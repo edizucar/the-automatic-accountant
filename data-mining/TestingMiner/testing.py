@@ -5,7 +5,5 @@ pdf_folder = os.chdir("..\\data-files") # cd into the folder with data
 
 pdfs = [f for f in os.listdir() if f.endswith(".pdf")]
 num_pdfs = len(pdfs)
-
-for pdf in pdfs[:1]:
-    text = extract_text(pdf)
-    print(text)
+contents,directors,comprehensive_income,balance_sheet,equity = [extract_text(pdfs[0],page_numbers=[i]) for i in [1,2,9,10,11]]
+print(contents)
