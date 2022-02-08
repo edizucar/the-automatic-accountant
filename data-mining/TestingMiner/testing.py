@@ -21,3 +21,4 @@ for i in range(num_pages):
         contents_page = s
         break
 
+contents_page = contents_page.split("\n")
