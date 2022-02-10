@@ -24,7 +24,7 @@ class PDF:
         if i in self.__pages:
             return self.__pages[i]
         else:
-            self.__pages[i] = self.pdfreader.extractText(i)
+            self.__pages[i] = self.pdfreader.getPage(i).extractText()
             return self.__pages[i]
     
     def find_contents_index(self):
@@ -40,6 +40,9 @@ class PDF:
 
     def get_contents_content(self):
         return self.get_page(self.find_contents_index())
+
+    # idea used to find page: search for keywords in context,
+    # see if page number provided matches the content we are looking for
 
     def find_directors_index(self):
         if self.__directors_index != None:

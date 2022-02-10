@@ -1,4 +1,4 @@
-from pdfminer.high_level import extract_pages, extract_text
+#from pdfminer.high_level import extract_pages, extract_text
 from PDF import PDF
 import os
 from sys import platform
@@ -16,9 +16,5 @@ pdf = [PDF(f) for f in os.listdir() if f.endswith(".pdf")][0]
 pdfpath = [f for f in os.listdir() if f.endswith(".pdf")][0]
 pdfreader = PdfFileReader(pdfpath)
 
-print(pdfreader.getPage(1).extractText())
+print(pdfreader.getPage(1).items())
 
-#for _ in range(1000):
-    #extract_pages(pdfpath, 0)
-
-print(pdf.get_contents_page_content())
