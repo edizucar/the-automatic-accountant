@@ -1,6 +1,8 @@
-from pdfminer.high_level import *
+from pdfminer.high_level import extract_pages, extract_text
+from PDF import PDF
 import os
 from sys import platform
+from PyPDF2 import PdfFileReader
 
 if platform == "win32" or platform == "win64":
     x = "\\"
@@ -9,16 +11,14 @@ else:
 
 pdf_folder = os.chdir(f"..{x}data-files") # cd into the folder with data
 
-pdfs = [f for f in os.listdir() if f.endswith(".pdf")]
-num_pdfs = len(pdfs)
+pdf = [PDF(f) for f in os.listdir() if f.endswith(".pdf")][0]
 
-num_pages = len(list(extract_pages(pdfs[0])))
+pdfpath = [f for f in os.listdir() if f.endswith(".pdf")][0]
+pdfreader = PdfFileReader(pdfpath)
 
-contents_page = None
-for i in range(num_pages):
-    s=extract_text(pdfs[0],page_numbers=[i])
-    if "contents" in s.lower():
-        contents_page = s
-        break
+print(pdfreader.getPage(1).extractText())
 
-contents_page = contents_page.split("\n")
+#for _ in range(1000):
+    #extract_pages(pdfpath, 0)
+
+print(pdf.get_contents_page_content())
