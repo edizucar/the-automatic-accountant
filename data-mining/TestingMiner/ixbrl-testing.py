@@ -23,7 +23,6 @@ for c in x.numeric:
 
 
 #getting director names
-human_names = 
 nonnumeric_names=set()
 for a in x.nonnumeric:
     nonnumeric_names.add(a.name)
