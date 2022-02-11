@@ -2,7 +2,7 @@ from ixbrlparse import IXBRL
 
 root = ""
 #f = root + "/Bilitech Ltd.xhtml"
-f = root + "/CE Statutory Accounts FY14-15.html"
+f = root + "/CE Statutory-Accounts-FY14-15.html"
 
 with open(f, encoding="utf8") as a:
     x = IXBRL(a)
