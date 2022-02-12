@@ -11,3 +11,4 @@ Dependencies
 * pandas
 * matplotlib
 * ixbrl-parse
+* regex (re)
