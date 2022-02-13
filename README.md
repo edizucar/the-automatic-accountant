@@ -12,3 +12,4 @@ Dependencies
 * matplotlib
 * ixbrl-parse
 * regex (re)
+* PyQt5
