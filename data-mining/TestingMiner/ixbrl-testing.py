@@ -23,17 +23,25 @@ def createJSON(input_path,destination_path):
 
     data = {
         "test_key":"test_value",
-        "People":{"Chairman":None, "ChiefExecutive":None, "Directors":{}}
+        "People":{"Chairman":None, "ChiefExecutive":None, "Directors":{}},
+        "Company Name":None,
+        "UK Companies House Registered Number":None,
+        "Start date covered by report":None,
+        "End date covered by report":None
+        
     
     }
     
 
     # Get Company Name, Director Info etc
 
-    #Getting important people from document 
+    
     important_role_patterns = ["Chairman","ChiefExecutive","Director[0-9]+"]
     important_people = set()
+
     for tag in ixbrl_file.nonnumeric:
+
+        #Getting important people from document 
         if tag.name == "NameEntityOfficer":
             val = tag.context.segments[0]["value"]
             san_name = sanitiseName(tag.value) #tag.value is the string of the chairman's name
@@ -46,6 +54,31 @@ def createJSON(input_path,destination_path):
                 director_number = int(re.findall('\d+', val)[-1]) # Each director is assigned a number from 1-40, so I extract this number
                 data["People"]["Directors"][director_number] = san_name
 
+        elif tag.name == "EntityCurrentLegalOrRegisteredName":
+            data["Company Name"] = tag.value
+
+        elif tag.name == "UKCompaniesHouseRegisteredNumber":
+            data["UK Companies House Registered Number"] = tag.value
+
+        elif tag.name == "StartDateForPeriodCoveredByReport":
+            if re.match(r"^\d{4}-\d{2}-\d{2}$",tag.value):
+                year,month,day = [int(x) for x in tag.value.split("-")] #TODO: We can separate y,m,d or leave as yyyy-mm-dd.
+                data["Start date covered by report"] = tag.value
+
+        elif tag.name == "EndDateForPeriodCoveredByReport":
+            if re.match(r"^\d{4}-\d{2}-\d{2}$",tag.value):
+                year,month,day = [int(x) for x in tag.value.split("-")] #TODO: We can separate y,m,d or leave as yyyy-mm-dd.
+                data["End date covered by report"] = tag.value
+
+        
+
+        
+
+    #Getting Company Name
+
+    #Getting Company Reference Number
+
+
     # Get Balance Sheet Info
 
     
@@ -53,8 +86,10 @@ def createJSON(input_path,destination_path):
     #Get etc etc
 
     #Write to json file
-    with open(destination_path,"w") as destination_file:
-        json.dump(data,destination_file)
+    if True:
+        with open(destination_path,"w") as destination_file:
+            json.dump(data,destination_file)
+        
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
