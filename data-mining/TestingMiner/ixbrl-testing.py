@@ -48,6 +48,8 @@ def createJSON(input_path,destination_path):
 
     # Get Balance Sheet Info
 
+    
+
     #Get etc etc
 
     #Write to json file
@@ -68,30 +70,6 @@ if __name__ == "__main__":
             createJSON(input_path,destination_path)
 
             
-
-
-if False:
-#root = ""
-#f = root + "/Bilitech Ltd.xhtml"
-#f = root + "CE Statutory-Accounts-FY14-15.html"
-
-#x.contexts
-
-    for c in x.numeric:
-        print(c.name)
-        if c.context.instant != None:
-            print("instant: ", c.context.instant)
-        if c.context.startdate != None:
-            print("startdate: ", c.context.startdate)
-        if c.context.enddate != None:
-            print("enddate: ", c.context.enddate)
-        print(c.value)
-        print()
-
-
-
-
-    #getting director names
 
 
 
