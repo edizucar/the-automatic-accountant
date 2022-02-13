@@ -1,0 +1,37 @@
+{
+    "Company name": "Example",
+    "UK Companies House Registered Number": "01111111",
+    "Start date covered by report": "01-01-21",
+    "End date covered by report": "01-01-22",
+    "Directors": {
+        "No. of directors": 0,
+	    "Director turnover in year": 0
+    },
+    "Profit & Loss Account": {
+        "Turnover": 0,
+        "Gross profit/loss": 0,
+        "Net profit/loss": 0
+    },
+    "Balance Sheet": {
+        "Fixed assets": {
+            "Tangible fixed assets": 0,
+            "Investments fixed assets": 0,
+            "Fixed assets balance": 0
+        },
+        "Current assets": {
+            "Debtors (due within one year)": 0,
+            "Cash balance": 0,
+            "Current assets balance": 0
+        },
+        "Current liabilities": {
+            "Creditors (due within one year)": 0,
+            "Current liabilities balance": 0
+        },
+        "Net assets/liabilities balance": 0
+    },
+    "Ratio Analysis Table": {
+        "Gross profit margin": 0,
+        "Liquidity ratio": 0,
+        "Debtor days": 0
+    }
+}
