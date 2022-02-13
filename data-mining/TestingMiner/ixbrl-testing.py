@@ -1,6 +1,5 @@
 
 import os.path
-from unicodedata import name
 from ixbrlparse import IXBRL
 import re
 import sys
@@ -90,6 +89,18 @@ def createJSON(input_path,destination_path):
         with open(destination_path,"w") as destination_file:
             json.dump(data,destination_file)
         
+def checkPaths(input_path,destination_path):
+    if os.path.exists(destination_path):
+            print(f"Overwriting {destination_path}")
+    if not os.path.exists(input_path):
+        print(f"File '{input_path}' not found")
+        return False
+    return True
+
+def checkAndcreateJSON(input_path,destination_path):
+    if checkPaths(input_path,destination_path):
+        createJSON(input_path,destination_path)
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
@@ -97,12 +108,8 @@ if __name__ == "__main__":
     else:
         input_path = sys.argv[1]
         destination_path = sys.argv[2]
-        if os.path.exists(destination_path):
-            print(f"Overwriting {destination_path}")
-        if not os.path.exists(input_path):
-            print(f"File '{input_path}' not found")
-        else:
-            createJSON(input_path,destination_path)
+        checkAndcreateJSON(input_path,destination_path)
+
 
             
 
