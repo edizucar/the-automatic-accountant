@@ -13,14 +13,38 @@ def matchAny(patterns, string):
 def searchAny(patterns, string):
     return len(filter(lambda pattern: re.search(pattern,string),patterns)) != 0
 
+def sanitiseName(name):
+    return re.sub(r"[^a-zA-Z\- ]","",name)
+
+
 def createJSON(input_path,destination_path):
     with open(input_path, encoding="utf8") as file:
         ixbrl_file = IXBRL(file)
 
-    data = {"test_key":"test_value"}
+    data = {
+        "test_key":"test_value",
+        "People":{"Chairman":None, "ChiefExecutive":None, "Directors":{}}
+    
+    }
+    
 
     # Get Company Name, Director Info etc
 
+    #Getting important people from document 
+    important_role_patterns = ["Chairman","ChiefExecutive","Director[0-9]+"]
+    important_people = set()
+    for tag in ixbrl_file.nonnumeric:
+        if tag.name == "NameEntityOfficer":
+            val = tag.context.segments[0]["value"]
+            san_name = sanitiseName(tag.value) #tag.value is the string of the chairman's name
+            #Exhaust the different relevant roles
+            if re.search("Chairman",val):
+                data["People"]["Chairman"] = san_name
+            elif re.search("ChiefExecutive",val):
+                data["People"]["ChiefExecutive"] = san_name
+            elif re.search("Director[0-9]+",val):
+                director_number = int(re.findall('\d+', val)[-1]) # Each director is assigned a number from 1-40, so I extract this number
+                data["People"]["Directors"][director_number] = san_name
 
     # Get Balance Sheet Info
 
@@ -68,23 +92,7 @@ if False:
 
 
     #getting director names
-    important_role_patterns = ["Chairman","ChiefExecutive","Director[0-9]+"]
-    important_people = []
-    nonnumeric_names=set()
-    director_pattern = "Director[0-9]+"
-    for a in x.nonnumeric:
-        
-        if a.name == "NameEntityOfficer":
-            val = a.context.segments[0]["value"]
-            if matchAny(important_role_patterns,val):
-                important_people.append(a)
 
-
-    for director in list(important_people):
-        c = director.context
-        val = c.segments[0]["value"]
-        print(f"value:{director.value}, segments:{val}")
-        print()
 
 
 
