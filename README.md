@@ -13,3 +13,5 @@ Dependencies
 * ixbrl-parse
 * regex (re)
 * PyQt5
+
+Do "pip install -r requirements.txt" to install the dependencies
