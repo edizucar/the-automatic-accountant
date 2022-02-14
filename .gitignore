@@ -1,5 +1,6 @@
 #Your virtual environment should be local
-.venv/
+.venv
+venv/
 
 #Dont need to vc cached local modules
 data-mining/TestingMiner/__pycache__
