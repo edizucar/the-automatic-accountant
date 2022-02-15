@@ -65,7 +65,7 @@ class App(QWidget):
     
     def openFileNamesDialog(self):
         options = QFileDialog.Options()
-        files, _ = QFileDialog.getOpenFileNames(self,"QFileDialog.getOpenFileNames()", "","All Files (*);;Python Files (*.py)", options=options)
+        files, _ = QFileDialog.getOpenFileNames(self,"Select Accounts to Analyse", "","All Files (*);;Python Files (*.py)", options=options)
         if files:
             return files
         else:
