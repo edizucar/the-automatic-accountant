@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit, QFileDialog, QPushButton, QHBoxLayout
+from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit, QFileDialog, QPushButton, QHBoxLayout, QVBoxLayout
 from PyQt5.QtGui import QIcon
 
 class App(QWidget):
@@ -7,8 +7,8 @@ class App(QWidget):
     def __init__(self):
         super().__init__()
         self.title = 'The Automatic Accountant'
-        self.left = 10
-        self.top = 10
+        self.left = 100
+        self.top = 100
         self.width = 640
         self.height = 480
         self.initUI()
@@ -16,38 +16,60 @@ class App(QWidget):
     def initUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
-        self.layout = QHBoxLayout()
-        self.setLayout(self.layout)
         
-        #self.openFileNameDialog()
-        #self.openFileNamesDialog()
-        #self.saveFileDialog()
+        self.mainTopWidget = QWidget()
+        self.mainBottomWidget = QWidget()
         
+        # Create Layouts
+        self.mainLayout = QVBoxLayout()
+        self.mainTopLayout = QHBoxLayout()
+        self.mainBottomLayout = QHBoxLayout()
+        
+        self.mainLayout.addWidget(self.mainTopWidget)
+        self.mainLayout.addWidget(self.mainBottomWidget)
+        
+        # Assign Layouts
+        self.setLayout(self.mainLayout)
+        self.mainTopWidget.setLayout(self.mainTopLayout)
+        self.mainBottomWidget.setLayout(self.mainBottomLayout)
+
+        
+        # Create Buttons
         self.uploadAccountsButton = QPushButton("Upload Accounts")
         self.uploadAccountsButton.setCheckable(True)
         self.uploadAccountsButton.clicked.connect(self.uploadAccounts)
         
-        #self.setCentralWidget(self.uploadAccountsButton)
-        self.layout.addWidget(self.uploadAccountsButton)
+        self.runAnalysisButton = QPushButton("Run Analysis")
+        self.runAnalysisButton.setCheckable(True)
+        self.runAnalysisButton.setEnabled(False)
+        self.runAnalysisButton.clicked.connect(self.analyseAccounts)
+        
+        # Add Buttons to window
+        self.mainTopLayout.addWidget(self.uploadAccountsButton)
+        self.mainBottomLayout.addWidget(self.runAnalysisButton)
         
         self.show()
     
     def uploadAccounts(self):
         files = self.openFileNamesDialog()
+        
+        self.runAnalysisButton.setEnabled(True)
+        #TODO: Show selected files on window
     
-    def openFileNameDialog(self):
-        options = QFileDialog.Options()
-        options |= QFileDialog.DontUseNativeDialog
-        fileName, _ = QFileDialog.getOpenFileName(self,"QFileDialog.getOpenFileName()", "","All Files (*);;Python Files (*.py)", options=options)
-        if fileName:
-            print(fileName)
+    def analyseAccounts(self):
+        print("ANALYSIS")
+        #TODO: Analyse accounts
+        
+        
+        
     
     def openFileNamesDialog(self):
         options = QFileDialog.Options()
-        options |= QFileDialog.DontUseNativeDialog
         files, _ = QFileDialog.getOpenFileNames(self,"QFileDialog.getOpenFileNames()", "","All Files (*);;Python Files (*.py)", options=options)
         if files:
             return files
+        else:
+            return None
     
     def saveFileDialog(self):
         options = QFileDialog.Options()
