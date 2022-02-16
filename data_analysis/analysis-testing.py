@@ -20,7 +20,7 @@ def readFromDataFolder(file_name):
     return data
 
 def main():
-    data = readFromDataFolder('CE Statutory-Accounts-FY14-15.html')
+    data = readFromDataFolder('data-files\\CE Statutory-Accounts-FY14-15.html')
     
 
 if __name__ == "__main__":
