@@ -35,8 +35,9 @@ class App(QWidget):
         print(self.mainLayout.alignment())
 
 
-        self.label = QLabel("My text")
+        self.label = QLabel("Please upload the files you would like us to analyze")
         self.label.setAlignment(QtCore.Qt.AlignCenter)
+        self.label.setStyleSheet("QLabel {color: grey;}")
         self.mainLayout.addWidget(self.label)
 
 
@@ -67,6 +68,7 @@ class App(QWidget):
         self.runAnalysisButton.clicked.connect(self.analyseAccounts)
 
         self.filesText = QTextEdit()
+        self.filesText.setText("No files currently imported")
         self.filesText.setReadOnly(True)
 
         # Add text
