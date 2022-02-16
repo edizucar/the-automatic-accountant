@@ -4,7 +4,7 @@ import os
 
 sys.path.append('.')
 sys.path.append('../data_analysis')
-from data_mining.TestingMiner.ixbrl_testing import checkAndcreateJSON
+from data_mining.ixbrl_testing import checkAndcreateJSON,checkAndGetJSON
 
 
 #Input should be the name of a file rather than a path, assuming that all the
@@ -13,13 +13,9 @@ from data_mining.TestingMiner.ixbrl_testing import checkAndcreateJSON
 def readFromDataFolder(file_name):
     path = os.path.realpath(__file__)
     dir = os.path.dirname(path)
-    dir1 = dir.replace('data_analysis', 'data_mining/TestingMiner')
+    dir1 = dir.replace('data_analysis', 'data_mining')
     os.chdir(dir1)
-    checkAndcreateJSON(file_name, 'data.json')
-    f = open('data.json')
-    data = json.load(f)
-    f.close()
-    os.remove('data.json')
+    data = checkAndGetJSON(file_name)
     os.chdir(dir)
     return data
 

@@ -272,9 +272,10 @@ def createJSON(input_path, destination_path):
         json.dump(data, destination_file)
 
 
-def checkPaths(input_path, destination_path):
-    if os.path.exists(destination_path):
-        print(f"Overwriting {destination_path}")
+def checkPaths(input_path, destination_path=None):
+    if destination_path != None:
+        if os.path.exists(destination_path):
+            print(f"Overwriting {destination_path}")
     if not os.path.exists(input_path):
         raise FileNotFoundError(f"File '{input_path}' not found")
     return True
@@ -284,11 +285,11 @@ def checkAndcreateJSON(input_path, destination_path):
     if checkPaths(input_path, destination_path):
         createJSON(input_path, destination_path)
 
-def checkAndGetJSON(input_path,destination_path):
-    if checkPaths(input_path, destination_path):
-        return getJSON(input_path, destination_path)
+def checkAndGetJSON(input_path):
+    if checkPaths(input_path):
+        return getJSON(input_path)
 
-def getJSON(input_path,destination_path):
+def getJSON(input_path):
     ixbrl_file = None
     with open(input_path, encoding="utf8") as file:
         ixbrl_file = IXBRL(file)
