@@ -4,3 +4,4 @@ venv/
 
 #Dont need to vc cached local modules
 data_mining/__pycache__
+data_mining/TestingMiner/__pycache__
