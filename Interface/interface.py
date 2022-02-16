@@ -1,5 +1,8 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit, QFileDialog, QPushButton, QHBoxLayout, QVBoxLayout, QTextEdit, QPlainTextEdit
+
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit, \
+    QFileDialog, QPushButton, QHBoxLayout, QVBoxLayout, QTextEdit, QPlainTextEdit, QLabel
 from PyQt5.QtGui import QIcon
 
 
@@ -28,7 +31,15 @@ class App(QWidget):
         self.mainLayout = QVBoxLayout()
         self.mainTopLayout = QHBoxLayout()
         self.mainBottomLayout = QHBoxLayout()
-        
+
+        print(self.mainLayout.alignment())
+
+
+        self.label = QLabel("My text")
+        self.label.setAlignment(QtCore.Qt.AlignCenter)
+        self.mainLayout.addWidget(self.label)
+
+
         self.mainLayout.addWidget(self.mainTopWidget)
         self.mainLayout.addWidget(self.mainBottomWidget)
         
@@ -57,12 +68,21 @@ class App(QWidget):
 
         self.filesText = QTextEdit()
         self.filesText.setReadOnly(True)
+
+        # Add text
+
+
+
+
         
         # Add Buttons to window
+
+
         self.mainTopLayout.addWidget(self.uploadAccountsButton)
         self.mainBottomLayout.addWidget(self.runAnalysisButton)
         self.mainBottomLayout.addWidget(self.CompanyLookup)
         self.mainBottomLayout.addWidget(self.filesText)
+        self.mainLayout.addWidget(self.textbox)
 
         
         self.show()
