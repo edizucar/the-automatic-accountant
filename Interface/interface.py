@@ -1,6 +1,10 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit, QFileDialog, QPushButton, QHBoxLayout, QVBoxLayout
+from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit, QFileDialog, QPushButton, QHBoxLayout, QVBoxLayout, QTextEdit
 from PyQt5.QtGui import QIcon
+
+
+
+
 
 class App(QWidget):
 
@@ -50,22 +54,29 @@ class App(QWidget):
         self.runAnalysisButton.setCheckable(True)
         self.runAnalysisButton.setEnabled(False)
         self.runAnalysisButton.clicked.connect(self.analyseAccounts)
+
+        self.filesText = QTextEdit()
         
         # Add Buttons to window
         self.mainTopLayout.addWidget(self.uploadAccountsButton)
         self.mainBottomLayout.addWidget(self.runAnalysisButton)
         self.mainBottomLayout.addWidget(self.CompanyLookup)
+        self.mainBottomLayout.addWidget(self.filesText)
 
         
         self.show()
 
     def companyLookup(self):
-        pass
+        company = self.textbox.text()
+        link = f"https://find-and-update.company-information.service.gov.uk/search?q={company}"
+        print(link)
     
     def uploadAccounts(self):
         files = self.openFileNamesDialog()
         
         self.runAnalysisButton.setEnabled(True)
+        self.filesText.setText(str(files))
+        print(files)
         #TODO: Show selected files on window
     
     def analyseAccounts(self):
