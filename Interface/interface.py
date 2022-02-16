@@ -51,7 +51,7 @@ class App(QWidget):
 
         
         # Create Buttons
-        self.uploadAccountsButton = QPushButton("Upload Accounts")
+        self.uploadAccountsButton = QPushButton("📁 Upload Accounts")
         self.uploadAccountsButton.setCheckable(True)
         self.uploadAccountsButton.clicked.connect(self.uploadAccounts)
 
