@@ -38,6 +38,13 @@ class App(QWidget):
         self.uploadAccountsButton = QPushButton("Upload Accounts")
         self.uploadAccountsButton.setCheckable(True)
         self.uploadAccountsButton.clicked.connect(self.uploadAccounts)
+
+        # Button To look up companies
+        self.CompanyLookup = QPushButton("Lookup Company")
+        self.CompanyLookup.setCheckable(True)
+        self.CompanyLookup.clicked.connect(self.companyLookup)
+
+        self.textbox = QLineEdit(self)
         
         self.runAnalysisButton = QPushButton("Run Analysis")
         self.runAnalysisButton.setCheckable(True)
@@ -47,8 +54,13 @@ class App(QWidget):
         # Add Buttons to window
         self.mainTopLayout.addWidget(self.uploadAccountsButton)
         self.mainBottomLayout.addWidget(self.runAnalysisButton)
+        self.mainBottomLayout.addWidget(self.CompanyLookup)
+
         
         self.show()
+
+    def companyLookup(self):
+        pass
     
     def uploadAccounts(self):
         files = self.openFileNamesDialog()
