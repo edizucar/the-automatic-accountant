@@ -12,16 +12,25 @@ from data_mining.ixbrl_testing import checkAndcreateJSON,checkAndGetJSON
 def change(data1, data2, index):
     index1 = data1[index]
     index2 = data2[index]
+    if(index1 == 0):
+        return 0
     return (index2 - index1) / (index1)
 
 #Just some examples of indices where we can look at the change over time
 def checkIfSuspicious(comparison, indices):
-    suspicious = []
+    suspicious = {}
     for index in indices:
         diff = comparison[index]["Relative Change"]
         if abs(diff) > 0.2:
             suspicious[index] = diff
     return suspicious
+
+def replacer(dictionary):
+    for k, v in dictionary.items():
+        if isinstance(v, dict):
+            replacer(v)
+        elif v is None:
+            dictionary[k] = 0
 
 #Plot graphs of specific indices over time
 def plotOverTime(data, index, name):
@@ -31,22 +40,12 @@ def plotOverTime(data, index, name):
 #Compare two sets of data, returns a dictionary which has all the data, absolute changes, relative changes, as well as points that are worth reporting 
 #(including over 20% change in certain indices, certain indices being negative when they shouldn't be)
 def compare(data1, data2):
-    company1 = data1["Company name"] + data1["Start date covered by report"] + " to " + data1["End date covered by report"]
-    company2 = data2["Company name"] + data2["Start date covered by report"] + " to " + data2["End date covered by report"]
-    directors1 = data1["Directors"]
-    directors2 = data2["Directors"]
-    director_no1 = directors1["No. of directors"]
-    director_no2 = directors2["No. of directors"]
-    director_no_change = director_no2 - director_no1
-    director_no_change_relative = change(directors1, directors2, "No. of directors")
-    director_no = {company1: director_no1, company2: director_no2, "Absolute Change": \
-        director_no_change, "Relative Change": director_no_change_relative}
-    director_turnover1 = directors1["Director turnover in year"]
-    director_turnover2 = directors2["Director turnover in year"]
-    director_turnover_change = director_turnover2 - director_turnover1
-    director_turnover_change_relative = change(directors1, directors2, "Director turnover in year")
-    director_turnover = {company1: director_turnover1, company2: director_turnover2, \
-        "Absolute Change": director_turnover_change, "Relative Change": director_turnover_change_relative}
+    replacer(data1)
+    replacer(data2)
+    print(data1)
+    print(data2)
+    company1 = data1["Company Name"] + " " + data1["Start date covered by report"] + " to " + data1["End date covered by report"]
+    company2 = data2["Company Name"] + " " + data2["Start date covered by report"] + " to " + data2["End date covered by report"]
     profit_and_loss1 = data1["Profit & Loss Account"]
     profit_and_loss2 = data2["Profit & Loss Account"]
     turnover1 = profit_and_loss1["Turnover"]
@@ -152,7 +151,7 @@ def compare(data1, data2):
     debtor_days_change_relative = change(ratio1, ratio2, "Debtor days")
     debtor_days = {company1: debtor_days1, company2: debtor_days2, "Absolute Change": \
         debtor_days_change, "Relative Change": debtor_days_change_relative}
-    comparison = {"No. of directors": director_no, "Director turnover in year": director_turnover, "Turnover": turnover, "Gross profit/loss": gross_profit, \
+    comparison = {"Turnover": turnover, "Gross profit/loss": gross_profit, \
         "Net profit/loss": net_profit, "Tangible fixed assets": tangible_fixed_assets, "Investments fixed assets": investment_fixed_assets, "Fixed assets balance": \
             fixed_asset_balance, "Debtors (due within one year)": debtors, "Cash balance": cash_balance, "Current assets balance": current_assets_balance, \
                 "Creditors (due within one year)": creditors, "Current liabilities balance": current_liabilities_balance, "Net assets/liabilities balance": \
@@ -166,20 +165,27 @@ def compare(data1, data2):
     negative_indices = {}
     for positive_index in ["Turnover", "Tangible fixed assets", "Investments fixed assets", "Fixed assets balance", "Debtors (due within one year)", "Cash balance", "Current assets balance",\
         "Creditors (due within one year)", "Current liabilities balance", "Net assets/liabilities balance"]:
-        companies = set()
+        companies = {}
         if comparison[positive_index][company1] < 0:
-            companies.add(company1)
+            companies[company1] = True
         if comparison[positive_index][company2] < 0:
-            companies.add(company2)
+            companies[company2] = True
         if(len(companies) > 0):
             negative_indices[positive_index] = companies
     comparison["Indices that are negative but should not be"] = negative_indices
     return comparison
 
 def main():
-    data1 = checkAndGetJSON('data-files\\CE Statutory-Accounts-FY14-15.html')
-    data2 = checkAndGetJSON('data-files\\CUTS Statutory-Accounts-FY14-15.html')
+    path = os.path.realpath(__file__)
+    dir = os.path.dirname(path)
+    dir1 = dir.replace('data_analysis', 'data_mining/data-files')
+    os.chdir(dir1)
+    data1 = checkAndGetJSON('CE Statutory Accounts FY14-15.html')
+    data2 = checkAndGetJSON('CUTS Statutory Accounts FY14-15.html')
     comparison = compare(data1,data2)
+    os.chdir(dir)
+    with open('comparison.json', 'w') as fp:
+        json.dump(comparison, fp)
     print(comparison)
     
     
