@@ -25,6 +25,7 @@ def checkIfSuspicious(comparison, indices):
             suspicious[index] = diff
     return suspicious
 
+#Replace all None values by 0 in a dict
 def replacer(dictionary):
     for k, v in dictionary.items():
         if isinstance(v, dict):
@@ -40,10 +41,9 @@ def plotOverTime(data, index, name):
 #Compare two sets of data, returns a dictionary which has all the data, absolute changes, relative changes, as well as points that are worth reporting 
 #(including over 20% change in certain indices, certain indices being negative when they shouldn't be)
 def compare(data1, data2):
+    #Temporary replace None values by 0 function, should update analysis function in the future to handle None values instead of this
     replacer(data1)
     replacer(data2)
-    print(data1)
-    print(data2)
     company1 = data1["Company Name"] + " " + data1["Start date covered by report"] + " to " + data1["End date covered by report"]
     company2 = data2["Company Name"] + " " + data2["Start date covered by report"] + " to " + data2["End date covered by report"]
     profit_and_loss1 = data1["Profit & Loss Account"]
