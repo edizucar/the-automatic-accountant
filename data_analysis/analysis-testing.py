@@ -179,7 +179,8 @@ def compare(data1, data2):
 def main():
     data1 = checkAndGetJSON('data-files\\CE Statutory-Accounts-FY14-15.html')
     data2 = checkAndGetJSON('data-files\\CUTS Statutory-Accounts-FY14-15.html')
-    compare(data1,data2)
+    comparison = compare(data1,data2)
+    print(comparison)
     
     
 if __name__ == "__main__":
