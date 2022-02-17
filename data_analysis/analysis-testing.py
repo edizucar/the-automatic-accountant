@@ -28,6 +28,8 @@ def plotOverTime(data, index, name):
     plt.plot(data["name"], index)
     plt.savefig('graphs/' + name + '.png')
 
+#Compare two sets of data, returns a dictionary which has all the data, absolute changes, relative changes, as well as points that are worth reporting 
+#(including over 20% change in certain indices, certain indices being negative when they shouldn't be)
 def compare(data1, data2):
     company1 = data1["Company name"] + data1["Start date covered by report"] + " to " + data1["End date covered by report"]
     company2 = data2["Company name"] + data2["Start date covered by report"] + " to " + data2["End date covered by report"]
@@ -155,8 +157,11 @@ def compare(data1, data2):
             fixed_asset_balance, "Debtors (due within one year)": debtors, "Cash balance": cash_balance, "Current assets balance": current_assets_balance, \
                 "Creditors (due within one year)": creditors, "Current liabilities balance": current_liabilities_balance, "Net assets/liabilities balance": \
                     net_al_balance, "Gross profit margin": gross_profit_margin, "Liquidity ratio": liquidity_ratio, "Debtor days": debtor_days}
+
+    #Checking for indicies that report a 20%+ change 
     suspicious_changes = checkIfSuspicious(comparison, comparison.keys())
     comparison["Suspicious Changes"] = suspicious_changes
+
     #Checking for indicies that shouldn't be negative, but are
     negative_indices = {}
     for positive_index in ["Turnover", "Tangible fixed assets", "Investments fixed assets", "Fixed assets balance", "Debtors (due within one year)", "Cash balance", "Current assets balance",\
