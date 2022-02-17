@@ -265,7 +265,7 @@ def addNumericTags(ixbrl_file, data):
 
 
 def createJSON(input_path, destination_path):
-    data = getJSON(input_path,destination_path)
+    data = getJSON(input_path)
 
     # Write to json file
     with open(destination_path, "w") as destination_file:
