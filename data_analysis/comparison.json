@@ -1,1 +1,112 @@
-{"Turnover": {"CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 5349877.0, "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": 5124093.0, "Absolute Change": -225784.0, "Relative Change": -0.0422035871105074}, "Gross profit/loss": {"CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 1547943.0, "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": 1066358.0, "Absolute Change": -481585.0, "Relative Change": -0.3111128768953379}, "Net profit/loss": {"CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 2318944.0, "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": -152180.0, "Absolute Change": -2471124.0, "Relative Change": -1.065624698138463}, "Tangible fixed assets": {"CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 0, "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": 40477.0, "Absolute Change": -40477.0, "Relative Change": -1.0}, "Investments fixed assets": {"CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 7684896.0, "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": 0, "Absolute Change": -7684896.0, "Relative Change": -1.0}, "Fixed assets balance": {"CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 7725373.0, "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": 0, "Absolute Change": -7725373.0, "Relative Change": -1.0}, "Debtors (due within one year)": {"CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 3517403.0, "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": 1787391.0, "Absolute Change": -1730012.0, "Relative Change": -0.49184355616913955}, "Cash balance": {"CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 0, "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": 0, "Absolute Change": 0, "Relative Change": 0}, "Current assets balance": {"CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 3517403.0, "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": 1787391.0, "Absolute Change": -1730012.0, "Relative Change": -0.49184355616913955}, "Creditors (due within one year)": {"CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 4825193.0, "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": 3419265.0, "Absolute Change": -1405928.0, "Relative Change": 0.41117842577279035}, "Current liabilities balance": {"CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 4825193.0, "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": 3419265.0, "Absolute Change": -1405928.0, "Relative Change": 0.41117842577279035}, "Net assets/liabilities balance": {"CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 6417583.0, "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": -1631874.0, "Absolute Change": -8049457.0, "Relative Change": -4.932646147925636}, "Gross profit margin": {"CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 0.2893417923440109, "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": 0.20810668346573724, "Absolute Change": -0.08123510887827368, "Relative Change": -0.2807582970305574}, "Liquidity ratio": {"CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 1.371805562228724, "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": 1.9129921768656102, "Absolute Change": 0.5411866146368862, "Relative Change": 0.39450679421188484}, "Debtor days": {"CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 239.97787145386707, "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": 127.31964759421814, "Absolute Change": -112.65822385964893, "Relative Change": -0.4694525506753074}, "Suspicious Changes": {"Gross profit/loss": -0.3111128768953379, "Net profit/loss": -1.065624698138463, "Tangible fixed assets": -1.0, "Investments fixed assets": -1.0, "Fixed assets balance": -1.0, "Debtors (due within one year)": -0.49184355616913955, "Current assets balance": -0.49184355616913955, "Creditors (due within one year)": 0.41117842577279035, "Current liabilities balance": 0.41117842577279035, "Net assets/liabilities balance": -4.932646147925636, "Gross profit margin": -0.2807582970305574, "Liquidity ratio": 0.39450679421188484, "Debtor days": -0.4694525506753074}, "Indices that are negative but should not be": {"Net assets/liabilities balance": {"CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": true}}}
+{
+    "Turnover": {
+        "CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 5349877.0,
+        "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": 5124093.0,
+        "Absolute Change": -225784.0,
+        "Relative Change": -0.0422035871105074
+    },
+    "Gross profit/loss": {
+        "CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 1547943.0,
+        "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": 1066358.0,
+        "Absolute Change": -481585.0,
+        "Relative Change": -0.3111128768953379
+    },
+    "Net profit/loss": {
+        "CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 2318944.0,
+        "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": -152180.0,
+        "Absolute Change": -2471124.0,
+        "Relative Change": -1.065624698138463
+    },
+    "Tangible fixed assets": {
+        "CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 0,
+        "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": 40477.0,
+        "Absolute Change": -40477.0,
+        "Relative Change": -1.0
+    },
+    "Investments fixed assets": {
+        "CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 7684896.0,
+        "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": 0,
+        "Absolute Change": -7684896.0,
+        "Relative Change": -1.0
+    },
+    "Fixed assets balance": {
+        "CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 7725373.0,
+        "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": 0,
+        "Absolute Change": -7725373.0,
+        "Relative Change": -1.0
+    },
+    "Debtors (due within one year)": {
+        "CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 3517403.0,
+        "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": 1787391.0,
+        "Absolute Change": -1730012.0,
+        "Relative Change": -0.49184355616913955
+    },
+    "Cash balance": {
+        "CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 0,
+        "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": 0,
+        "Absolute Change": 0,
+        "Relative Change": 0
+    },
+    "Current assets balance": {
+        "CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 3517403.0,
+        "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": 1787391.0,
+        "Absolute Change": -1730012.0,
+        "Relative Change": -0.49184355616913955
+    },
+    "Creditors (due within one year)": {
+        "CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 4825193.0,
+        "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": 3419265.0,
+        "Absolute Change": -1405928.0,
+        "Relative Change": 0.41117842577279035
+    },
+    "Current liabilities balance": {
+        "CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 4825193.0,
+        "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": 3419265.0,
+        "Absolute Change": -1405928.0,
+        "Relative Change": 0.41117842577279035
+    },
+    "Net assets/liabilities balance": {
+        "CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 6417583.0,
+        "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": -1631874.0,
+        "Absolute Change": -8049457.0,
+        "Relative Change": -4.932646147925636
+    },
+    "Gross profit margin": {
+        "CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 0.2893417923440109,
+        "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": 0.20810668346573724,
+        "Absolute Change": -0.08123510887827368,
+        "Relative Change": -0.2807582970305574
+    },
+    "Liquidity ratio": {
+        "CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 1.371805562228724,
+        "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": 1.9129921768656102,
+        "Absolute Change": 0.5411866146368862,
+        "Relative Change": 0.39450679421188484
+    },
+    "Debtor days": {
+        "CAMBRIDGE ENTERPRISE LIMITED 2014-08-01 to 2015-07-31": 239.97787145386707,
+        "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": 127.31964759421814,
+        "Absolute Change": -112.65822385964893,
+        "Relative Change": -0.4694525506753074
+    },
+    "Suspicious Changes": {
+        "Gross profit/loss": -0.3111128768953379,
+        "Net profit/loss": -1.065624698138463,
+        "Tangible fixed assets": -1.0,
+        "Investments fixed assets": -1.0,
+        "Fixed assets balance": -1.0,
+        "Debtors (due within one year)": -0.49184355616913955,
+        "Current assets balance": -0.49184355616913955,
+        "Creditors (due within one year)": 0.41117842577279035,
+        "Current liabilities balance": 0.41117842577279035,
+        "Net assets/liabilities balance": -4.932646147925636,
+        "Gross profit margin": -0.2807582970305574,
+        "Liquidity ratio": 0.39450679421188484,
+        "Debtor days": -0.4694525506753074
+    },
+    "Indices that are negative but should not be": {
+        "Net assets/liabilities balance": {
+            "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED 2014-08-01 to 2015-07-31": true
+        }
+    }
+}
