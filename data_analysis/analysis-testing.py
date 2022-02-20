@@ -47,6 +47,12 @@ def returnCompare(data1, data2, index):
     return {"Company1": company1, "Company2": company2, "Absolute Change": absolute_change, \
         "Relative Change": relative_change}
 
+def company_details(data):
+    d = {}
+    for x in ["Company Name", "UK Companies House Registered Number", "Start date covered by report", "End date covered by report"]:
+        d[x] = data[x]
+    return d
+
 
 
 #Compare two sets of data, returns a dictionary which has all the data, absolute changes, relative changes, as well as points that are worth reporting 
@@ -106,6 +112,9 @@ def compare(data1, data2):
         if(len(companies) > 0):
             negative_indices[positive_index] = companies
     comparison["Indices that are negative but should not be"] = negative_indices
+    comparison["Company1"] = company_details(data1)
+    comparison["Company2"] = company_details(data2)
+
     return comparison
 
 def main():

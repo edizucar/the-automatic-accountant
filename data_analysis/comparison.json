@@ -113,5 +113,17 @@
         "Net assets/liabilities balance": {
             "Company2": true
         }
+    },
+    "Company1": {
+        "Company Name": "CAMBRIDGE ENTERPRISE LIMITED",
+        "UK Companies House Registered Number": "01069886",
+        "Start date covered by report": "2014-08-01",
+        "End date covered by report": "2015-07-31"
+    },
+    "Company2": {
+        "Company Name": "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED",
+        "UK Companies House Registered Number": "05749230",
+        "Start date covered by report": "2014-08-01",
+        "End date covered by report": "2015-07-31"
     }
 }
