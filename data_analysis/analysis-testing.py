@@ -1,21 +1,18 @@
+from pickle import NONE
 import sys
 import json
 import os
+from xml.etree.ElementPath import get_parent_map
 import matplotlib.pyplot as plt
+from enum import Enum, IntEnum, auto
 
 sys.path.append('.')
 sys.path.append('../data_analysis')
-<<<<<<< HEAD
-from data_mining.data_mine import checkAndcreateJSON,checkAndGetJSON
-=======
 from data_mining.data_mine import checkAndGetJSON
->>>>>>> 938cd0caddceb6d6876474abfa8d44c8c966e6ff
 
 #Find out percentage change of a specific index, eg. gross profit,
 #from data1 to data2
-def change(data1, data2, index):
-    index1 = data1[index]
-    index2 = data2[index]
+def change(index1, index2):
     if(index1 == 0):
         return 0
     return (index2 - index1) / (index1)
@@ -47,7 +44,7 @@ def returnCompare(data1, data2, index):
     if absolute_change is None: 
         relative_change = None
     else:
-        relative_change = change(data1, data2, index)
+        relative_change = change(company1, company2)
     return {"Company1": company1, "Company2": company2, "Absolute Change": absolute_change, \
         "Relative Change": relative_change}
 
@@ -138,12 +135,151 @@ def main():
 if __name__ == "__main__":
     main()
 
+class Flag(IntEnum):
+    GREEN = auto()
+    AMBER = auto()
+    RED = auto()
+
+def getSector(SIC):
+    if 1110 <= SIC <= 3220:
+        return "A"
+    elif 5101 <= SIC <= 9900:
+        return "B"
+    elif 10110 <= SIC <= 33200:
+        return "C"
+    elif 35110 <= SIC <= 35300:
+        return "D"
+    elif 36000 <= SIC <= 39000:
+        return "E"
+    elif 41100 <= SIC <= 43999:
+        return "F"
+    elif 45111 <= SIC <= 47990:
+        return "G"
+    elif 49100 <= SIC <= 53202:
+        return "H"
+    elif 55100 <= SIC <= 56302:
+        return "I"
+    elif 58110 <= SIC <= 63990:
+        return "J"
+    elif 64110 <= SIC <= 66300:
+        return "K"
+    elif 68100 <= SIC <= 68320:
+        return "L"
+    elif 69101 <= SIC <= 7500:
+        return "M"
+    elif 77110 <= SIC <= 82990:
+        return "N"
+    elif 84110 <= SIC <= 84300:
+        return "O"
+    elif 85100 <= SIC <= 85600:
+        return "P"
+    elif 86101 <= SIC <= 88990:
+        return "Q"
+    elif 90010 <= SIC <= 93290:
+        return "R"
+    elif 94110 <= SIC <= 96090:
+        return "S"
+    elif 97000 <= SIC <= 98200:
+        return "T"
+    elif 99000 <= SIC <= 99999:
+        return "U"
+    raise Exception("Invalid SIC")
+
+sectors = {
+    "A" : "Agriculture, Forestry and Fishing",
+    "B" : "Mining and Quarrying",
+    "C" : "Manufacturing",
+    "D" : "Electricity, gas, steam and air conditioning supply",
+    "E" : "Water supply, sewerage, waste management and remediation activities",
+    "F" : "Construction",
+    "G" : "Wholesale and retail trade; repair of motor vehicles and motorcycles",
+    "H" : "Transportation and storage",
+    "I" : "Accommodation and food service activities",
+    "J" : "Information and communication",
+    "K" : "Financial and insurance activities",
+    "L" : "Real estate activities",
+    "M" : "Professional, scientific and technical activities",
+    "N" : "Administrative and support service activities",
+    "O" : "Public administration and defence; compulsory social security",
+    "P" : "Education",
+    "Q" : "Human health and social work activities",
+    "R" : "Arts, entertainment and recreation",
+    "S" : "Other service activities",
+    "T" : "Activities of households as employers; undifferentiated goods- and services-producing activities of households for own use",
+    "U" : "Activities of extraterritorial organisations and bodies"
+} 
+
+
+#TODO: dind reasonable values for these two dictionaries
+
+average_gross_profit_by_sector = {
+    "A" : 1,
+    "B" : 1,
+    "C" : 1,
+    "D" : 1,
+    "E" : 1,
+    "F" : 1,
+    "G" : 1,
+    "H" : 1,
+    "I" : 1,
+    "J" : 1,
+    "K" : 1,
+    "L" : 1,
+    "M" : 1,
+    "N" : 1,
+    "O" : 1,
+    "P" : 1,
+    "Q" : 1,
+    "R" : 1,
+    "S" : 1,
+    "T" : 1,
+    "U" : 1
+}
+
+average_net_profit_by_sector = {
+    "A" : 1,
+    "B" : 1,
+    "C" : 1,
+    "D" : 1,
+    "E" : 1,
+    "F" : 1,
+    "G" : 1,
+    "H" : 1,
+    "I" : 1,
+    "J" : 1,
+    "K" : 1,
+    "L" : 1,
+    "M" : 1,
+    "N" : 1,
+    "O" : 1,
+    "P" : 1,
+    "Q" : 1,
+    "R" : 1,
+    "S" : 1,
+    "T" : 1,
+    "U" : 1
+}
+
 def oneYearOneCompany(data):
     directors = len(data["People"]["Directors"])
-    turnover = data["Appointed"] + data["Resigned"] 
+    turnover = data["Appointed"] + data["Resigned"]
+    turnover_flag = Flag.GREEN
+    turnover_message = None
     if ((turnover / directors > 0.25 and directors > 12) or turnover / directors > 0.4 ):
-        if data["Appointed"]/data["Resigned"] < 1.5:
-            turnover_f
+        if data["Appointed"]/data["Resigned"] < 1:
+            turnover_flag = Flag.RED
+            turnover_message = "Increased turnover including many resignations"
+        elif data["Appointed"]/data["Resigned"] < 1.2:
+            turnover_flag = Flag.AMBER
+            turnover_message = "Increased turnover including some resignations"
+    gross_profit = data["Profit & Loss Account"]["Gross profit/loss"]
+    net_profit = data["Profit & Loss Account"]["Net profit/loss"]
+    gross_profit_margin = data["Ratio Analysis Table"]["Gross profit margin"]
+    gross_profit_flag = Flag.GREEN
+    gross_profit_message = None
+    if gross_profit_margin 
+    net_profit_margin = net_profit / data["Gross profit margin"]["Turnover"]
+
     return {}
 
 def multipleYearsOneCompany(data_li):
