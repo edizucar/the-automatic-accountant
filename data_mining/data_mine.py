@@ -1,9 +1,12 @@
 
+from msilib.schema import File
 import os.path
 from ixbrlparse import IXBRL
 import re
 import sys
 import json
+import requests
+from bs4 import BeautifulSoup
 
 
 def matchAny(patterns, string):
@@ -85,6 +88,14 @@ def addNonnumericTags(ixbrl_file, data):
 
     return data
 
+def addSICAndTag(ixbrl_file,data):
+    company_id = data.get("UK Companies House Registered Number")
+    if company_id is None:
+        data["SIC Data"] = None
+    else:
+        front_page_url = "https://find-and-update.company-information.service.gov.uk/company/01069886"
+        front_page = requests.get(front_page_url)
+        
 
 def addNumericTags(ixbrl_file, data):
     # Get Balance Sheet Info
