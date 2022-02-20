@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 sys.path.append('.')
 sys.path.append('../data_analysis')
-from data_mining.ixbrl_testing import checkAndcreateJSON,checkAndGetJSON
+from data_mining.data_mine import checkAndGetJSON
 
 #Find out percentage change of a specific index, eg. gross profit,
 #from data1 to data2
@@ -21,17 +21,9 @@ def checkIfSuspicious(comparison, indices):
     suspicious = {}
     for index in indices:
         diff = comparison[index]["Relative Change"]
-        if abs(diff) > 0.2:
+        if (diff is None) or abs(diff) > 0.2:
             suspicious[index] = diff
     return suspicious
-
-#Replace all None values by 0 in a dict
-def replacer(dictionary):
-    for k, v in dictionary.items():
-        if isinstance(v, dict):
-            replacer(v)
-        elif v is None:
-            dictionary[k] = 0
 
 #Plot graphs of specific indices over time
 def plotOverTime(data, index, name):
@@ -58,8 +50,6 @@ def returnCompare(data1, data2, index):
 #(including over 20% change in certain indices, certain indices being negative when they shouldn't be)
 def compare(data1, data2):
     #Temporary replace None values by 0 function, should update analysis function in the future to handle None values instead of this
-    replacer(data1)
-    replacer(data2)
     profit_and_loss1 = data1["Profit & Loss Account"]
     profit_and_loss2 = data2["Profit & Loss Account"]
     turnover = returnCompare(profit_and_loss1, profit_and_loss2, "Turnover")
@@ -106,9 +96,9 @@ def compare(data1, data2):
     for positive_index in ["Turnover", "Tangible fixed assets", "Investments fixed assets", "Fixed assets balance", "Debtors (due within one year)", "Cash balance", "Current assets balance",\
         "Creditors (due within one year)", "Current liabilities balance", "Net assets/liabilities balance"]:
         companies = {}
-        if comparison[positive_index]["Company1"] < 0:
+        if comparison[positive_index]["Company1"] is not None and comparison[positive_index]["Company1"] < 0:
             companies["Company1"] = True
-        if comparison[positive_index]["Company2"] < 0:
+        if comparison[positive_index]["Company2"] is not None and comparison[positive_index]["Company2"]< 0:
             companies["Company2"] = True
         if(len(companies) > 0):
             negative_indices[positive_index] = companies
