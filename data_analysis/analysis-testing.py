@@ -133,3 +133,40 @@ def main():
     
 if __name__ == "__main__":
     main()
+
+def oneYearOneCompany(data):
+    directors = len(data["People"]["Directors"])
+    turnover = data["Appointed"] + data["Resigned"] 
+    if ((turnover / directors > 0.25 and directors > 12) or turnover / directors > 0.4 ):
+        if data["Appointed"]/data["Resigned"] < 1.5:
+            turnover_f
+    return {}
+
+def multipleYearsOneCompany(data_li):
+    return {}
+
+'''def main(path):
+    dir1 = os.path.dirname(path)
+    files = os.listdir(dir1)
+    length = len(files)
+    if length == 0:
+        raise Exception("No files provided")
+    if length == 1:
+        return oneYearOneCompany(checkAndGetJSON(path + files[0]))
+    if length == 2:
+        data1 = checkAndGetJSON(checkAndGetJSON(path + files[0]))
+        data2 = checkAndGetJSON(checkAndGetJSON(path + files[1]))
+        if data1["Company Name"] != data2["Comany Name"]:
+            return compare(data1, data2)
+        else:
+            data_li = []
+            comp_name = None
+            for f in files:
+                data = checkAndGetJSON(path + f)
+                if comp_name is None:
+                    comp_name = data["Company Name"]
+                elif comp_name != data["Company Name"]:
+                    raise Exception("Cannot compare multiple companies for multiple years")
+                data_li.append(checkAndGetJSON(path + f))
+            return multipleYearsOneCompany(data_li)
+'''
