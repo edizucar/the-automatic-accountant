@@ -52,6 +52,9 @@ def company_details(data):
     d = {}
     for x in ["Company Name", "UK Companies House Registered Number", "Start date covered by report", "End date covered by report"]:
         d[x] = data[x]
+    d["SIC"] = data["SIC And Tag Pairs"][0][0]
+    d["Industry"] = data["SIC And Tag Pairs"][0][1]
+    d["Sector"] = sectors[getSector(d["SIC"])]
     return d
 
 
@@ -262,6 +265,8 @@ average_net_profit_by_sector = {
 
 def oneYearOneCompany(data):
     directors = len(data["People"]["Directors"])
+    #TODO: once data mining team add appointments and resignations
+    #change the next line to match the json
     turnover = data["Appointed"] + data["Resigned"]
     turnover_flag = Flag.GREEN
     turnover_message = None
@@ -272,13 +277,28 @@ def oneYearOneCompany(data):
         elif data["Appointed"]/data["Resigned"] < 1.2:
             turnover_flag = Flag.AMBER
             turnover_message = "Increased turnover including some resignations"
+    sector = getSector(data["SIC And Tag Pairs"][0][0])
     gross_profit = data["Profit & Loss Account"]["Gross profit/loss"]
-    net_profit = data["Profit & Loss Account"]["Net profit/loss"]
     gross_profit_margin = data["Ratio Analysis Table"]["Gross profit margin"]
     gross_profit_flag = Flag.GREEN
     gross_profit_message = None
-    if gross_profit_margin 
+    if abs(change(average_gross_profit_by_sector[sector], gross_profit_margin)) > 0.8:
+        gross_profit_flag = Flag.AMBER
+        gross_profit_mesage = "Gross profit margin (" + str(gross_profit_margin) + ") deviates from industry average (" + str(average_gross_profit_by_sector[sector]) + ")."
+    if abs(change(average_gross_profit_by_sector[sector], gross_profit_margin)) > 1.5:
+        gross_profit_flag = Flag.RED
+        gross_profit_mesage = "Gross profit margin (" + str(gross_profit_margin) + ") deviates significantly from industry average (" + str(average_gross_profit_by_sector[sector]) + ")."
+    net_profit = data["Profit & Loss Account"]["Net profit/loss"]
     net_profit_margin = net_profit / data["Gross profit margin"]["Turnover"]
+    net_profit_flag = Flag.GREEN
+    net_profit_message = None
+    if abs(change(average_net_profit_by_sector[sector], net_profit_margin)) > 0.8:
+        net_profit_flag = Flag.AMBER
+        net_profit_mesage = "Net profit margin (" + str(net_profit_margin) + ") deviates from industry average (" + str(average_net_profit_by_sector[sector]) + ")."
+    if abs(change(average_net_profit_by_sector[sector], net_profit_margin)) > 1.5:
+        net_profit_flag = Flag.RED
+        net_profit_mesage = "Net profit margin (" + str(net_profit_margin) + ") deviates significantly from industry average (" + str(average_net_profit_by_sector[sector]) + ")."
+
 
     return {}
 
