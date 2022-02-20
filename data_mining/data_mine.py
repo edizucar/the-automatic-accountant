@@ -101,14 +101,13 @@ def addSICAndTag(data :json) -> json:
         fp_soup = BeautifulSoup(front_page.content, "html.parser")
 
         spans = fp_soup.find_all("span") # get all span elements
+       
         spans = filter(lambda span : re.search("sic[0-9]+",span.get("id","")), spans) # filter by id
         spans_tuples = [tuple(span.text.strip().split(" - ")) for span in spans] # split into sid,decription tuples
         data["SIC And Tag Pairs"] = [[int(sic),desc] for sic,desc in spans_tuples] #conversion to correct types
     
     return data
-        
-
-        
+               
 
 def addNumericTags(ixbrl_file, data):
     # Get Balance Sheet Info
@@ -336,6 +335,7 @@ def getJSON(input_path :pathlib.Path) ->json:
     }
 
     data = addNonnumericTags(ixbrl_file, data)
+    data = addSICAndTag(data)
     data = addNumericTags(ixbrl_file, data)
 
     return data
