@@ -87,12 +87,13 @@ def addNonnumericTags(ixbrl_file, data):
 
     return data
 
-def addSICAndTag(data :json) -> json:
+
+def addSICAndTag(data: json) -> json:
     """
     |Needs company_id to be found or it won't be happy
     """
 
-    company_id = data.get("UK Companies House Registered Number",None)
+    company_id = data.get("UK Companies House Registered Number", None)
     if company_id is None:
         data["SIC Data"] = None
     else:
@@ -100,14 +101,50 @@ def addSICAndTag(data :json) -> json:
         front_page = requests.get(front_page_url)
         fp_soup = BeautifulSoup(front_page.content, "html.parser")
 
-        spans = fp_soup.find_all("span") # get all span elements
-       
-        spans = filter(lambda span : re.search("sic[0-9]+",span.get("id","")), spans) # filter by id
-        spans_tuples = [tuple(span.text.strip().split(" - ")) for span in spans] # split into sid,decription tuples
-        data["SIC And Tag Pairs"] = [[int(sic),desc] for sic,desc in spans_tuples] #conversion to correct types
-    
+        spans = fp_soup.find_all("span")  # get all span elements
+
+        spans = filter(lambda span: re.search(
+            "sic[0-9]+", span.get("id", "")), spans)  # filter by id
+        spans_tuples = [tuple(span.text.strip().split(" - "))
+                              for span in spans]  # split into sid,decription tuples
+        # conversion to correct types
+        data["SIC And Tag Pairs"] = [[int(sic), desc]
+                                          for sic, desc in spans_tuples]
+
     return data
-               
+
+
+
+def addDirectorTurnover(data):
+    company_id = data.get("UK Companies House Registered Number",None)
+    if company_id is None:
+        data["Directors Appointed"] = None
+        data["Directors Resigned"] = None
+    else:
+        page_url = f"https://find-and-update.company-information.service.gov.uk/company/{company_id}/officers?page="
+        page_soup = []
+        max_iters = 10
+        def checkIfEnd(text:str)->bool:
+            if text is None:
+                return False
+            else:
+                return "there are no officer details available for this company" in text.lower()
+        for i in range(max_iters):
+            page = requests.get(page_url+str(i+1))
+            soup = BeautifulSoup(page.content,"html.parser")
+            finished_search = soup.find_all("h2", string=checkIfEnd)
+            if finished_search:
+                break
+            else:
+                page_soup.append(soup)
+        print(len(page_soup))
+
+
+
+    return data
+ 
+    
+    
 
 def addNumericTags(ixbrl_file, data):
     # Get Balance Sheet Info
@@ -336,6 +373,7 @@ def getJSON(input_path :pathlib.Path) ->json:
 
     data = addNonnumericTags(ixbrl_file, data)
     data = addSICAndTag(data)
+    data = addDirectorTurnover(data)
     data = addNumericTags(ixbrl_file, data)
 
     return data
