@@ -1,9 +1,12 @@
 
+from msilib.schema import File
 import os.path
 from ixbrlparse import IXBRL
 import re
 import sys
 import json
+import requests
+from bs4 import BeautifulSoup
 
 
 def matchAny(patterns, string):
@@ -85,6 +88,14 @@ def addNonnumericTags(ixbrl_file, data):
 
     return data
 
+def addSICAndTag(ixbrl_file,data):
+    company_id = data.get("UK Companies House Registered Number")
+    if company_id is None:
+        data["SIC Data"] = None
+    else:
+        front_page_url = "https://find-and-update.company-information.service.gov.uk/company/01069886"
+        front_page = requests.get(front_page_url)
+        
 
 def addNumericTags(ixbrl_file, data):
     # Get Balance Sheet Info
@@ -196,58 +207,58 @@ def addNumericTags(ixbrl_file, data):
 
     # 3. checks and additions
 
-    tangibleFixedAssets = data["Balance Sheet"]["Fixed assets"]["Tangible fixed assets"]
-    investmentsFixedAssets = data["Balance Sheet"]["Fixed assets"]["Investments fixed assets"]
+    tangible_fixed_assets = data["Balance Sheet"]["Fixed assets"]["Tangible fixed assets"]
+    investments_fixed_assets = data["Balance Sheet"]["Fixed assets"]["Investments fixed assets"]
     if (data["Balance Sheet"]["Fixed assets"]["Fixed assets balance"] == None):
-        if (tangibleFixedAssets == None):
-            data["Balance Sheet"]["Fixed assets"]["Fixed assets balance"] = investmentsFixedAssets
-        elif (investmentsFixedAssets == None):
-            data["Balance Sheet"]["Fixed assets"]["Fixed assets balance"] = tangibleFixedAssets
+        if (tangible_fixed_assets == None):
+            data["Balance Sheet"]["Fixed assets"]["Fixed assets balance"] = investments_fixed_assets
+        elif (investments_fixed_assets == None):
+            data["Balance Sheet"]["Fixed assets"]["Fixed assets balance"] = tangible_fixed_assets
         else:
             # add
-            data["Balance Sheet"]["Fixed assets"]["Fixed assets balance"] = tangibleFixedAssets + \
-                investmentsFixedAssets
+            data["Balance Sheet"]["Fixed assets"]["Fixed assets balance"] = tangible_fixed_assets + \
+                investments_fixed_assets
 
-    cashBalance = data["Balance Sheet"]["Current assets"]["Cash balance"]
-    debtorsOneYear = data["Balance Sheet"][
+    cash_balance = data["Balance Sheet"]["Current assets"]["Cash balance"]
+    debtors_one_year = data["Balance Sheet"][
         "Current assets"]["Debtors (due within one year)"]
     if (data["Balance Sheet"]["Current assets"]["Current assets balance"] == None):
-        if (debtorsOneYear == None):
-            data["Balance Sheet"]["Current assets"]["Current assets balance"] = cashBalance
-        elif (cashBalance == None):
-            data["Balance Sheet"]["Current assets"]["Current assets balance"] = debtorsOneYear
+        if (debtors_one_year == None):
+            data["Balance Sheet"]["Current assets"]["Current assets balance"] = cash_balance
+        elif (cash_balance == None):
+            data["Balance Sheet"]["Current assets"]["Current assets balance"] = debtors_one_year
         else:
             # add
-            data["Balance Sheet"]["Current assets"]["Current assets balance"] = cashBalance + debtorsOneYear
+            data["Balance Sheet"]["Current assets"]["Current assets balance"] = cash_balance + debtors_one_year
 
     if (data["Balance Sheet"]["Current liabilities"]["Current liabilities balance"] == None):
         data["Balance Sheet"]["Current liabilities"]["Current liabilities balance"] = data[
             "Balance Sheet"]["Current liabilities"]["Creditors (due within one year)"]
 
-    fixedAssetsBalance = data["Balance Sheet"]["Fixed assets"]["Fixed assets balance"]
-    currentAssetsBalance = data["Balance Sheet"]["Current assets"]["Current assets balance"]
-    currentLiabilitiesBalance = data["Balance Sheet"]["Current liabilities"]["Current liabilities balance"]
+    fixed_assets_balance = data["Balance Sheet"]["Fixed assets"]["Fixed assets balance"]
+    current_assets_balance = data["Balance Sheet"]["Current assets"]["Current assets balance"]
+    current_liabilities_balance = data["Balance Sheet"]["Current liabilities"]["Current liabilities balance"]
     if (data["Balance Sheet"]["Net assets/liabilities balance"] == None):
-        if (fixedAssetsBalance == None):
-            if (currentAssetsBalance == None):
-                data["Balance Sheet"]["Net assets/liabilities balance"] = currentLiabilitiesBalance
-            elif (currentLiabilitiesBalance == None):
-                data["Balance Sheet"]["Net assets/liabilities balance"] = currentAssetsBalance
+        if (fixed_assets_balance == None):
+            if (current_assets_balance == None):
+                data["Balance Sheet"]["Net assets/liabilities balance"] = current_liabilities_balance
+            elif (current_liabilities_balance == None):
+                data["Balance Sheet"]["Net assets/liabilities balance"] = current_assets_balance
             else:
-                data["Balance Sheet"]["Net assets/liabilities balance"] = currentAssetsBalance - \
-                    abs(currentLiabilitiesBalance)
-        elif (currentAssetsBalance == None):
-            if (currentLiabilitiesBalance == None):
-                data["Balance Sheet"]["Net assets/liabilities balance"] = fixedAssetsBalance
+                data["Balance Sheet"]["Net assets/liabilities balance"] = current_assets_balance - \
+                    abs(current_liabilities_balance)
+        elif (current_assets_balance == None):
+            if (current_liabilities_balance == None):
+                data["Balance Sheet"]["Net assets/liabilities balance"] = fixed_assets_balance
             else:
-                data["Balance Sheet"]["Net assets/liabilities balance"] = fixedAssetsBalance - \
-                    abs(currentLiabilitiesBalance)
-        elif (currentLiabilitiesBalance == None):
-            data["Balance Sheet"]["Net assets/liabilities balance"] = currentAssetsBalance + \
-                fixedAssetsBalance
+                data["Balance Sheet"]["Net assets/liabilities balance"] = fixed_assets_balance - \
+                    abs(current_liabilities_balance)
+        elif (current_liabilities_balance == None):
+            data["Balance Sheet"]["Net assets/liabilities balance"] = current_assets_balance + \
+                fixed_assets_balance
         else:
-            data["Balance Sheet"]["Net assets/liabilities balance"] = fixedAssetsBalance + \
-                currentAssetsBalance - abs(currentLiabilitiesBalance)
+            data["Balance Sheet"]["Net assets/liabilities balance"] = fixed_assets_balance + \
+                current_assets_balance - abs(current_liabilities_balance)
 
     turnover = data["Profit & Loss Account"]["Turnover"]
     if ((turnover != None) and (turnover != 0)):
@@ -285,9 +296,11 @@ def checkAndcreateJSON(input_path, destination_path):
     if checkPaths(input_path, destination_path):
         createJSON(input_path, destination_path)
 
+
 def checkAndGetJSON(input_path):
     if checkPaths(input_path):
         return getJSON(input_path)
+
 
 def getJSON(input_path):
     ixbrl_file = None
