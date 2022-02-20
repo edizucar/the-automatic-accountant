@@ -5,7 +5,11 @@ import matplotlib.pyplot as plt
 
 sys.path.append('.')
 sys.path.append('../data_analysis')
+<<<<<<< HEAD
+from data_mining.data_mine import checkAndcreateJSON,checkAndGetJSON
+=======
 from data_mining.data_mine import checkAndGetJSON
+>>>>>>> 938cd0caddceb6d6876474abfa8d44c8c966e6ff
 
 #Find out percentage change of a specific index, eg. gross profit,
 #from data1 to data2

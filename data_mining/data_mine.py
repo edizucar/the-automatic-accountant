@@ -1,12 +1,11 @@
 
-from msilib.schema import File
-import os.path
 from ixbrlparse import IXBRL
 import re
 import sys
 import json
 import requests
 from bs4 import BeautifulSoup
+import pathlib
 
 
 def matchAny(patterns, string):
@@ -88,13 +87,27 @@ def addNonnumericTags(ixbrl_file, data):
 
     return data
 
-def addSICAndTag(ixbrl_file,data):
-    company_id = data.get("UK Companies House Registered Number")
+def addSICAndTag(data :json) -> json:
+    """
+    |Needs company_id to be found or it won't be happy
+    """
+
+    company_id = data.get("UK Companies House Registered Number",None)
     if company_id is None:
         data["SIC Data"] = None
     else:
-        front_page_url = "https://find-and-update.company-information.service.gov.uk/company/01069886"
+        front_page_url = f"https://find-and-update.company-information.service.gov.uk/company/{str(company_id)}"
         front_page = requests.get(front_page_url)
+        fp_soup = BeautifulSoup(front_page.content, "html.parser")
+
+        spans = fp_soup.find_all("span") # get all span elements
+        spans = filter(lambda span : re.search("sic[0-9]+",span.get("id","")), spans) # filter by id
+        spans_tuples = [tuple(span.text.strip().split(" - ")) for span in spans] # split into sid,decription tuples
+        data["SIC And Tag Pairs"] = [[int(sic),desc] for sic,desc in spans_tuples] #conversion to correct types
+    
+    return data
+        
+
         
 
 def addNumericTags(ixbrl_file, data):
@@ -283,11 +296,11 @@ def createJSON(input_path, destination_path):
         json.dump(data, destination_file)
 
 
-def checkPaths(input_path, destination_path=None):
-    if destination_path != None:
-        if os.path.exists(destination_path):
+def checkPaths(input_path :pathlib.Path, destination_path : pathlib.Path =None) -> bool:
+    if not destination_path is None:
+        if destination_path.exists():
             print(f"Overwriting {destination_path}")
-    if not os.path.exists(input_path):
+    if not input_path.exists():
         raise FileNotFoundError(f"File '{input_path}' not found")
     return True
 
@@ -302,13 +315,12 @@ def checkAndGetJSON(input_path):
         return getJSON(input_path)
 
 
-def getJSON(input_path):
+def getJSON(input_path :pathlib.Path) ->json:
     ixbrl_file = None
     with open(input_path, encoding="utf8") as file:
         ixbrl_file = IXBRL(file)
 
     data = {
-        "test_key": "test_value",
         "People": {"Chairman": None, "ChiefExecutive": None, "Directors": {}},
         "Company Name": None,
         "UK Companies House Registered Number": None,
@@ -333,6 +345,6 @@ if __name__ == "__main__":
     if len(sys.argv) != 3:
         print("Expected 2 argument : python <ixbrl-file-path> <destination-json-path>")
     else:
-        input_path = sys.argv[1]
-        destination_path = sys.argv[2]
+        input_path = pathlib.Path(sys.argv[1])
+        destination_path = pathlib.Path(sys.argv[2])
         checkAndcreateJSON(input_path, destination_path)
