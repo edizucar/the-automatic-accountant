@@ -18,12 +18,15 @@ def change(data1, data2, index):
 
 #Just some examples of indices where we can look at the change over time
 def checkIfSuspicious(comparison, indices):
-    suspicious = {}
+    drastic_changes = {}
+    none_values = {}
     for index in indices:
         diff = comparison[index]["Relative Change"]
-        if (diff is None) or abs(diff) > 0.2:
-            suspicious[index] = diff
-    return suspicious
+        if diff is None:
+            none_values[index] = diff
+        elif abs(diff) > 0.2:
+            drastic_changes[index] = diff
+    return {"Drastic Changes": drastic_changes, "None values": none_values}
 
 #Plot graphs of specific indices over time
 def plotOverTime(data, index, name):

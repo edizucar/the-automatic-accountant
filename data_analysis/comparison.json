@@ -90,20 +90,24 @@
         "Relative Change": -0.4694525506753074
     },
     "Suspicious Changes": {
-        "Gross profit/loss": -0.3111128768953379,
-        "Net profit/loss": -1.065624698138463,
-        "Tangible fixed assets": null,
-        "Investments fixed assets": null,
-        "Fixed assets balance": null,
-        "Debtors (due within one year)": -0.49184355616913955,
-        "Cash balance": null,
-        "Current assets balance": -0.49184355616913955,
-        "Creditors (due within one year)": -0.291372386555315,
-        "Current liabilities balance": -0.291372386555315,
-        "Net assets/liabilities balance": -1.2542817132244335,
-        "Gross profit margin": -0.2807582970305574,
-        "Liquidity ratio": 0.39450679421188484,
-        "Debtor days": -0.4694525506753074
+        "Drastic Changes": {
+            "Gross profit/loss": -0.3111128768953379,
+            "Net profit/loss": -1.065624698138463,
+            "Debtors (due within one year)": -0.49184355616913955,
+            "Current assets balance": -0.49184355616913955,
+            "Creditors (due within one year)": -0.291372386555315,
+            "Current liabilities balance": -0.291372386555315,
+            "Net assets/liabilities balance": -1.2542817132244335,
+            "Gross profit margin": -0.2807582970305574,
+            "Liquidity ratio": 0.39450679421188484,
+            "Debtor days": -0.4694525506753074
+        },
+        "None values": {
+            "Tangible fixed assets": null,
+            "Investments fixed assets": null,
+            "Fixed assets balance": null,
+            "Cash balance": null
+        }
     },
     "Indices that are negative but should not be": {
         "Net assets/liabilities balance": {
