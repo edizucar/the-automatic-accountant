@@ -212,6 +212,7 @@ sectors = {
     "U" : "Activities of extraterritorial organisations and bodies"
 } 
 
+#TODO: change all instances of exception to be of a more appropriate, specific exception type
 
 #TODO: dind reasonable values for these two dictionaries
 
@@ -263,42 +264,75 @@ average_net_profit_by_sector = {
     "U" : 1
 }
 
-def oneYearOneCompany(data):
-    directors = len(data["People"]["Directors"])
+def getInvalidTuple(feature):
+    return (None, Flag.RED, feature + " missing or inappropriately tagged.")
+
+def getDirectors(data):
+    if data["People"]["Directors"] is None:
+        return getInvalidTuple("Directors list")
+    return (len(data["People"]["Directors"]), Flag.GREEN, None)
+
+def getDirectorTurnover(data, directors):
     #TODO: once data mining team add appointments and resignations
-    #change the next line to match the json
-    turnover = data["Appointed"] + data["Resigned"]
-    turnover_flag = Flag.GREEN
-    turnover_message = None
-    if ((turnover / directors > 0.25 and directors > 12) or turnover / directors > 0.4 ):
-        if data["Appointed"]/data["Resigned"] < 1:
-            turnover_flag = Flag.RED
-            turnover_message = "Increased turnover including many resignations"
-        elif data["Appointed"]/data["Resigned"] < 1.2:
-            turnover_flag = Flag.AMBER
-            turnover_message = "Increased turnover including some resignations"
+    #change the next part to match the json
+    if data["Appointed"] is None or data["Resigned"] is None:
+        return getInvalidTuple("Director appointments/resignations")
+    else:
+        turnover = data["Appointed"] + data["Resigned"]
+        if ((turnover / directors > 0.25 and directors > 12) or turnover / directors > 0.4 ):
+            if data["Appointed"]/data["Resigned"] < 1:
+                return (turnover, Flag.Red, "Increased turnover including many resignations")
+            elif data["Appointed"]/data["Resigned"] < 1.2:
+                return (turnover, Flag.Amber, "Increased turnover including some resignations")
+    return (turnover, Flag.Green, None)
+
+def getGrossProfitMargin(data, sector):
+    gross_profit_margin = data["Ratio Analysis Table"]["Gross profit margin"]
+    if gross_profit_margin is None:
+        return getInvalidTuple("Gross profit or turnover")
+    if abs(change(average_gross_profit_by_sector[sector], gross_profit_margin)) > 1.5:
+        return (gross_profit_margin, Flag.RED, 
+        "Gross profit margin (" + str(gross_profit_margin) + ") deviates significantly from industry average (" + str(average_gross_profit_by_sector[sector]) + ").")
+    if abs(change(average_gross_profit_by_sector[sector], gross_profit_margin)) > 0.8:
+        return(gross_profit_margin, Flag.AMBER, 
+            "Gross profit margin (" + str(gross_profit_margin) + ") deviates from industry average (" + str(average_gross_profit_by_sector[sector]) + ").")
+    return (gross_profit_margin, Flag.GREEN, None)
+
+def getNetProfitMargin(data, sector):
+    if data["Ratio Analysis Table"]["Net profit margin"] is None or data["Profit & Loss Account"]["Turnover"] is None:
+        return getInvalidTuple("Net profit or turnover")
+    net_profit_margin = data["Ratio Analysis Table"]["Net profit margin"] / data["Profit & Loss Account"]["Turnover"]
+    if abs(change(average_net_profit_by_sector[sector], net_profit_margin)) > 1.5:
+        return (net_profit_margin, Flag.RED, 
+        "Net profit margin (" + str(net_profit_margin) + ") deviates significantly from industry average (" + str(average_net_profit_by_sector[sector]) + ").")
+    if abs(change(average_net_profit_by_sector[sector], net_profit_margin)) > 0.8:
+        return(net_profit_margin, Flag.AMBER, 
+            "Net profit margin (" + str(net_profit_margin) + ") deviates from industry average (" + str(average_net_profit_by_sector[sector]) + ").")
+    return (net_profit_margin, Flag.GREEN, None)
+    
+
+
+def oneYearOneCompany(data):
+    directors, director_flag, director_message = len(data["People"]["Directors"])
+    if directors is None:
+        turnover, turnover_flag, turnover_message = getInvalidTuple("Directors list")
+    else:
+        turnover, turnover_flag, turnover_message = getDirectorTurnover(data, directors)
+    
     sector = getSector(data["SIC And Tag Pairs"][0][0])
     gross_profit = data["Profit & Loss Account"]["Gross profit/loss"]
-    gross_profit_margin = data["Ratio Analysis Table"]["Gross profit margin"]
-    gross_profit_flag = Flag.GREEN
-    gross_profit_message = None
-    if abs(change(average_gross_profit_by_sector[sector], gross_profit_margin)) > 0.8:
-        gross_profit_flag = Flag.AMBER
-        gross_profit_mesage = "Gross profit margin (" + str(gross_profit_margin) + ") deviates from industry average (" + str(average_gross_profit_by_sector[sector]) + ")."
-    if abs(change(average_gross_profit_by_sector[sector], gross_profit_margin)) > 1.5:
-        gross_profit_flag = Flag.RED
-        gross_profit_mesage = "Gross profit margin (" + str(gross_profit_margin) + ") deviates significantly from industry average (" + str(average_gross_profit_by_sector[sector]) + ")."
-    net_profit = data["Profit & Loss Account"]["Net profit/loss"]
-    net_profit_margin = net_profit / data["Gross profit margin"]["Turnover"]
-    net_profit_flag = Flag.GREEN
-    net_profit_message = None
-    if abs(change(average_net_profit_by_sector[sector], net_profit_margin)) > 0.8:
-        net_profit_flag = Flag.AMBER
-        net_profit_mesage = "Net profit margin (" + str(net_profit_margin) + ") deviates from industry average (" + str(average_net_profit_by_sector[sector]) + ")."
-    if abs(change(average_net_profit_by_sector[sector], net_profit_margin)) > 1.5:
-        net_profit_flag = Flag.RED
-        net_profit_mesage = "Net profit margin (" + str(net_profit_margin) + ") deviates significantly from industry average (" + str(average_net_profit_by_sector[sector]) + ")."
+    if gross_profit is None:
+        gross_profit, gross_profit_flag, gross_profit_message = getInvalidTuple("Gross profit")
+        gross_profit_margin = None
+    else:
+        gross_profit_margin, gross_profit_flag, gross_profit_mesage = getGrossProfitMargin(data, sector)
 
+    net_profit = data["Profit & Loss Account"]["Net profit/loss"]
+    if net_profit is None:
+        net_profit, net_profit_flag, net_profit_message = getInvalidTuple("Net profit")
+        net_profit_margin = None
+    else:
+        net_profit_margin, net_profit_flag, net_profit_message = getNetProfitMargin(data, sector)
 
     return {}
 
