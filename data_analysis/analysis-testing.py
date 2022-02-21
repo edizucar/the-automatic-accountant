@@ -312,6 +312,16 @@ def getNetProfitMargin(data, sector, net_profit):
         return(net_profit_margin, Flag.AMBER, 
             "Net profit margin (" + str(net_profit_margin) + ") deviates from industry average (" + str(average_net_profit_by_sector[sector]) + ").")
     return (net_profit_margin, Flag.GREEN, None)
+
+def getLiquidityRatio(data):
+    liquidity_ratio = data["Ratio Analysis Table"]["Liquidity ratio"]
+    if liquidity_ratio is None:
+        return getInvalidTuple("Current assets or current liabilities")
+    if liquidity_ratio < 1:
+        return (liquidity_ratio, Flag.RED, "Liabilities outweigh assets")
+    if liquidity_ratio < 1.2:
+        return (liquidity_ratio, Flag.AMBER, "Assets only slightly outweigh liabilities")
+    return (liquidity_ratio, Flag.GREEN, None) 
     
 
 
@@ -325,6 +335,8 @@ def oneYearOneCompany(data):
 
     net_profit = data["Profit & Loss Account"]["Net profit/loss"]
     net_profit_margin, net_profit_flag, net_profit_message= getNetProfitMargin(data, sector, net_profit)
+
+    liquidity_ratio, liquidity_ratio_flag, liquidity_ratio_message = getLiquidityRatio(data)
 
     return {}
 
