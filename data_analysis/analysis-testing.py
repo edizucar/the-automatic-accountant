@@ -275,6 +275,8 @@ def getDirectors(data):
 def getDirectorTurnover(data, directors):
     #TODO: once data mining team add appointments and resignations
     #change the next part to match the json
+    if directors is None:
+        return getInvalidTuple("Directors list")
     if data["Appointed"] is None or data["Resigned"] is None:
         return getInvalidTuple("Director appointments/resignations")
     else:
@@ -298,10 +300,11 @@ def getGrossProfitMargin(data, sector):
             "Gross profit margin (" + str(gross_profit_margin) + ") deviates from industry average (" + str(average_gross_profit_by_sector[sector]) + ").")
     return (gross_profit_margin, Flag.GREEN, None)
 
-def getNetProfitMargin(data, sector):
-    if data["Ratio Analysis Table"]["Net profit margin"] is None or data["Profit & Loss Account"]["Turnover"] is None:
+def getNetProfitMargin(data, sector, net_profit):
+    turnover = data["Profit & Loss Account"]["Turnover"]
+    if net_profit is None or turnover is None:
         return getInvalidTuple("Net profit or turnover")
-    net_profit_margin = data["Ratio Analysis Table"]["Net profit margin"] / data["Profit & Loss Account"]["Turnover"]
+    net_profit_margin = net_profit / turnover
     if abs(change(average_net_profit_by_sector[sector], net_profit_margin)) > 1.5:
         return (net_profit_margin, Flag.RED, 
         "Net profit margin (" + str(net_profit_margin) + ") deviates significantly from industry average (" + str(average_net_profit_by_sector[sector]) + ").")
@@ -313,26 +316,15 @@ def getNetProfitMargin(data, sector):
 
 
 def oneYearOneCompany(data):
-    directors, director_flag, director_message = len(data["People"]["Directors"])
-    if directors is None:
-        turnover, turnover_flag, turnover_message = getInvalidTuple("Directors list")
-    else:
-        turnover, turnover_flag, turnover_message = getDirectorTurnover(data, directors)
+    directors, director_flag, director_message = getDirectors(data["People"]["Directors"])
+    turnover, turnover_flag, turnover_message = getDirectorTurnover(data, directors)
     
     sector = getSector(data["SIC And Tag Pairs"][0][0])
     gross_profit = data["Profit & Loss Account"]["Gross profit/loss"]
-    if gross_profit is None:
-        gross_profit, gross_profit_flag, gross_profit_message = getInvalidTuple("Gross profit")
-        gross_profit_margin = None
-    else:
-        gross_profit_margin, gross_profit_flag, gross_profit_mesage = getGrossProfitMargin(data, sector)
+    gross_profit_margin, gross_profit_flag, gross_profit_message = getGrossProfitMargin(data, sector)
 
     net_profit = data["Profit & Loss Account"]["Net profit/loss"]
-    if net_profit is None:
-        net_profit, net_profit_flag, net_profit_message = getInvalidTuple("Net profit")
-        net_profit_margin = None
-    else:
-        net_profit_margin, net_profit_flag, net_profit_message = getNetProfitMargin(data, sector)
+    net_profit_margin, net_profit_flag, net_profit_message= getNetProfitMargin(data, sector, net_profit)
 
     return {}
 
