@@ -48,13 +48,13 @@ def returnCompare(data1, data2, index):
     return {"Company1": company1, "Company2": company2, "Absolute Change": absolute_change, \
         "Relative Change": relative_change}
 
-def company_details(data):
+def companyDetails(data):
     d = {}
     for x in ["Company Name", "UK Companies House Registered Number", "Start date covered by report", "End date covered by report"]:
         d[x] = data[x]
     d["SIC"] = data["SIC And Tag Pairs"][0][0]
     d["Industry"] = data["SIC And Tag Pairs"][0][1]
-    d["Sector"] = sectors[getSector(d["SIC"])]
+    d["Sector"] =  None if d["SIC"] is None else sectors[getSector(d["SIC"])]
     return d
 
 
@@ -116,8 +116,8 @@ def compare(data1, data2):
         if(len(companies) > 0):
             negative_indices[positive_index] = companies
     comparison["Indices that are negative but should not be"] = negative_indices
-    comparison["Company1"] = company_details(data1)
-    comparison["Company2"] = company_details(data2)
+    comparison["Company1"] = companyDetails(data1)
+    comparison["Company2"] = companyDetails(data2)
 
     return comparison
 
@@ -214,7 +214,7 @@ sectors = {
 
 #TODO: change all instances of exception to be of a more appropriate, specific exception type
 
-#TODO: dind reasonable values for these two dictionaries
+#TODO: find reasonable values for these two dictionaries
 
 average_gross_profit_by_sector = {
     "A" : 1,
@@ -267,6 +267,9 @@ average_net_profit_by_sector = {
 def getInvalidTuple(feature):
     return (None, Flag.RED, feature + " missing or inappropriately tagged.")
 
+def getNegativeTuple(feature, value):
+    return (value, Flag.RED, feature + " cannot be negative")
+
 def getDirectors(data):
     if data["People"]["Directors"] is None:
         return getInvalidTuple("Directors list")
@@ -275,18 +278,22 @@ def getDirectors(data):
 def getDirectorTurnover(data, directors):
     #TODO: once data mining team add appointments and resignations
     #change the next part to match the json
+    appointed = data["Appointed"]
+    resigned = data["Resigned"]
+    if appointed < 0 or resigned < 0:
+        return getNegativeTuple()
     if directors is None:
         return getInvalidTuple("Directors list")
-    if data["Appointed"] is None or data["Resigned"] is None:
+    if appointed is None or resigned is None:
         return getInvalidTuple("Director appointments/resignations")
     else:
-        turnover = data["Appointed"] + data["Resigned"]
+        turnover = appointed + resigned
         if ((turnover / directors > 0.25 and directors > 12) or turnover / directors > 0.4 ):
-            if data["Appointed"]/data["Resigned"] < 1:
-                return (turnover, Flag.Red, "Increased turnover including many resignations")
-            elif data["Appointed"]/data["Resigned"] < 1.2:
-                return (turnover, Flag.Amber, "Increased turnover including some resignations")
-    return (turnover, Flag.Green, None)
+            if appointed/resigned < 1:
+                return ([turnover, appointed] , Flag.Red, "Increased turnover including many resignations")
+            elif appointed/resigned < 1.2:
+                return ([turnover, appointed], Flag.Amber, "Increased turnover including some resignations")
+    return ([turnover, appointed], Flag.Green, None)
 
 def getGrossProfitMargin(data, sector):
     gross_profit_margin = data["Ratio Analysis Table"]["Gross profit margin"]
@@ -321,13 +328,23 @@ def getLiquidityRatio(data):
         return (liquidity_ratio, Flag.RED, "Liabilities outweigh assets")
     if liquidity_ratio < 1.2:
         return (liquidity_ratio, Flag.AMBER, "Assets only slightly outweigh liabilities")
-    return (liquidity_ratio, Flag.GREEN, None) 
+    return (liquidity_ratio, Flag.GREEN, None)
+
+def getDebtorDays(data):
+    debtorDays = data["Ratio Analysis Table"]["Debtor Days"]
+    if debtorDays is None:
+        return getInvalidTuple("Debtors within a year")
+    if debtorDays > 200:
+        return (debtorDays, Flag.RED, "Debtor days too high")
+    if debtorDays > 100:
+        return (debtorDays, Flag.AMBER, "Debtor days high")
+    return (debtorDays, Flag.GREEN, None)
     
 
 
 def oneYearOneCompany(data):
     directors, director_flag, director_message = getDirectors(data["People"]["Directors"])
-    turnover, turnover_flag, turnover_message = getDirectorTurnover(data, directors)
+    (turnover, appointed), turnover_flag, turnover_message = getDirectorTurnover(data, directors)
     
     sector = getSector(data["SIC And Tag Pairs"][0][0])
     gross_profit = data["Profit & Loss Account"]["Gross profit/loss"]
@@ -338,7 +355,55 @@ def oneYearOneCompany(data):
 
     liquidity_ratio, liquidity_ratio_flag, liquidity_ratio_message = getLiquidityRatio(data)
 
-    return {}
+    debtor_days, debtor_flag, debtor_message = getDebtorDays(data)
+
+    #TODO: add turnover by region if mining team manages to extract that
+    #TODO: add in every field the corresponding note or a summary if the mining team manages to extract that
+
+    return {
+        "Type" : "One Year One Company",
+
+        "Company Details" : companyDetails(data),
+
+        "Directors" : {
+            "Number of directors" : directors,
+            "Flag" : director_flag,
+            "Message" : director_message
+        },
+
+        "Director Turnover" : {
+            "Turnover" : turnover,
+            "Appointments" : appointed,
+            "Flag" : turnover_flag,
+            "Message" : turnover_message 
+        },
+
+        "Gross Profit" : {
+            "Gross Profit" : gross_profit,
+            "Gross Profit Margin" : gross_profit_margin,
+            "Flag" : gross_profit_flag,
+            "Message" : gross_profit_message
+        },
+
+        "Net Profit" : {
+            "Net Profit" : net_profit,
+            "Net Profit Margin" : net_profit_margin,
+            "Flag" : net_profit_flag,
+            "Message" : net_profit_message
+        },
+
+        "Liquidity Ratio" : {
+            "Liquidity Ratio" : liquidity_ratio,
+            "Flag" : liquidity_ratio_flag,
+            "Message" : liquidity_ratio_message
+        },
+
+        "Debtor Days" : {
+            "Debtor Days": debtor_days,
+            "Flag" : debtor_flag,
+            "Message" : debtor_message
+        },
+    }
 
 def multipleYearsOneCompany(data_li):
     return {}
