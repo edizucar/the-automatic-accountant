@@ -131,7 +131,7 @@ def main():
     comparison = compare(data1,data2)
     os.chdir(dir)
     with open('comparison.json', 'w') as fp:
-        json.dump(comparison, fp)
+        json.dump(comparison, fp,indent=4)
     print(comparison)
     
     

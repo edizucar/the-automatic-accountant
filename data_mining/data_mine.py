@@ -142,13 +142,30 @@ def addDirectorTurnover(data):
         
         start_date = dateParse(data.get("Start date covered by report"))
         end_date = dateParse(data.get("End date covered by report"))
+        num_assign = 0
+        num_resign = 0
         for page in page_soup:
             #Each 'page' is a BeautifulSoup object.
-            appointment_date = page.findall()
+            temp = page.find_all("div",class_=re.compile("appointment-[0-9]+"))
+            divs = sorted([(int(div["class"][0].split("-")[-1]),div) for div in temp])
 
+            #Each element in divs refers to a specific person
+            for i,div in divs:
+                # Get assignment/resignation date for indiviual and check if within the years we care about.
+                assign_date = div.find("dd",class_="data",id=f"officer-appointed-on-{i}")
+                if not assign_date is None:
+                    assign_date = dateParse(assign_date.text)
+                    if start_date < assign_date and assign_date < end_date:
+                        num_assign += 1
+                
+                resign_date = div.find("dd",class_="data",id=f"officer-resigned-on-{i}")
+                if not resign_date is None:
+                    resign_date = dateParse(resign_date.text)
+                    if start_date < resign_date and resign_date < end_date:
+                        num_resign += 1
 
-
-
+    data["Number of Assignments"] = num_assign
+    data["Number of Resignations"] = num_resign
     return data
  
     
@@ -337,7 +354,7 @@ def createJSON(input_path, destination_path):
 
     # Write to json file
     with open(destination_path, "w") as destination_file:
-        json.dump(data, destination_file)
+        json.dump(data, destination_file,indent=4)
 
 
 def checkPaths(input_path :pathlib.Path, destination_path : pathlib.Path =None) -> bool:
