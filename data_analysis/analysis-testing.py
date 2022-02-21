@@ -104,21 +104,6 @@ def compare(data1, data2):
     suspicious_changes = checkIfSuspicious(comparison, comparison.keys())
     comparison["Suspicious Changes"] = suspicious_changes
 
-    #Checking for indicies that shouldn't be negative, but are
-    negative_indices = {}
-    for positive_index in ["Turnover", "Tangible fixed assets", "Investments fixed assets", "Fixed assets balance", "Debtors (due within one year)", "Cash balance", "Current assets balance",\
-        "Creditors (due within one year)", "Current liabilities balance", "Net assets/liabilities balance"]:
-        companies = {}
-        if comparison[positive_index]["Company1"] is not None and comparison[positive_index]["Company1"] < 0:
-            companies["Company1"] = True
-        if comparison[positive_index]["Company2"] is not None and comparison[positive_index]["Company2"]< 0:
-            companies["Company2"] = True
-        if(len(companies) > 0):
-            negative_indices[positive_index] = companies
-    comparison["Indices that are negative but should not be"] = negative_indices
-    comparison["Company1"] = companyDetails(data1)
-    comparison["Company2"] = companyDetails(data2)
-
     return comparison
 
 def main():
@@ -134,7 +119,15 @@ def main():
         json.dump(comparison, fp,indent=4)
     print(comparison)
     
-    
+def getNegativeIndices(data):
+    negative_indices = {}
+    for positive_index in ["Tangible fixed assets", "Investments fixed assets", "Fixed assets balance", "Cash balance", "Current assets balance",\
+        "Creditors (due within one year)", "Current liabilities balance", "Net assets/liabilities balance"]:
+        if data[positive_index] is not None and data[positive_index] < 0:
+            negative_indices[positive_index] = data[positive_index]
+    return negative_indices
+
+
 if __name__ == "__main__":
     main()
 
@@ -278,8 +271,8 @@ def getDirectors(data):
 def getDirectorTurnover(data, directors):
     #TODO: once data mining team add appointments and resignations
     #change the next part to match the json
-    appointed = data["Appointed"]
-    resigned = data["Resigned"]
+    appointed = data["Number of Assignments"]
+    resigned = data["Number of Resignations"]
     if appointed < 0 or resigned < 0:
         return getNegativeTuple()
     if directors is None:
@@ -311,6 +304,8 @@ def getNetProfitMargin(data, sector, net_profit):
     turnover = data["Profit & Loss Account"]["Turnover"]
     if net_profit is None or turnover is None:
         return getInvalidTuple("Net profit or turnover")
+    if turnover < 0:
+        return (turnover, Flag.RED, "Turnover cannot be negative")
     net_profit_margin = net_profit / turnover
     if abs(change(average_net_profit_by_sector[sector], net_profit_margin)) > 1.5:
         return (net_profit_margin, Flag.RED, 
@@ -338,6 +333,8 @@ def getDebtorDays(data):
         return (debtorDays, Flag.RED, "Debtor days too high")
     if debtorDays > 100:
         return (debtorDays, Flag.AMBER, "Debtor days high")
+    if debtorDays < 0:
+        return (debtorDays, Flag.RED, "Debtor days cannot be negative")
     return (debtorDays, Flag.GREEN, None)
     
 
@@ -356,6 +353,7 @@ def oneYearOneCompany(data):
     liquidity_ratio, liquidity_ratio_flag, liquidity_ratio_message = getLiquidityRatio(data)
 
     debtor_days, debtor_flag, debtor_message = getDebtorDays(data)
+
 
     #TODO: add turnover by region if mining team manages to extract that
     #TODO: add in every field the corresponding note or a summary if the mining team manages to extract that
@@ -403,7 +401,13 @@ def oneYearOneCompany(data):
             "Flag" : debtor_flag,
             "Message" : debtor_message
         },
+
+        "Negative Indices" : getNegativeIndices(data)
     }
+
+def oneYearTwoCompanies(data1, data2):
+    analysis = {"Type" : 3, "Company 1" : oneYearOneCompany(data1), "Company 2" : oneYearOneCompany(data2), "Comparison" : compare(data1, data2) }
+
 
 def multipleYearsOneCompany(data_li):
     return {}
@@ -420,16 +424,15 @@ def multipleYearsOneCompany(data_li):
         data1 = checkAndGetJSON(checkAndGetJSON(path + files[0]))
         data2 = checkAndGetJSON(checkAndGetJSON(path + files[1]))
         if data1["Company Name"] != data2["Comany Name"]:
-            return compare(data1, data2)
-        else:
-            data_li = []
-            comp_name = None
-            for f in files:
-                data = checkAndGetJSON(path + f)
-                if comp_name is None:
-                    comp_name = data["Company Name"]
-                elif comp_name != data["Company Name"]:
-                    raise Exception("Cannot compare multiple companies for multiple years")
-                data_li.append(checkAndGetJSON(path + f))
-            return multipleYearsOneCompany(data_li)
-'''
+            return oneYearTwoCompanies(data1, data2)
+
+    data_li = []
+    comp_name = None
+    for f in files:
+        data = checkAndGetJSON(path + f)
+        if comp_name is None:
+            comp_name = data["Company Name"]
+        elif comp_name != data["Company Name"]:
+            raise Exception("Cannot compare multiple companies for multiple years")
+        data_li.append(checkAndGetJSON(path + f))
+    return multipleYearsOneCompany(data_li)'''
