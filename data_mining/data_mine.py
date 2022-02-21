@@ -354,7 +354,7 @@ def createJSON(input_path, destination_path):
 
     # Write to json file
     with open(destination_path, "w") as destination_file:
-        json.dump(data, destination_file)
+        json.dump(data, destination_file,indent=4)
 
 
 def checkPaths(input_path :pathlib.Path, destination_path : pathlib.Path =None) -> bool:
