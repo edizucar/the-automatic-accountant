@@ -97,7 +97,7 @@ def addSICAndTag(data: json) -> json:
 
     company_id = data.get("UK Companies House Registered Number", None)
     if company_id is None:
-        data["SIC Data"] = None
+        data["SIC And Tag Pairs"] = None
     else:
         front_page_url = f"https://find-and-update.company-information.service.gov.uk/company/{str(company_id)}"
         front_page = requests.get(front_page_url)
@@ -110,8 +110,7 @@ def addSICAndTag(data: json) -> json:
         spans_tuples = [tuple(span.text.strip().split(" - "))
                               for span in spans]  # split into sid,decription tuples
         # conversion to correct types
-        data["SIC And Tag Pairs"] = [[int(sic), desc]
-                                          for sic, desc in spans_tuples]
+        data["SIC And Tag Pairs"] = [[int(sic), desc] for sic, desc in spans_tuples]
 
     return data
 
@@ -120,8 +119,8 @@ def addSICAndTag(data: json) -> json:
 def addDirectorTurnover(data):
     company_id = data.get("UK Companies House Registered Number",None)
     if company_id is None:
-        data["Directors Appointed"] = None
-        data["Directors Resigned"] = None
+        data["Number of Assignments"] = None
+        data["Number of Resignations"] = None
     else:
         page_url = f"https://find-and-update.company-information.service.gov.uk/company/{company_id}/officers?page="
         page_soup = []
