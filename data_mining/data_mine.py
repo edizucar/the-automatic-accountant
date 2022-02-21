@@ -6,6 +6,8 @@ import json
 import requests
 from bs4 import BeautifulSoup
 import pathlib
+from dateutil.parser import parse as dateParse
+import datetime
 
 
 def matchAny(patterns, string):
@@ -137,7 +139,13 @@ def addDirectorTurnover(data):
                 break
             else:
                 page_soup.append(soup)
-        print(len(page_soup))
+        
+        start_date = dateParse(data.get("Start date covered by report"))
+        end_date = dateParse(data.get("End date covered by report"))
+        for page in page_soup:
+            #Each 'page' is a BeautifulSoup object.
+            appointment_date = page.findall()
+
 
 
 
