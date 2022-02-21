@@ -62,5 +62,7 @@
         "Message" : "Debtor days within a year missing or mistagged"
     },
 
-    "Negative indexes" : []
+    "Negative indexes" : {
+        "Fixed Assets" : -312423.0
+    }
 }
