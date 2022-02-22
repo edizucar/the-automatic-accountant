@@ -1,8 +1,9 @@
 import sys
-
+import qpageview
 from PyQt5 import QtCore
 from PyQt5 import QtGui
 import json
+from fpdf import FPDF
 from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit, \
     QFileDialog, QPushButton, QHBoxLayout, QVBoxLayout, QTextEdit, QPlainTextEdit, QLabel, QStackedWidget
 from PyQt5.QtGui import QIcon
@@ -102,6 +103,7 @@ class App(QWidget):
         self.filesText.setReadOnly(True)
         # Add text
 
+
         # Add Buttons to window
 
         self.mainTopLayout.addWidget(self.uploadAccountsButton)
@@ -189,7 +191,18 @@ class SecondWindow(QWidget):
 
         self.show()
     def giveAnalysisData(self,data):
+        #TODO CREATE PDF HERE
         self.data = data
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font("Arial", size = 15)
+        for key,value in data["Company Details"].items():
+            pdf.cell(200, 10, txt=f"{key} : {value}",
+                ln=2, align='C')
+
+
+        # save the pdf with name .pdf
+        pdf.output("GFG.pdf")
         for i in self.data:
             print(i)
 
