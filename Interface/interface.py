@@ -7,6 +7,7 @@ from fpdf import FPDF
 from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit, \
     QFileDialog, QPushButton, QHBoxLayout, QVBoxLayout, QTextEdit, QPlainTextEdit, QLabel, QStackedWidget
 from PyQt5.QtGui import QIcon
+import pathlib
 
 
 class Combined(QWidget):
@@ -34,9 +35,9 @@ class Combined(QWidget):
         print(self.stackedWidget.currentIndex())
 
     def swapScreen(self):
-        f = open("/Users/danielvlasits/PycharmProjects/the-automatic-accountant/data_analysis/output_files/oneyear.json", "r")
-        data = json.load(f)
-        f.close()
+        path = pathlib.Path("./data_analysis/output_files/oneyear.json")
+        with open(path, "r") as file:
+            data = json.load(file)
         self.secondWindow.giveAnalysisData(data)
         self.stackedWidget.setCurrentIndex(1)
 
