@@ -1,7 +1,9 @@
 import sys
-
+import qpageview
 from PyQt5 import QtCore
 from PyQt5 import QtGui
+import json
+from fpdf import FPDF
 from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit, \
     QFileDialog, QPushButton, QHBoxLayout, QVBoxLayout, QTextEdit, QPlainTextEdit, QLabel, QStackedWidget
 from PyQt5.QtGui import QIcon
@@ -21,7 +23,8 @@ class Combined(QWidget):
         self.stackedWidget = QStackedWidget()
 
         self.stackedWidget.addWidget(App(self.swapScreen))
-        self.stackedWidget.addWidget(SecondWindow())
+        self.secondWindow = SecondWindow()
+        self.stackedWidget.addWidget(self.secondWindow)
 
         self.stackedWidget.show()
 
@@ -31,6 +34,10 @@ class Combined(QWidget):
         print(self.stackedWidget.currentIndex())
 
     def swapScreen(self):
+        f = open("/Users/danielvlasits/PycharmProjects/the-automatic-accountant/data_analysis/output_files/oneyear.json", "r")
+        data = json.load(f)
+        f.close()
+        self.secondWindow.giveAnalysisData(data)
         self.stackedWidget.setCurrentIndex(1)
 
 
@@ -95,6 +102,7 @@ class App(QWidget):
         self.filesText.setText("No files currently imported")
         self.filesText.setReadOnly(True)
         # Add text
+
 
         # Add Buttons to window
 
@@ -182,6 +190,22 @@ class SecondWindow(QWidget):
         self.mainBottomWidget.setLayout(self.mainBottomLayout)
 
         self.show()
+    def giveAnalysisData(self,data):
+        #TODO CREATE PDF HERE
+        self.data = data
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font("Arial", size = 15)
+        for key,value in data["Company Details"].items():
+            pdf.cell(200, 10, txt=f"{key} : {value}",
+                ln=2, align='C')
+
+
+        # save the pdf with name .pdf
+        pdf.output("GFG.pdf")
+        for i in self.data:
+            print(i)
+
 
 
 if __name__ == '__main__':
