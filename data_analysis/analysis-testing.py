@@ -24,10 +24,10 @@ def checkIfSuspicious(comparison, indices):
     for index in indices:
         diff = comparison[index]["Relative Change"]
         if diff is None:
-            none_values[index] = diff
+            continue
         elif abs(diff) > 0.2:
             drastic_changes[index] = diff
-    return {"Drastic Changes": drastic_changes, "None values": none_values}
+    return drastic_changes
 
 #Plot graphs of specific indices over time
 def plotOverTime(data, index, name):
