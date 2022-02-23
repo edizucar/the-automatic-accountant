@@ -3,7 +3,6 @@ from PyQt5 import QtCore, QtWebEngineWidgets
 from PyQt5 import QtGui
 import json
 from fpdf import FPDF
-import qpageview
 from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit, \
     QFileDialog, QPushButton, QHBoxLayout, QVBoxLayout, QTextEdit, QPlainTextEdit, QLabel, QStackedWidget
 from PyQt5.QtGui import QIcon
@@ -171,41 +170,100 @@ class SecondWindow(QWidget):
         self.mainBottomWidget = QWidget()
 
         # Create Layouts
-        self.mainLayout = QVBoxLayout()
-        self.mainTopLayout = QHBoxLayout()
-        self.mainBottomLayout = QHBoxLayout()
+        self.mainLayout = QHBoxLayout()
+        self.mainTopLayout = QVBoxLayout()
+        #self.mainBottomLayout = QHBoxLayout()
 
-        print(self.mainLayout.alignment())
+        #print(self.mainLayout.alignment())
 
-        self.label = QLabel("Here are the results of the analysis")
-        self.label.setAlignment(QtCore.Qt.AlignCenter)
-        self.label.setStyleSheet("QLabel {color: grey;}")
-        self.mainLayout.addWidget(self.label)
-
-        self.mainLayout.addWidget(self.mainTopWidget)
-        self.mainLayout.addWidget(self.mainBottomWidget)
+        #self.label = QLabel("Here are the results of the analysis")
+        #self.label.setAlignment(QtCore.Qt.AlignCenter)
+        #self.label.setStyleSheet("QLabel {color: grey;}")
+        #self.mainLayout.addWidget(self.label)
 
 
+        #self.mainLayout.addWidget(self.mainBottomWidget)
 
+        filename = "/Users/danielvlasits/PycharmProjects/the-automatic-accountant/Interface/GFG.pdf"
+        view = QtWebEngineWidgets.QWebEngineView()
+        settings = view.settings()
+        settings.setAttribute(QtWebEngineWidgets.QWebEngineSettings.PluginsEnabled, True)
+        url = QtCore.QUrl.fromLocalFile(filename)
+        view.load(url)
+        view.show()
 
-        self.mainLayout.addWidget(v)
+        self.mainLayout.addWidget(view)
+
+        #filename2 = "/Users/danielvlasits/PycharmProjects/the-automatic-accountant/Interface/GFG2.pdf"
+        #view2 = QtWebEngineWidgets.QWebEngineView()
+        #url2 = QtCore.QUrl.fromLocalFile(filename2)
+        #view2.load(url2)
+        #view2.show()
+
+        #self.mainLayout.addWidget(view2)
+
 
         # Assign Layouts
         self.setLayout(self.mainLayout)
 
         self.mainTopWidget.setLayout(self.mainTopLayout)
-        self.mainBottomWidget.setLayout(self.mainBottomLayout)
+        #self.mainBottomWidget.setLayout(self.mainBottomLayout)
 
         self.show()
+
+    def printBasic(self, item, json, pdf):
+        pdf.set_font("Arial", size=15)
+        pdf.set_text_color(0, 0, 0)
+        if json[item]["Flag"] == 2:
+            pdf.set_text_color(0, 0, 100)
+        if json[item]["Flag"] == 3:
+            pdf.set_text_color(100, 0, 0)
+        print("_________________________________________")
+        for key,value in json[item].items():
+
+            print(key,value)
+            if key not in ["Flag", "Message"]:
+                pdf.cell(200, 10, txt=f"{key} : {value}",
+                         ln=4, align='L')
+        if json[item]["Flag"] != 1:
+            pdf.multi_cell(200, 10, txt=f"Error Identified : {json[item]['Message']}",
+                     align='L')
+
+
+
+
     def giveAnalysisData(self,data):
         #TODO CREATE PDF HERE
         self.data = data
         pdf = FPDF()
         pdf.add_page()
-        pdf.set_font("Arial", size = 15)
+        pdf.set_font("Arial", size=15)
         for key,value in data["Company Details"].items():
             pdf.cell(200, 10, txt=f"{key} : {value}",
-                ln=4, align='C')
+                     ln=4, align='C')
+
+        self.data["Negative Indices"]["Flag"] = 3
+        self.data["Negative Indices"]["Message"] = "Index has negative value while it should be positive"
+
+        #pdf.add_page()
+        getDict = {"Director Info": ["Directors", "Director Turnover"],
+                   "Turnover Info": ["Turnover", "Turnover by Region"],
+                   "Profit Info": ["Gross Profit", "Net Profit", "Liquidity Ratio"],
+                   "Debtor Info": ["Debtor Days"],
+                   "Indices": ["Negative Indices"]}
+        longLine = "-----------------------------------------------------------"
+        for bigName in ["Director Info", "Turnover Info", "Profit Info", "Debtor Info", "Indices"]:
+            pdf.set_text_color(0, 0, 0)
+            pdf.set_font('Arial', 'B', 15)
+            pdf.cell(200, 10, txt=longLine,
+                     ln=4, align='L', )
+            pdf.cell(200, 10, txt=bigName,
+                     ln=4, align='L', )
+            pdf.set_font('Arial', size=15)
+            for item in getDict[bigName]:
+                pdf.cell(200, 10, txt=item,
+                         ln=4, align='L')
+                self.printBasic(item, self.data, pdf)
 
 
         # save the pdf with name .pdf
@@ -217,9 +275,6 @@ class SecondWindow(QWidget):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    v = qpageview.View()
-    v.loadPdf("/Users/danielvlasits/PycharmProjects/the-automatic-accountant/Interface/GFG.pdf")
-    v.show()
     ex = Combined()
     ex.swapScreen()
     sys.exit(app.exec_())
