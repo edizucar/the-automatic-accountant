@@ -10,10 +10,6 @@ def main():
     )
 
     app = QtWidgets.QApplication(sys.argv)
-    #filename, _ = QtWidgets.QFileDialog.getOpenFileName(None, filter="PDF (*.pdf)")
-    #if not filename:
-    #    print("please select the .pdf file")
-    #    sys.exit(0)
     filename = "/Users/danielvlasits/PycharmProjects/the-automatic-accountant/Interface/GFG.pdf"
     view = QtWebEngineWidgets.QWebEngineView()
     settings = view.settings()
