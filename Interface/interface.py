@@ -276,5 +276,5 @@ class SecondWindow(QWidget):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = Combined()
-    ex.swapScreen()
+    ##ex.swapScreen()
     sys.exit(app.exec_())
