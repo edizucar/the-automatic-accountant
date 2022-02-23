@@ -1,9 +1,9 @@
 import sys
-import qpageview
-from PyQt5 import QtCore
+from PyQt5 import QtCore, QtWebEngineWidgets
 from PyQt5 import QtGui
 import json
 from fpdf import FPDF
+import qpageview
 from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit, \
     QFileDialog, QPushButton, QHBoxLayout, QVBoxLayout, QTextEdit, QPlainTextEdit, QLabel, QStackedWidget
 from PyQt5.QtGui import QIcon
@@ -35,7 +35,7 @@ class Combined(QWidget):
         print(self.stackedWidget.currentIndex())
 
     def swapScreen(self):
-        path = pathlib.Path("./data_analysis/output_files/oneyear.json")
+        path = pathlib.Path("../data_analysis/output_files/oneyear.json")
         with open(path, "r") as file:
             data = json.load(file)
         self.secondWindow.giveAnalysisData(data)
@@ -185,8 +185,14 @@ class SecondWindow(QWidget):
         self.mainLayout.addWidget(self.mainTopWidget)
         self.mainLayout.addWidget(self.mainBottomWidget)
 
+
+
+
+        self.mainLayout.addWidget(v)
+
         # Assign Layouts
         self.setLayout(self.mainLayout)
+
         self.mainTopWidget.setLayout(self.mainTopLayout)
         self.mainBottomWidget.setLayout(self.mainBottomLayout)
 
@@ -199,7 +205,7 @@ class SecondWindow(QWidget):
         pdf.set_font("Arial", size = 15)
         for key,value in data["Company Details"].items():
             pdf.cell(200, 10, txt=f"{key} : {value}",
-                ln=2, align='C')
+                ln=4, align='C')
 
 
         # save the pdf with name .pdf
@@ -211,5 +217,9 @@ class SecondWindow(QWidget):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    v = qpageview.View()
+    v.loadPdf("/Users/danielvlasits/PycharmProjects/the-automatic-accountant/Interface/GFG.pdf")
+    v.show()
     ex = Combined()
+    ex.swapScreen()
     sys.exit(app.exec_())
