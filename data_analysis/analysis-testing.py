@@ -1,10 +1,15 @@
+from cProfile import label
 from pickle import NONE
 import sys
 import json
 import os
+from turtle import color
 from xml.etree.ElementPath import get_parent_map
 import matplotlib.pyplot as plt
 from enum import Enum, IntEnum, auto
+from datetime import datetime
+
+from numpy import sort
 
 sys.path.append('.')
 sys.path.append('../data_analysis')
@@ -29,10 +34,6 @@ def checkIfSuspicious(comparison, indices):
             drastic_changes[index] = diff
     return drastic_changes
 
-#Plot graphs of specific indices over time
-def plotOverTime(data, index, name):
-    plt.plot(data["name"], index)
-    plt.savefig('graphs/' + name + '.png')
 
 def returnCompare(data1, data2, index):
     company1 = data1[index]
@@ -105,19 +106,6 @@ def compare(data1, data2):
     comparison["Suspicious Changes"] = suspicious_changes
 
     return comparison
-
-def main():
-    path = os.path.realpath(__file__)
-    dir = os.path.dirname(path)
-    dir1 = dir.replace('data_analysis', 'data_mining\input-files')
-    os.chdir(dir1)
-    data1 = checkAndGetJSON('CE Statutory Accounts FY14-15.html')
-    data2 = checkAndGetJSON('CUTS Statutory Accounts FY14-15.html')
-    comparison = compare(data1,data2)
-    os.chdir(dir)
-    with open('comparison.json', 'w') as fp:
-        json.dump(comparison, fp,indent=4)
-    print(comparison)
     
 def getNegativeIndices(data):
     negative_indices = {}
@@ -126,10 +114,6 @@ def getNegativeIndices(data):
         if data[positive_index] is not None and data[positive_index] < 0:
             negative_indices[positive_index] = data[positive_index]
     return negative_indices
-
-
-if __name__ == "__main__":
-    main()
 
 class Flag(IntEnum):
     GREEN = auto()
@@ -269,8 +253,6 @@ def getDirectors(data):
     return (len(data["People"]["Directors"]), Flag.GREEN, None)
 
 def getDirectorTurnover(data, directors):
-    #TODO: once data mining team add appointments and resignations
-    #change the next part to match the json
     appointed = data["Number of Assignments"]
     resigned = data["Number of Resignations"]
     if appointed < 0 or resigned < 0:
@@ -337,7 +319,10 @@ def getDebtorDays(data):
         return (debtorDays, Flag.RED, "Debtor days cannot be negative")
     return (debtorDays, Flag.GREEN, None)
     
-
+class Type(IntEnum):
+    ONE_YEAR_ONE_COMPANY = auto()
+    MULTIPLE_YEARS_ONE_COMPANY = auto()
+    ONE_YEAR_TWO_COMPANIES = auto()
 
 def oneYearOneCompany(data):
     directors, director_flag, director_message = getDirectors(data["People"]["Directors"])
@@ -348,7 +333,7 @@ def oneYearOneCompany(data):
     gross_profit_margin, gross_profit_flag, gross_profit_message = getGrossProfitMargin(data, sector)
 
     net_profit = data["Profit & Loss Account"]["Net profit/loss"]
-    net_profit_margin, net_profit_flag, net_profit_message= getNetProfitMargin(data, sector, net_profit)
+    net_profit_margin, net_profit_flag, net_profit_message = getNetProfitMargin(data, sector, net_profit)
 
     liquidity_ratio, liquidity_ratio_flag, liquidity_ratio_message = getLiquidityRatio(data)
 
@@ -358,8 +343,9 @@ def oneYearOneCompany(data):
     #TODO: add turnover by region if mining team manages to extract that
     #TODO: add in every field the corresponding note or a summary if the mining team manages to extract that
 
+
     return {
-        "Type" : "One Year One Company",
+        "Type" : Type.ONE_YEAR_ONE_COMPANY,
 
         "Company Details" : companyDetails(data),
 
@@ -406,11 +392,151 @@ def oneYearOneCompany(data):
     }
 
 def oneYearTwoCompanies(data1, data2):
-    analysis = {"Type" : 3, "Company 1" : oneYearOneCompany(data1), "Company 2" : oneYearOneCompany(data2), "Comparison" : compare(data1, data2) }
+    analysis = {"Type" : Type.ONE_YEAR_TWO_COMPANIES, "Company 1" : oneYearOneCompany(data1), "Company 2" : oneYearOneCompany(data2), "Comparison" : compare(data1, data2) }
 
+def getDate(date_string):
+    return datetime.strptime(date_string, "%Y-%m-%d")
+
+def plot(x, y, index):
+    plt.plot(x,y)
+    plt.title(index)
+    plt.xlabel("Date")
+    plt.ylabel(index)
+    plt.savefig(index + ".png")
+
+def plotDirectors(x,directors, turnover, appointments, resignations):
+    plt.plot(x, directors, label = "Number of Directors", color = "b")
+    plt.plot(x, turnover, label = "Director Turnover", color = "c")
+    plt.plot(x, appointments, label = "Director appintments", color = "g")
+    plt.plot(x, resignations, label = "Director resignations", color = "r")
+    plt.title("Directors and Director turnover")
+    plt.xlabel("Date")
+    plt.ylabel("Number of Directors")
+    plt.legend()
+    plt.savefig("directors.png")
+
+def plotProfit(x, turnover, gross_profit, net_profit):
+    plt.plot(x, turnover, label = "Turnover")
+    plt.plot(x, gross_profit, label = "Gross profit")
+    plt.plot(x, net_profit, label = "Net profit")
+    plt.title("Turnover and profit")
+    plt.xlabel("Date")
+    plt.ylabel("Amount (£)")
+    plt.legend()
+    plt.savefig("profit.png")
+
+def plotProfitMargins(x, gross_profit_margin, gross_profit_margin_average, net_profit_margin, net_profit_margin_average):
+    plt.plot(x, gross_profit_margin, label = "Gross profit margin")
+    plt.plot(x, net_profit_margin, label = "Net profit margin")
+    plt.axhline(y=gross_profit_margin_average, linestyle='--', label = "Gross profit margin industry average")
+    plt.axhline(y=net_profit_margin_average, linestyle='--', label = "Net profit margin industry average")
+    plt.title("Profit margins")
+    plt.xlabel("Date")
+    plt.ylabel("Profit margins")
+    plt.legend()
+    plt.savefig("profit_margin.png")
+
+def plotGraphs(analysis):
+    axes = [(getDate(a["Company Details"]["End date covered by report"]),
+            a["Directors"]["Number of directors"],
+            a["Director Turnover"]["Turnover"],
+            a["Director Turnover"]["Appointments"],
+            a["Director Turnover"]["Turnover"] - a["Director Turnover"]["Appointments"]) 
+            for a in analysis
+            if a["Company Details"]["End date covered by report"] is not None
+            and a["Directors"]["Number of directors"] is not None 
+            and a["Director Turnover"]["Turnover"] is not None 
+            and a["Director Turnover"]["Appointments"] is not None
+        ]
+    if axes != []:
+        (x, directors, turnover, appointments, resignations) = list(zip(*axes))
+        plotDirectors(x,directors, turnover, appointments, resignations)
+
+    axes = [(getDate(a["Company Details"]["End date covered by report"]),
+            a["Turnover"]["Turnover"],
+            a["Gross Profit"]["Gross Profit"],
+            a["Net Profit"]["Net Profit"],
+            a["Director Turnover"]["Turnover"] - a["Director Turnover"]["Appointments"]) 
+            for a in analysis
+            if a["Company Details"]["End date covered by report"] is not None
+            and a["Turnover"]["Turnover"] is not None 
+            and a["Gross Profit"]["Gross Profit"] is not None 
+            and a["Net Profit"]["Net Profit"] is not None
+    ]
+    if axes != []:
+        (x, turnover, gross_profit, net_profit) = list(zip(*axes))
+        plotProfit(x, turnover, gross_profit, net_profit)
+    
+    axes = [(getDate(a["Company Details"]["End date covered by report"]),
+            a["Gross Profit"]["Gross Profit Margin"],
+            a["Net Profit"]["Net Profit Margin "]) 
+            for a in analysis
+            if a["Company Details"]["End date covered by report"] is not None
+            and a["Gross Profit"]["Gross Profit Margin"] is not None 
+            and a["Net Profit"]["Net Profit Margin"] is not None
+    ]
+    if axes != [] and analysis[0]["Company Details"]["SIC"]:
+        (x, gross_profit_margin , net_profit_margin) = list(zip(*axes))
+        SIC = analysis[0]["Company Details"]["SIC"]
+        gross_profit_margin_average = average_gross_profit_by_sector[getSector(SIC)]
+        net_profit_margin_average = average_net_profit_by_sector[getSector(SIC)]
+        plotProfitMargins(x, gross_profit_margin, gross_profit_margin_average, net_profit_margin, net_profit_margin_average)
+    
+    axes = [(getDate(a["Company Details"]["End date covered by report"]),
+            a["Liquidity Ratio"]["Liquidity Ratio"]) 
+            for a in analysis
+            if a["Company Details"]["End date covered by report"] is not None
+            and a["Liquidity Ratio"]["Liquidity Ratio"] is not None
+    ]
+    if axes != []:
+        x, liq_ratio = list(zip(*axes))
+        plot(x, liq_ratio, "Liquidity Ratio")
+    
+    axes = [(getDate(a["Company Details"]["End date covered by report"]),
+            a["Debtor Days"]["Debtor Days"]) 
+            for a in analysis
+            if a["Company Details"]["End date covered by report"] is not None
+            and a["Debtor Days"]["Debtor Days"] is not None
+    ]
+    if axes != []:
+        x, liq_ratio = list(zip(*axes))
+        plot(x, liq_ratio, "Liquidity Ratio")
+    
 
 def multipleYearsOneCompany(data_li):
-    return {}
+    data_li = sorted(data_li, key= lambda x:getDate(x["Start date covered by report"]))
+    analysis = [oneYearOneCompany(d) for d in data_li]
+    comparisons = []
+    missing_reports = []
+    for d in range(len(data_li)-1):
+        if not (363 < (getDate(data_li[d+1]) - getDate(data_li[d])).days < 368):
+            missing_reports.append((getDate(data_li[d]["Start date covered by report"]) + datetime.timedeleta(days = 365)).strftime("%Y-%m-%d") + " to " + 
+                (getDate(data_li[d]["Start date covered by report"]) + datetime.timedeleta(days = 730)).strftime("%Y-%m-%d"))
+        else:
+            comparisons.append(compare(data_li[d], data_li[d+1]))
+    plotGraphs(analysis)
+    return {
+        "Type" : Type.MULTIPLE_YEARS_ONE_COMPANY, 
+        "Yearly Analysis" : analysis, 
+        "Comparisons" : comparisons, 
+        "Missing Reports" : missing_reports,
+    }
+
+'''if __name__ == "__main__":
+    main()
+
+def main():
+    path = os.path.realpath(__file__)
+    dir = os.path.dirname(path)
+    dir1 = dir.replace('data_analysis', 'data_mining\input-files')
+    os.chdir(dir1)
+    data1 = checkAndGetJSON('CE Statutory Accounts FY14-15.html')
+    data2 = checkAndGetJSON('CUTS Statutory Accounts FY14-15.html')
+    comparison = compare(data1,data2)
+    os.chdir(dir)
+    with open('comparison.json', 'w') as fp:
+        json.dump(comparison, fp,indent=4)
+    print(comparison)'''
 
 '''def main(path):
     dir1 = os.path.dirname(path)
