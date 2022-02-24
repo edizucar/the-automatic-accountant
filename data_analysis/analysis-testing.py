@@ -8,7 +8,7 @@ from xml.etree.ElementPath import get_parent_map
 import matplotlib.pyplot as plt
 from enum import Enum, IntEnum, auto
 from datetime import datetime
-
+from pathlib import Path
 from numpy import sort
 
 sys.path.append('.')
@@ -539,27 +539,30 @@ def main():
         json.dump(comparison, fp,indent=4)
     print(comparison)'''
 
-'''def main(path):
-    dir1 = os.path.dirname(path)
+def main(path):
+    dir1 = os.path.realpath(path)
     files = os.listdir(dir1)
+    print(files)
     length = len(files)
     if length == 0:
         raise Exception("No files provided")
     if length == 1:
-        return oneYearOneCompany(checkAndGetJSON(path + files[0]))
+        return oneYearOneCompany(checkAndGetJSON(Path(path + "\\" + files[0])))
     if length == 2:
-        data1 = checkAndGetJSON(checkAndGetJSON(path + files[0]))
-        data2 = checkAndGetJSON(checkAndGetJSON(path + files[1]))
+        data1 = checkAndGetJSON(checkAndGetJSON(Path(path + "\\" + files[0])))
+        data2 = checkAndGetJSON(checkAndGetJSON(Path(path + "\\" + files[1])))
         if data1["Company Name"] != data2["Comany Name"]:
             return oneYearTwoCompanies(data1, data2)
 
     data_li = []
     comp_name = None
     for f in files:
-        data = checkAndGetJSON(path + f)
+        data = checkAndGetJSON(Path(path + "\\" + f))
         if comp_name is None:
             comp_name = data["Company Name"]
         elif comp_name != data["Company Name"]:
             raise Exception("Cannot compare multiple companies for multiple years")
-        data_li.append(checkAndGetJSON(path + f))
-    return multipleYearsOneCompany(data_li)'''
+        data_li.append(checkAndGetJSON(Path(path + "\\" + f)))
+    return multipleYearsOneCompany(data_li)
+
+print(main("..\\the-automatic-accountant\\data_analysis\\input-files"))
