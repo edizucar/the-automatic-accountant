@@ -393,6 +393,7 @@ def oneYearOneCompany(data):
 
 def oneYearTwoCompanies(data1, data2):
     analysis = {"Type" : Type.ONE_YEAR_TWO_COMPANIES, "Company 1" : oneYearOneCompany(data1), "Company 2" : oneYearOneCompany(data2), "Comparison" : compare(data1, data2) }
+    return analysis
 
 def getDate(date_string):
     return datetime.strptime(date_string, "%Y-%m-%d")
