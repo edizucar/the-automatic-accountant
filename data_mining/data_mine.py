@@ -1,4 +1,3 @@
-
 from ixbrlparse import IXBRL
 import re
 import sys
@@ -7,18 +6,18 @@ import requests
 from bs4 import BeautifulSoup
 import pathlib
 from dateutil.parser import parse as dateParse
-import datetime
 
 
-def matchAny(patterns, string):
+
+def matchAny(patterns: list[str], string:str) -> bool:
     return len(filter(lambda pattern: re.match(pattern, string), patterns)) != 0
 
 
-def searchAny(patterns, string):
+def searchAny(patterns :list[str], string:str)->bool:
     return len(filter(lambda pattern: re.search(pattern, string), patterns)) != 0
 
 
-def sanitiseName(name):
+def sanitiseName(name:str):
     return re.sub(r"[^a-zA-Z\- ]", "", name)
 
 
@@ -48,7 +47,7 @@ def maxDate(instant, start, end):
         return None
 
 
-def addNonnumericTags(ixbrl_file, data):
+def addNonnumericTags(ixbrl_file:IXBRL, data:json)->json:
     important_role_patterns = ["Chairman", "ChiefExecutive", "Director[0-9]+"]
     important_people = set()
 
@@ -116,7 +115,7 @@ def addSICAndTag(data: json) -> json:
 
 
 
-def addDirectorTurnover(data):
+def addDirectorTurnover(data:json)->json:
     company_id = data.get("UK Companies House Registered Number",None)
     if company_id is None:
         data["Number of Assignments"] = None
@@ -166,11 +165,9 @@ def addDirectorTurnover(data):
     data["Number of Assignments"] = num_assign
     data["Number of Resignations"] = num_resign
     return data
- 
-    
-    
+     
 
-def addNumericTags(ixbrl_file, data):
+def addNumericTags(ixbrl_file:IXBRL, data:json)->json:
     # Get Balance Sheet Info
     latest = {"turnover": None, "gpl": None, "npl": None, "fixed": None, "t fixed": None, "i fixed": None,
               "debtors": None, "debtors 1y": None, "c assets": None, "c liabilities": None,
@@ -348,7 +345,7 @@ def addNumericTags(ixbrl_file, data):
     return data
 
 
-def createJSON(input_path, destination_path):
+def createJSON(input_path:pathlib.Path, destination_path:pathlib.Path)->None:
     data = getJSON(input_path)
 
     # Write to json file
@@ -365,17 +362,17 @@ def checkPaths(input_path :pathlib.Path, destination_path : pathlib.Path =None) 
     return True
 
 
-def checkAndcreateJSON(input_path, destination_path):
+def checkAndcreateJSON(input_path:pathlib.Path, destination_path:pathlib.Path)->None:
     if checkPaths(input_path, destination_path):
         createJSON(input_path, destination_path)
 
 
-def checkAndGetJSON(input_path):
+def checkAndGetJSON(input_path:pathlib.Path)->json:
     if checkPaths(input_path):
         return getJSON(input_path)
 
 
-def getJSON(input_path :pathlib.Path) ->json:
+def getJSON(input_path :pathlib.Path)->json:
     ixbrl_file = None
     with open(input_path, encoding="utf8") as file:
         ixbrl_file = IXBRL(file)
