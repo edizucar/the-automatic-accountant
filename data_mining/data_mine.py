@@ -6,14 +6,15 @@ import requests
 from bs4 import BeautifulSoup
 import pathlib
 from dateutil.parser import parse as dateParse
+from typing import List
 
 
 
-def matchAny(patterns: list[str], string:str) -> bool:
+def matchAny(patterns: List[str], string:str) -> bool:
     return len(filter(lambda pattern: re.match(pattern, string), patterns)) != 0
 
 
-def searchAny(patterns :list[str], string:str)->bool:
+def searchAny(patterns :List[str], string:str)->bool:
     return len(filter(lambda pattern: re.search(pattern, string), patterns)) != 0
 
 
