@@ -53,7 +53,6 @@ def addNonnumericTags(ixbrl_file:IXBRL, data:json)->json:
     important_people = set()
 
     for tag in ixbrl_file.nonnumeric:
-
         # Getting important people from document
         if tag.name == "NameEntityOfficer":
             val = tag.context.segments[0]["value"]
@@ -76,16 +75,14 @@ def addNonnumericTags(ixbrl_file:IXBRL, data:json)->json:
             data["UK Companies House Registered Number"] = tag.value
 
         elif tag.name == "StartDateForPeriodCoveredByReport":
-            if re.match(r"^\d{4}-\d{2}-\d{2}$", tag.value):
-                # TODO: We can separate y,m,d or leave as yyyy-mm-dd.
-                year, month, day = [int(x) for x in tag.value.split("-")]
-                data["Start date covered by report"] = tag.value
+            date_parsed = dateParse(tag.value)
+            date_formatted = date_parsed.strftime("%Y-%m-%d") #put into yyyy-mm-dd format
+            data["Start date covered by report"] = date_formatted
 
         elif tag.name == "EndDateForPeriodCoveredByReport":
-            if re.match(r"^\d{4}-\d{2}-\d{2}$", tag.value):
-                # TODO: We can separate y,m,d or leave as yyyy-mm-dd.
-                year, month, day = [int(x) for x in tag.value.split("-")]
-                data["End date covered by report"] = tag.value
+            date_parsed = dateParse(tag.value)
+            date_formatted = date_parsed.strftime("%Y-%m-%d") #put into yyyy-mm-dd format
+            data["End date covered by report"] = date_formatted
 
     return data
 
@@ -138,9 +135,17 @@ def addDirectorTurnover(data:json)->json:
                 break
             else:
                 page_soup.append(soup)
+
+        start_date = data.get("Start date covered by report")
+        end_date = data.get("End date covered by report")
+
+        if start_date is None or end_date is None:
+            data["Number of Assignments"] = None
+            data["Number of Resignations"] = None
+            return data
         
-        start_date = dateParse(data.get("Start date covered by report"))
-        end_date = dateParse(data.get("End date covered by report"))
+        start_date = dateParse(start_date)
+        end_date = dateParse(end_date)
         num_assign = 0
         num_resign = 0
         for page in page_soup:
