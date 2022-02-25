@@ -109,10 +109,16 @@ def compare(data1, data2):
     
 def getNegativeIndices(data):
     negative_indices = {}
-    for positive_index in ["Tangible fixed assets", "Investments fixed assets", "Fixed assets balance", "Cash balance", "Current assets balance",\
-        "Creditors (due within one year)", "Current liabilities balance", "Net assets/liabilities balance"]:
-        if data[positive_index] is not None and data[positive_index] < 0:
-            negative_indices[positive_index] = data[positive_index]
+    for positive_index, ind in [(data["Balance Sheet"]["Fixed assets"]["Tangible fixed assets"], "Tangible fixed assets"),
+                                (data["Balance Sheet"]["Fixed assets"]["Investments fixed assets"], "Investments fixed assets"),
+                                (data["Balance Sheet"]["Fixed assets"]["Fixed assets balance"], "Fixed assets balance"),
+                                (data["Balance Sheet"]["Current assets"]["Cash balance"], "Cash balance"),
+                                (data["Balance Sheet"]["Current assets"]["Current assets balance"], "Current assets balance"),
+                                (data["Balance Sheet"]["Current liabilities"]["Creditors (due within one year)"], "Creditors (due within one year)"),
+                                (data["Balance Sheet"]["Current liabilities"]["Current liabilities balance"], "Current liabilities balance"),
+                                (data["Balance Sheet"]["Net assets/liabilities balance"], "Net assets/liabilities balance")]:
+        if positive_index is not None and positive_index < 0:
+            negative_indices[ind] = positive_index
     return negative_indices
 
 class Flag(IntEnum):
@@ -145,7 +151,7 @@ def getSector(SIC):
         return "K"
     elif 68100 <= SIC <= 68320:
         return "L"
-    elif 69101 <= SIC <= 7500:
+    elif 69101 <= SIC <= 75000:
         return "M"
     elif 77110 <= SIC <= 82990:
         return "N"
@@ -265,10 +271,10 @@ def getDirectorTurnover(data, directors):
         turnover = appointed + resigned
         if ((turnover / directors > 0.25 and directors > 12) or turnover / directors > 0.4 ):
             if appointed/resigned < 1:
-                return ([turnover, appointed] , Flag.Red, "Increased turnover including many resignations")
+                return ([turnover, appointed] , Flag.RED, "Increased turnover including many resignations")
             elif appointed/resigned < 1.2:
-                return ([turnover, appointed], Flag.Amber, "Increased turnover including some resignations")
-    return ([turnover, appointed], Flag.Green, None)
+                return ([turnover, appointed], Flag.AMBER, "Increased turnover including some resignations")
+    return ([turnover, appointed], Flag.GREEN, None)
 
 def getGrossProfitMargin(data, sector):
     gross_profit_margin = data["Ratio Analysis Table"]["Gross profit margin"]
@@ -301,14 +307,15 @@ def getLiquidityRatio(data):
     liquidity_ratio = data["Ratio Analysis Table"]["Liquidity ratio"]
     if liquidity_ratio is None:
         return getInvalidTuple("Current assets or current liabilities")
+    liquidity_ratio = 1 / liquidity_ratio
     if liquidity_ratio < 1:
-        return (liquidity_ratio, Flag.RED, "Liabilities outweigh assets")
+        return (liquidity_ratio, Flag.RED, "Current liabilities outweigh assets")
     if liquidity_ratio < 1.2:
-        return (liquidity_ratio, Flag.AMBER, "Assets only slightly outweigh liabilities")
+        return (liquidity_ratio, Flag.AMBER, "Current assets only slightly outweigh liabilities")
     return (liquidity_ratio, Flag.GREEN, None)
 
 def getDebtorDays(data):
-    debtorDays = data["Ratio Analysis Table"]["Debtor Days"]
+    debtorDays = data["Ratio Analysis Table"]["Debtor days"]
     if debtorDays is None:
         return getInvalidTuple("Debtors within a year")
     if debtorDays > 200:
@@ -325,7 +332,7 @@ class Type(IntEnum):
     ONE_YEAR_TWO_COMPANIES = auto()
 
 def oneYearOneCompany(data):
-    directors, director_flag, director_message = getDirectors(data["People"]["Directors"])
+    directors, director_flag, director_message = getDirectors(data)
     (turnover, appointed), turnover_flag, turnover_message = getDirectorTurnover(data, directors)
     
     sector = getSector(data["SIC And Tag Pairs"][0][0])
@@ -513,6 +520,7 @@ def multipleYearsOneCompany(data_li):
         if not (363 < (getDate(data_li[d+1]) - getDate(data_li[d])).days < 368):
             missing_reports.append((getDate(data_li[d]["Start date covered by report"]) + datetime.timedeleta(days = 365)).strftime("%Y-%m-%d") + " to " + 
                 (getDate(data_li[d]["Start date covered by report"]) + datetime.timedeleta(days = 730)).strftime("%Y-%m-%d"))
+            
         else:
             comparisons.append(compare(data_li[d], data_li[d+1]))
     plotGraphs(analysis)
@@ -547,11 +555,13 @@ def main(path):
     if length == 0:
         raise Exception("No files provided")
     if length == 1:
-        return oneYearOneCompany(checkAndGetJSON(Path(path + "\\" + files[0])))
+        data = checkAndGetJSON(Path(path + "\\" + files[0]))
+        print(data)
+        return oneYearOneCompany(data)
     if length == 2:
-        data1 = checkAndGetJSON(checkAndGetJSON(Path(path + "\\" + files[0])))
-        data2 = checkAndGetJSON(checkAndGetJSON(Path(path + "\\" + files[1])))
-        if data1["Company Name"] != data2["Comany Name"]:
+        data1 = checkAndGetJSON(Path(path + "\\" + files[0]))
+        data2 = checkAndGetJSON(Path(path + "\\" + files[1]))
+        if data1["Company Name"] != data2["Company Name"]:
             return oneYearTwoCompanies(data1, data2)
 
     data_li = []
