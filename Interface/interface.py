@@ -139,7 +139,7 @@ class App(QWidget):
     def openFileNamesDialog(self):
         options = QFileDialog.Options()
         files, _ = QFileDialog.getOpenFileNames(self, "Select Accounts to Analyse", "",
-                                                "All Files (*);;Python Files (*.py)", options=options)
+                                                "Html Files (*.html);;Xhtml Files (*.xhtml);;Pdf Files (*.pdf)", options=options)
         if files:
             return files
         else:
