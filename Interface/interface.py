@@ -18,13 +18,15 @@ class Combined(QWidget):
         self.top = 100
         self.width = 640
         self.height = 480
+        self.screen = 0
         self.initUI()
 
     def initUI(self):
         self.stackedWidget = QStackedWidget()
 
-        self.stackedWidget.addWidget(App(self.swapScreen))
-        self.secondWindow = SecondWindow()
+        self.firstWindow = App(self.resultsScreen)
+        self.stackedWidget.addWidget(self.firstWindow)
+        self.secondWindow = SecondWindow(self.mainScreen)
         self.stackedWidget.addWidget(self.secondWindow)
 
         self.stackedWidget.show()
@@ -34,12 +36,15 @@ class Combined(QWidget):
         self.stackedWidget.show()
         print(self.stackedWidget.currentIndex())
 
-    def swapScreen(self):
+    def resultsScreen(self):
         path = pathlib.Path("../data_analysis/output_files/oneyear.json")
         with open(path, "r") as file:
             data = json.load(file)
         self.secondWindow.giveAnalysisData(data)
         self.stackedWidget.setCurrentIndex(1)
+        
+    def mainScreen(self):
+        self.stackedWidget.setCurrentIndex(0)
 
 
 class App(QWidget):
@@ -135,7 +140,6 @@ class App(QWidget):
             self.filesText.setText("\n".join([("📃" + i.split("/")[-1]) for i in files]))
 
         
-
     def analyseAccounts(self):
         print("ANALYSIS")
         self.swapScreen()
@@ -159,14 +163,15 @@ class App(QWidget):
             print(fileName)
 
 class SecondWindow(QWidget):
-    def __init__(self):
+    def __init__(self, swapScreen):
         super().__init__()
         self.title = 'The Automatic Accountant'
         self.left = 100
         self.top = 100
-        self.width = 640
-        self.height = 480
+        self.width = 800
+        self.height = 600
         self.initUI()
+        self.swapScreen = swapScreen
 
     def initUI(self):
         self.setWindowTitle(self.title)
@@ -176,17 +181,35 @@ class SecondWindow(QWidget):
         self.mainBottomWidget = QWidget()
 
         # Create Layouts
-        self.mainLayout = QHBoxLayout()
-        self.mainTopLayout = QVBoxLayout()
-        #self.mainBottomLayout = QHBoxLayout()
+        self.mainLayout = QVBoxLayout()
+        self.mainTopLayout = QHBoxLayout()
+        self.mainBottomLayout = QVBoxLayout()
 
-        #print(self.mainLayout.alignment())
+        #print(self.mainLayout.alignment())-
 
-        #self.label = QLabel("Here are the results of the analysis")
-        #self.label.setAlignment(QtCore.Qt.AlignCenter)
-        #self.label.setStyleSheet("QLabel {color: grey;}")
-        #self.mainLayout.addWidget(self.label)
+        self.label = QLabel("Here are the results of the analysis")
+        self.label.setAlignment(QtCore.Qt.AlignCenter)
+        self.label.setStyleSheet("QLabel {color: grey;}")
+        self.mainTopLayout.addWidget(self.label)
+        
+        self.backButton = QPushButton("Return")
+        self.downloadFilesButton = QPushButton("Download Results")
+        
+        self.backButton.clicked.connect(self.goToMainPage)
+        self.downloadFilesButton.clicked.connect(self.downloadResults)
+        
+        
 
+        
+        self.mainLayout.addWidget(self.mainTopWidget)
+        self.mainLayout.addWidget(self.mainBottomWidget)
+
+        self.mainTopLayout.addWidget(self.backButton)
+        self.mainTopLayout.addWidget(self.downloadFilesButton)
+        
+        self.mainTopLayout.addStretch()
+        
+        
 
         #self.mainLayout.addWidget(self.mainBottomWidget)
         filename = os.path.join(os.path.dirname(__file__), 'GFG.pdf')
@@ -197,8 +220,11 @@ class SecondWindow(QWidget):
         url = QtCore.QUrl.fromLocalFile(filename)
         view.load(url)
         view.show()
+        
+        self.resize(200,1400)
+        
 
-        self.mainLayout.addWidget(view)
+        self.mainBottomLayout.addWidget(view) 
 
         #filename2 = "/Users/danielvlasits/PycharmProjects/the-automatic-accountant/Interface/GFG2.pdf"
         #view2 = QtWebEngineWidgets.QWebEngineView()
@@ -211,11 +237,18 @@ class SecondWindow(QWidget):
 
         # Assign Layouts
         self.setLayout(self.mainLayout)
-
+        
         self.mainTopWidget.setLayout(self.mainTopLayout)
-        #self.mainBottomWidget.setLayout(self.mainBottomLayout)
+        self.mainBottomWidget.setLayout(self.mainBottomLayout)
 
         self.show()
+        
+    def downloadResults(self):
+        # TODO: Allow user to save pdf of results
+        return
+    
+    def goToMainPage(self):
+        self.swapScreen()
 
     def printBasic(self, item, json, pdf):
         pdf.set_font("Arial", size=15)
