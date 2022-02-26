@@ -346,7 +346,7 @@ def addNumericTags(ixbrl_file:IXBRL, data:json)->json:
 
     if ((data["Balance Sheet"]["Current assets"]["Current assets balance"] != None) and (data["Balance Sheet"]["Current liabilities"]["Current liabilities balance"] != None) and (data["Balance Sheet"]["Current assets"]["Current assets balance"] != 0)):
         data["Ratio Analysis Table"]["Liquidity ratio"] = abs(
-            data["Balance Sheet"]["Current liabilities"]["Current liabilities balance"]) / data["Balance Sheet"]["Current assets"]["Current assets balance"]
+            data["Balance Sheet"]["Current assets"]["Current assets balance"]) / data["Balance Sheet"]["Current liabilities"]["Current liabilities balance"]
 
     return data
 
