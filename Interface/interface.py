@@ -122,14 +122,19 @@ class App(QWidget):
 
     def uploadAccounts(self):
         files = self.openFileNamesDialog()
+        
+        # No files selected
+        if not files:
+            return
+        else:
+            self.runAnalysisButton.setEnabled(True)
+            #pal = self.runAnalysisButton.palette()
+            #pal.setColor(QtGui.QPalette.Button, QtGui.QColor.fromRgb(255, 255, 0))
+            #self.runAnalysisButton.setPalette(pal)
+            #self.runAnalysisButton.update()
+            self.filesText.setText("\n".join([("📃" + i.split("/")[-1]) for i in files]))
 
-        self.runAnalysisButton.setEnabled(True)
-        #pal = self.runAnalysisButton.palette()
-        #pal.setColor(QtGui.QPalette.Button, QtGui.QColor.fromRgb(255, 255, 0))
-        #self.runAnalysisButton.setPalette(pal)
-        #self.runAnalysisButton.update()
-        self.filesText.setText("\n".join([("📃" + i.split("/")[-1]) for i in files]))
-        # TODO: Show selected files on window
+        
 
     def analyseAccounts(self):
         print("ANALYSIS")
@@ -139,7 +144,7 @@ class App(QWidget):
     def openFileNamesDialog(self):
         options = QFileDialog.Options()
         files, _ = QFileDialog.getOpenFileNames(self, "Select Accounts to Analyse", "",
-                                                "Html Files (*.html);;Xhtml Files (*.xhtml);;Pdf Files (*.pdf)", options=options)
+                                                "All Files (*.*);;Html Files (*.html);;Xhtml Files (*.xhtml);;Pdf Files (*.pdf)", options=options)
         if files:
             return files
         else:
