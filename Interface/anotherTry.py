@@ -1,5 +1,5 @@
 import sys
-
+import os
 from PyQt5 import QtCore, QtWidgets, QtWebEngineWidgets
 
 
@@ -10,7 +10,11 @@ def main():
     )
 
     app = QtWidgets.QApplication(sys.argv)
-    filename = "/Users/danielvlasits/PycharmProjects/the-automatic-accountant/Interface/GFG.pdf"
+    
+    
+
+    filename = os.path.join(os.path.dirname(__file__), 'GFG.pdf')
+    print(filename)
     view = QtWebEngineWidgets.QWebEngineView()
     settings = view.settings()
     settings.setAttribute(QtWebEngineWidgets.QWebEngineSettings.PluginsEnabled, True)

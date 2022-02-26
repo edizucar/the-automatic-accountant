@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit, \
     QFileDialog, QPushButton, QHBoxLayout, QVBoxLayout, QTextEdit, QPlainTextEdit, QLabel, QStackedWidget
 from PyQt5.QtGui import QIcon
 import pathlib
+import os
 
 
 class Combined(QWidget):
@@ -183,8 +184,8 @@ class SecondWindow(QWidget):
 
 
         #self.mainLayout.addWidget(self.mainBottomWidget)
+        filename = os.path.join(os.path.dirname(__file__), 'GFG.pdf')
 
-        filename = "/Users/danielvlasits/PycharmProjects/the-automatic-accountant/Interface/GFG.pdf"
         view = QtWebEngineWidgets.QWebEngineView()
         settings = view.settings()
         settings.setAttribute(QtWebEngineWidgets.QWebEngineSettings.PluginsEnabled, True)
