@@ -350,6 +350,49 @@ def addNumericTags(ixbrl_file:IXBRL, data:json)->json:
 
     return data
 
+def addAuditorsReport(input_path:pathlib.Path, data:json)->json:
+    # if heading contains "AUDITORS’ REPORT" or similar, append everything underneath it
+    # until next heading (span on same level)
+
+    with open(input_path, encoding="utf8") as file:
+        soup = BeautifulSoup(file,"html.parser")
+    spans = soup.find_all("span")  # get all span elements
+    report_spans = list(filter(lambda span: re.search(
+        "(INDEPENDENT )?AUDITORS(’?) REPORT", span.text, re.IGNORECASE), spans))
+
+    report = []
+    
+    if report_spans != []:
+        for match in report_spans:
+            span_class = match['class']
+
+            level_spans = soup.find_all('span', {'class' : span_class})
+            next_level = level_spans[level_spans.index(match) + 1]
+            rep_spans = spans[spans.index(match):spans.index(next_level)]
+
+            prev_level = None
+            rep = []
+            join_next = False
+            for l in rep_spans:
+                if (l.text != "-") and (l.text != ""):
+                    if (l['class'] != prev_level) and (len(rep) != 0):
+                        rep.append("\n")
+                        rep.append(l.text)
+                    elif (join_next == True) and (len(rep) != 0):
+                        rep[-1] = rep[-1] + " " + l.text
+                        join_next = False
+                    else:
+                        rep.append(l.text)
+                    prev_level = l['class']
+                elif (l.text == "-"):
+                    join_next = True
+
+            rep_string = "\n".join(rep)
+            report.append(rep_string)  
+            
+            data["Auditors' Report"] = report
+            return data
+
 
 def createJSON(input_path:pathlib.Path, destination_path:pathlib.Path)->None:
     data = getJSON(input_path)
@@ -395,13 +438,15 @@ def getJSON(input_path :pathlib.Path)->json:
             "Current assets": {"Debtors (due within one year)": None, "Cash balance": None, "Current assets balance": None},
             "Current liabilities": {"Creditors (due within one year)": None, "Current liabilities balance": None},
             "Net assets/liabilities balance": None},
-        "Ratio Analysis Table": {"Gross profit margin": None, "Liquidity ratio": None, "Debtor days": None}
+        "Ratio Analysis Table": {"Gross profit margin": None, "Liquidity ratio": None, "Debtor days": None},
+        "Auditors' Report":None
     }
 
     data = addNonnumericTags(ixbrl_file, data)
     data = addSICAndTag(data)
     data = addDirectorTurnover(data)
     data = addNumericTags(ixbrl_file, data)
+    data = addAuditorsReport(input_path, data)
 
     return data
 
