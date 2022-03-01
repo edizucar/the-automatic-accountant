@@ -462,14 +462,14 @@ def plotGraphs(analysis):
         plotDirectors(x,directors, turnover, appointments, resignations)
 
     axes = [(getDate(a["Company Details"]["End date covered by report"]),
-            a["Turnover"]["Turnover"],
+            a["Gross Profit"]["Gross Profit"] / a["Gross Profit"]["Gross Profit Margin"],
             a["Gross Profit"]["Gross Profit"],
             a["Net Profit"]["Net Profit"],
             a["Director Turnover"]["Turnover"] - a["Director Turnover"]["Appointments"]) 
             for a in analysis
             if a["Company Details"]["End date covered by report"] is not None
-            and a["Turnover"]["Turnover"] is not None 
             and a["Gross Profit"]["Gross Profit"] is not None 
+            and a["Gross Profit"]["Gross Profit Margin"] is not None
             and a["Net Profit"]["Net Profit"] is not None
     ]
     if axes != []:
@@ -525,7 +525,7 @@ def multipleYearsOneCompany(data_li):
             missing_reports.append((end + datetime.timedeleta(days = 1)).strftime("%Y-%m-%d") + " to " + 
                 (start - datetime.timedeleta(days = 1)).strftime("%Y-%m-%d"))    
         else:
-            comparisons.append(compare(data_li[d], data_li[d+1]), (data_li[d+1]["End date covered by report"] - end).days)
+            comparisons.append(compare(data_li[d], data_li[d+1], (getDate(data_li[d+1]["End date covered by report"]) - end).days))
     plotGraphs(analysis)
     return {
         "Type" : Type.MULTIPLE_YEARS_ONE_COMPANY, 
@@ -561,4 +561,10 @@ def main(paths):
         data_li.append(data)
     return multipleYearsOneCompany(data_li)
 
-print(main("..\\the-automatic-accountant\\data_analysis\\input-files"))
+paths = [
+    r"..\the-automatic-accountant\data_analysis\input_files\CE Statutory Accounts FY17-18.html",
+    r"..\the-automatic-accountant\data_analysis\input_files\CE Statutory Accounts FY18-19.html",
+    r"..\the-automatic-accountant\data_analysis\input_files\CE Statutory Accounts FY19-20.html"
+]
+
+print(main(paths))
