@@ -9,8 +9,11 @@ from PyQt5.QtGui import QIcon
 import pathlib
 import os
 
+
+
 sys.path.append('.')
 sys.path.append('../data_analysis')
+from data_analysis.analysis_testing import main
 import data_analysis.analysis_testing as analysis
 
 
@@ -41,9 +44,7 @@ class Combined(QWidget):
         print(self.stackedWidget.currentIndex())
 
     def resultsScreen(self):
-        path = pathlib.Path(r"data_analysis\output_files\oneyear.json")
-        with open(path, "r") as file:
-            data = json.load(file)
+        data = main(self.firstWindow.filesToAnalyse)
         self.secondWindow.giveAnalysisData(data)
         self.stackedWidget.setCurrentIndex(1)
         
@@ -142,6 +143,7 @@ class App(QWidget):
             #self.runAnalysisButton.setPalette(pal)
             #self.runAnalysisButton.update()
             self.filesText.setText("\n".join([("📃" + i.split("/")[-1]) for i in files]))
+            self.filesToAnalyse = files
 
         
     def analyseAccounts(self):
@@ -201,12 +203,14 @@ class SecondWindow(QWidget):
         
         self.backButton.clicked.connect(self.goToMainPage)
         self.downloadFilesButton.clicked.connect(self.downloadResults)
+
         
         
 
         
         self.mainLayout.addWidget(self.mainTopWidget)
         self.mainLayout.addWidget(self.mainBottomWidget)
+        self.mainTopWidget.setMaximumHeight(50)
 
         self.mainTopLayout.addWidget(self.backButton)
         self.mainTopLayout.addWidget(self.downloadFilesButton)
@@ -216,19 +220,20 @@ class SecondWindow(QWidget):
         
 
         #self.mainLayout.addWidget(self.mainBottomWidget)
-        filename = os.path.join(os.path.dirname(__file__), 'GFG.pdf')
+        self.filename = os.path.join(os.path.dirname(__file__), 'GFG.pdf')
+        #print(os.path)
+        #filename = "GFG.pdf"
 
-        view = QtWebEngineWidgets.QWebEngineView()
-        settings = view.settings()
-        settings.setAttribute(QtWebEngineWidgets.QWebEngineSettings.PluginsEnabled, True)
-        url = QtCore.QUrl.fromLocalFile(filename)
-        view.load(url)
-        view.show()
+        self.view = QtWebEngineWidgets.QWebEngineView()
+        self.settings = self.view.settings()
+        self.settings.setAttribute(QtWebEngineWidgets.QWebEngineSettings.PluginsEnabled, True)
+        self.url = QtCore.QUrl.fromLocalFile(self.filename)
+
         
         self.resize(200,1400)
         
 
-        self.mainBottomLayout.addWidget(view) 
+        self.mainBottomLayout.addWidget(self.view)
 
         #filename2 = "/Users/danielvlasits/PycharmProjects/the-automatic-accountant/Interface/GFG2.pdf"
         #view2 = QtWebEngineWidgets.QWebEngineView()
@@ -255,22 +260,25 @@ class SecondWindow(QWidget):
         self.swapScreen()
 
     def printBasic(self, item, json, pdf):
-        pdf.set_font("Arial", size=15)
-        pdf.set_text_color(0, 0, 0)
-        if json[item]["Flag"] == 2:
-            pdf.set_text_color(0, 0, 100)
-        if json[item]["Flag"] == 3:
-            pdf.set_text_color(100, 0, 0)
-        print("_________________________________________")
-        for key,value in json[item].items():
+        try:
+            pdf.set_font("Arial", size=15)
+            pdf.set_text_color(0, 0, 0)
+            if json[item]["Flag"] == 2:
+                pdf.set_text_color(0, 0, 100)
+            if json[item]["Flag"] == 3:
+                pdf.set_text_color(100, 0, 0)
+            print("_________________________________________")
+            for key,value in json[item].items():
 
-            print(key,value)
-            if key not in ["Flag", "Message"]:
-                pdf.cell(200, 10, txt=f"{key} : {value}",
-                         ln=4, align='L')
-        if json[item]["Flag"] != 1:
-            pdf.multi_cell(200, 10, txt=f"Error Identified : {json[item]['Message']}",
-                     align='L')
+                print(key,value)
+                if key not in ["Flag", "Message"]:
+                    pdf.cell(200, 10, txt=f"{key} : {value}",
+                             ln=4, align='L')
+            if json[item]["Flag"] != 1:
+                pdf.multi_cell(200, 10, txt=f"Error Identified : {json[item]['Message']}",
+                         align='L')
+        except KeyError:
+            pass
 
 
 
@@ -278,42 +286,52 @@ class SecondWindow(QWidget):
     def giveAnalysisData(self,data):
         #TODO CREATE PDF HERE
         self.data = data
+        with open('json_data.json', 'w') as outfile:
+            json.dump(self.data, outfile)
         pdf = FPDF()
         pdf.add_page()
         pdf.set_font("Arial", size=15)
-        for key,value in data["Company Details"].items():
-            pdf.cell(200, 10, txt=f"{key} : {value}",
-                     ln=4, align='C')
+        if data["Type"] == 1:
+            loopThrough = [data]
+        if data["Type"] == 2:
+            loopThrough = data["Yearly Analysis"]
+        if data["Type"] == 3:
+            loopThrough = [data["Company 1"], data["Company 2"]]
+        for CompanyData in loopThrough:
+            for key,value in CompanyData["Company Details"].items():
+                pdf.cell(200, 10, txt=f"{key} : {value}",
+                         ln=4, align='C')
 
-        self.data["Negative Indices"]["Flag"] = 3
-        self.data["Negative Indices"]["Message"] = "Index has negative value while it should be positive"
+            CompanyData["Negative Indices"]["Flag"] = 3
+            CompanyData["Negative Indices"]["Message"] = "Index has negative value while it should be positive"
 
-        #pdf.add_page()
-        getDict = {"Director Info": ["Directors", "Director Turnover"],
-                   "Turnover Info": ["Turnover", "Turnover by Region"],
-                   "Profit Info": ["Gross Profit", "Net Profit", "Liquidity Ratio"],
-                   "Debtor Info": ["Debtor Days"],
-                   "Indices": ["Negative Indices"]}
-        longLine = "-----------------------------------------------------------"
-        for bigName in ["Director Info", "Turnover Info", "Profit Info", "Debtor Info", "Indices"]:
-            pdf.set_text_color(0, 0, 0)
-            pdf.set_font('Arial', 'B', 15)
-            pdf.cell(200, 10, txt=longLine,
-                     ln=4, align='L', )
-            pdf.cell(200, 10, txt=bigName,
-                     ln=4, align='L', )
-            pdf.set_font('Arial', size=15)
-            for item in getDict[bigName]:
-                pdf.cell(200, 10, txt=item,
-                         ln=4, align='L')
-                self.printBasic(item, self.data, pdf)
+            #pdf.add_page()
+            getDict = {"Director Info": ["Directors", "Director Turnover"],
+                       "Turnover Info": ["Turnover", "Turnover by Region"],
+                       "Profit Info": ["Gross Profit", "Net Profit", "Liquidity Ratio"],
+                       "Debtor Info": ["Debtor Days"],
+                       "Indices": ["Negative Indices"]}
+            longLine = "-----------------------------------------------------------"
+            for bigName in ["Director Info", "Turnover Info", "Profit Info", "Debtor Info", "Indices"]:
+                pdf.set_text_color(0, 0, 0)
+                pdf.set_font('Arial', 'B', 15)
+                pdf.cell(200, 10, txt=longLine,
+                         ln=4, align='L', )
+                pdf.cell(200, 10, txt=bigName,
+                         ln=4, align='L', )
+                pdf.set_font('Arial', size=15)
+                for item in getDict[bigName]:
+                    pdf.cell(200, 10, txt=item,
+                             ln=4, align='L')
+                    self.printBasic(item, CompanyData, pdf)
 
 
         # save the pdf with name .pdf
-        pdf.output("GFG.pdf")
+        pdf.output(os.path.join("Interface","GFG.pdf"))
         for i in self.data:
             print(i)
-
+        self.view.load(self.url)
+        self.view.show()
 
 
 if __name__ == '__main__':
