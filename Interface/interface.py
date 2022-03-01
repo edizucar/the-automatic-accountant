@@ -299,7 +299,7 @@ class SecondWindow(QWidget):
         self.data = data
         textToWrite = ""
         with open('json_data.json', 'w') as outfile:
-            json.dump(self.data, outfile)
+            json.dump(self.data, outfile,indent=4)
         pdf = FPDF()
         pdf.add_page()
 
