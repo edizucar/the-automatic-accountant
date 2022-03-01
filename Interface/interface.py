@@ -40,7 +40,7 @@ class Combined(QWidget):
         print(self.stackedWidget.currentIndex())
 
     def resultsScreen(self):
-        path = pathlib.Path("../data_analysis/output_files/oneyear.json")
+        path = pathlib.Path(r"data_analysis\output_files\oneyear.json")
         with open(path, "r") as file:
             data = json.load(file)
         self.secondWindow.giveAnalysisData(data)
