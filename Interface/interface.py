@@ -286,6 +286,7 @@ class SecondWindow(QWidget):
     def giveAnalysisData(self,data):
         #TODO CREATE PDF HERE
         self.data = data
+        textToWrite = ""
         with open('json_data.json', 'w') as outfile:
             json.dump(self.data, outfile)
         pdf = FPDF()
@@ -301,6 +302,8 @@ class SecondWindow(QWidget):
             for key,value in CompanyData["Company Details"].items():
                 pdf.cell(200, 10, txt=f"{key} : {value}",
                          ln=4, align='C')
+                if key not in ["SIC", "Industry", "Sector"]:
+                    textToWrite += str(value) + " "
 
             CompanyData["Negative Indices"]["Flag"] = 3
             CompanyData["Negative Indices"]["Message"] = "Index has negative value while it should be positive"
@@ -325,7 +328,7 @@ class SecondWindow(QWidget):
                              ln=4, align='L')
                     self.printBasic(item, CompanyData, pdf)
 
-
+        self.label.setText(textToWrite)
         # save the pdf with name .pdf
         pdf.output(os.path.join("Interface","GFG.pdf"))
         for i in self.data:
