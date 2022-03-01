@@ -536,32 +536,29 @@ def multipleYearsOneCompany(data_li):
 
 
 
-def main(path):
-    dir1 = os.path.realpath(path)
-    files = os.listdir(dir1)
-    print(files)
-    length = len(files)
+def main(paths):
+    length = len(paths)
     if length == 0:
         raise Exception("No files provided")
     if length == 1:
-        data = checkAndGetJSON(Path(path + "\\" + files[0]))
+        data = checkAndGetJSON(Path(paths[0]))
         print(data)
         return oneYearOneCompany(data)
     if length == 2:
-        data1 = checkAndGetJSON(Path(path + "\\" + files[0]))
-        data2 = checkAndGetJSON(Path(path + "\\" + files[1]))
+        data1 = checkAndGetJSON(Path(paths[0]))
+        data2 = checkAndGetJSON(Path(paths[1]))
         if data1["Company Name"] != data2["Company Name"]:
             return oneYearTwoCompanies(data1, data2)
 
     data_li = []
     comp_name = None
-    for f in files:
-        data = checkAndGetJSON(Path(path + "\\" + f))
+    for path in paths:
+        data = checkAndGetJSON(Path(path))
         if comp_name is None:
             comp_name = data["Company Name"]
         elif comp_name != data["Company Name"]:
             raise Exception("Cannot compare multiple companies for multiple years")
-        data_li.append(checkAndGetJSON(Path(path + "\\" + f)))
+        data_li.append(data)
     return multipleYearsOneCompany(data_li)
 
 print(main("..\\the-automatic-accountant\\data_analysis\\input-files"))
