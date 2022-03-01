@@ -316,7 +316,7 @@ class SecondWindow(QWidget):
             loopThrough = [data["Company 1"], data["Company 2"]]
         for CompanyData in loopThrough:
             for key,value in CompanyData["Company Details"].items():
-                pdf.cell(200, 10, txt=f"{key} : {value}",
+                pdf.cell(200, 10, txt=f"{key}: {value}",
                          ln=4, align='C')
                 if key not in ["SIC", "Industry", "Sector"]:
                     textToWrite += str(value) + " "
