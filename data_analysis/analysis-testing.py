@@ -23,14 +23,15 @@ def change(index1, index2):
     return (index2 - index1) / (index1)
 
 #Just some examples of indices where we can look at the change over time
-def checkIfSuspicious(comparison, indices):
+def checkIfSuspicious(comparison, indices, factor=365):
     drastic_changes = {}
     none_values = {}
     for index in indices:
         diff = comparison[index]["Relative Change"]
         if diff is None:
             continue
-        elif abs(diff) > 0.2:
+        #this is equal to 0.20 for one year, i.e. a factor of 365 days
+        elif abs(diff) > 1.0005**factor-1:
             drastic_changes[index] = diff
     return drastic_changes
 
@@ -62,7 +63,7 @@ def companyDetails(data):
 
 #Compare two sets of data, returns a dictionary which has all the data, absolute changes, relative changes, as well as points that are worth reporting 
 #(including over 20% change in certain indices, certain indices being negative when they shouldn't be)
-def compare(data1, data2):
+def compare(data1, data2, factor=365):
     #Temporary replace None values by 0 function, should update analysis function in the future to handle None values instead of this
     profit_and_loss1 = data1["Profit & Loss Account"]
     profit_and_loss2 = data2["Profit & Loss Account"]
@@ -101,8 +102,8 @@ def compare(data1, data2):
                 "Creditors (due within one year)": creditors, "Current liabilities balance": current_liabilities_balance, "Net assets/liabilities balance": \
                     net_al_balance, "Gross profit margin": gross_profit_margin, "Liquidity ratio": liquidity_ratio, "Debtor days": debtor_days}
 
-    #Checking for indicies that report a 20%+ change 
-    suspicious_changes = checkIfSuspicious(comparison, comparison.keys())
+    #Checking for indices that report a 20%+ change 
+    suspicious_changes = checkIfSuspicious(comparison, comparison.keys(), factor)
     comparison["Suspicious Changes"] = suspicious_changes
 
     return comparison
@@ -517,12 +518,13 @@ def multipleYearsOneCompany(data_li):
     comparisons = []
     missing_reports = []
     for d in range(len(data_li)-1):
-        if not (363 < (getDate(data_li[d+1]) - getDate(data_li[d])).days < 368):
-            missing_reports.append((getDate(data_li[d]["Start date covered by report"]) + datetime.timedeleta(days = 365)).strftime("%Y-%m-%d") + " to " + 
-                (getDate(data_li[d]["Start date covered by report"]) + datetime.timedeleta(days = 730)).strftime("%Y-%m-%d"))
-            
+        start = getDate(data_li[d+1]["Start date covered by report"])
+        end = getDate(data_li[d]["End date covered by report"])
+        if not ((start-end).days == 1):
+            missing_reports.append((end + datetime.timedeleta(days = 1)).strftime("%Y-%m-%d") + " to " + 
+                (start - datetime.timedeleta(days = 1)).strftime("%Y-%m-%d"))    
         else:
-            comparisons.append(compare(data_li[d], data_li[d+1]))
+            comparisons.append(compare(data_li[d], data_li[d+1]), (data_li[d+1]["End date covered by report"] - end).days)
     plotGraphs(analysis)
     return {
         "Type" : Type.MULTIPLE_YEARS_ONE_COMPANY, 
