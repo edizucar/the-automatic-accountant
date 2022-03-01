@@ -11,7 +11,8 @@ import os
 
 sys.path.append('.')
 sys.path.append('../data_analysis')
-from data_analysis.analysis_testing import main
+import data_analysis.analysis_testing as analysis
+
 
 class Combined(QWidget):
     def __init__(self):
