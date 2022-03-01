@@ -328,9 +328,9 @@ def getDebtorDays(data):
     return (debtorDays, Flag.GREEN, None)
     
 class Type(IntEnum):
-    ONE_YEAR_ONE_COMPANY = auto()
-    MULTIPLE_YEARS_ONE_COMPANY = auto()
-    ONE_YEAR_TWO_COMPANIES = auto()
+    ONE_YEAR_ONE_COMPANY = 1
+    MULTIPLE_YEARS_ONE_COMPANY = 2
+    ONE_YEAR_TWO_COMPANIES = 3
 
 #TODO: add turnover by region if mining team manages to extract that
 #TODO: add in every field the corresponding note or a summary if the mining team manages to extract that

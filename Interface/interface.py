@@ -13,8 +13,8 @@ import os
 
 sys.path.append('.')
 sys.path.append('../data_analysis')
-from data_analysis.analysis_testing import main
-import data_analysis.analysis_testing as analysis
+from data_analysis.analysis_testing import main as getAnalysisJSON
+
 
 
 class Combined(QWidget):
@@ -44,7 +44,7 @@ class Combined(QWidget):
         print(self.stackedWidget.currentIndex())
 
     def resultsScreen(self):
-        data = main(self.firstWindow.filesToAnalyse)
+        data = getAnalysisJSON(self.firstWindow.filesToAnalyse)
         self.secondWindow.giveAnalysisData(data)
         self.stackedWidget.setCurrentIndex(1)
         
