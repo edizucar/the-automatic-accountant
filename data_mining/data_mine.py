@@ -395,6 +395,9 @@ def addAuditorsReport(input_path:pathlib.Path, data:json)->json:
 
 
 def createJSON(input_path:pathlib.Path, destination_path:pathlib.Path)->None:
+    """
+    Creates the JSON object of the mined data then puts it into an actual JSON file.
+    """
     data = getJSON(input_path)
 
     # Write to json file
@@ -402,7 +405,10 @@ def createJSON(input_path:pathlib.Path, destination_path:pathlib.Path)->None:
         json.dump(data, destination_file,indent=4)
 
 
-def checkPaths(input_path :pathlib.Path, destination_path : pathlib.Path =None) -> bool:
+def checkPaths(input_path :pathlib.Path, destination_path : pathlib.Path=None) -> bool:
+    """
+    Checks for conflicts with paths and raises relevant errors/warnings. returns True if no errors. 
+    """
     if not destination_path is None:
         if destination_path.exists():
             print(f"Overwriting {destination_path}")
@@ -412,16 +418,28 @@ def checkPaths(input_path :pathlib.Path, destination_path : pathlib.Path =None) 
 
 
 def checkAndcreateJSON(input_path:pathlib.Path, destination_path:pathlib.Path)->None:
+    """
+    Checks for errors in the input path and raises relevant warnings/errors if there are conflicts.
+    Then calls createJSON.
+    """
     if checkPaths(input_path, destination_path):
         createJSON(input_path, destination_path)
 
 
 def checkAndGetJSON(input_path:pathlib.Path)->json:
+    """
+    Checks for errors in the input path and raises relevant warnings/errors if there are conflicts.
+    Then calls getJSON.
+    """
     if checkPaths(input_path):
         return getJSON(input_path)
 
 
 def getJSON(input_path :pathlib.Path)->json:
+    """
+    INPUT: input_path - the path of the input file to be mined
+    OUTPUT: json object of all mined data
+    """
     ixbrl_file = None
     with open(input_path, encoding="utf8") as file:
         ixbrl_file = IXBRL(file)

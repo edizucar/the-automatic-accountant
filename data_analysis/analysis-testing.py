@@ -534,21 +534,7 @@ def multipleYearsOneCompany(data_li):
         "Missing Reports" : missing_reports,
     }
 
-'''if __name__ == "__main__":
-    main()
 
-def main():
-    path = os.path.realpath(__file__)
-    dir = os.path.dirname(path)
-    dir1 = dir.replace('data_analysis', 'data_mining\input-files')
-    os.chdir(dir1)
-    data1 = checkAndGetJSON('CE Statutory Accounts FY14-15.html')
-    data2 = checkAndGetJSON('CUTS Statutory Accounts FY14-15.html')
-    comparison = compare(data1,data2)
-    os.chdir(dir)
-    with open('comparison.json', 'w') as fp:
-        json.dump(comparison, fp,indent=4)
-    print(comparison)'''
 
 def main(path):
     dir1 = os.path.realpath(path)
