@@ -262,12 +262,12 @@ def getDirectors(data):
 def getDirectorTurnover(data, directors):
     appointed = data["Number of Assignments"]
     resigned = data["Number of Resignations"]
-    if appointed < 0 or resigned < 0:
-        return getNegativeTuple()
     if directors is None:
         return getInvalidTuple("Directors list")
     if appointed is None or resigned is None:
         return getInvalidTuple("Director appointments/resignations")
+    if appointed < 0 or resigned < 0:
+        return getNegativeTuple()
     else:
         turnover = appointed + resigned
         if ((turnover / directors > 0.25 and directors > 12) or turnover / directors > 0.4 ):
@@ -332,10 +332,15 @@ class Type(IntEnum):
     MULTIPLE_YEARS_ONE_COMPANY = auto()
     ONE_YEAR_TWO_COMPANIES = auto()
 
+#TODO: add turnover by region if mining team manages to extract that
+#TODO: add in every field the corresponding note or a summary if the mining team manages to extract that
+#TODO: clear up code - comments, argument types etc
+#TODO: add auditors report that was added by data mining team
+
 def oneYearOneCompany(data):
     directors, director_flag, director_message = getDirectors(data)
     (turnover, appointed), turnover_flag, turnover_message = getDirectorTurnover(data, directors)
-    
+
     sector = getSector(data["SIC And Tag Pairs"][0][0])
     gross_profit = data["Profit & Loss Account"]["Gross profit/loss"]
     gross_profit_margin, gross_profit_flag, gross_profit_message = getGrossProfitMargin(data, sector)
@@ -346,11 +351,6 @@ def oneYearOneCompany(data):
     liquidity_ratio, liquidity_ratio_flag, liquidity_ratio_message = getLiquidityRatio(data)
 
     debtor_days, debtor_flag, debtor_message = getDebtorDays(data)
-
-
-    #TODO: add turnover by region if mining team manages to extract that
-    #TODO: add in every field the corresponding note or a summary if the mining team manages to extract that
-
 
     return {
         "Type" : Type.ONE_YEAR_ONE_COMPANY,
@@ -513,6 +513,7 @@ def plotGraphs(analysis):
     
 
 def multipleYearsOneCompany(data_li):
+    data_li = [d for d in data_li if d["Start date covered by report"] is not None and d["End date covered by report"]]
     data_li = sorted(data_li, key= lambda x:getDate(x["Start date covered by report"]))
     analysis = [oneYearOneCompany(d) for d in data_li]
     comparisons = []
