@@ -561,10 +561,10 @@ def main(paths):
         data_li.append(data)
     return multipleYearsOneCompany(data_li)
 
-paths = [
+'''paths = [
     r"..\the-automatic-accountant\data_analysis\input_files\CE Statutory Accounts FY17-18.html",
     r"..\the-automatic-accountant\data_analysis\input_files\CE Statutory Accounts FY18-19.html",
     r"..\the-automatic-accountant\data_analysis\input_files\CE Statutory Accounts FY19-20.html"
 ]
 
-print(main(paths))
+print(main(paths))'''

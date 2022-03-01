@@ -9,6 +9,9 @@ from PyQt5.QtGui import QIcon
 import pathlib
 import os
 
+sys.path.append('.')
+sys.path.append('../data_analysis')
+from data_analysis.analysis_testing import main
 
 class Combined(QWidget):
     def __init__(self):
