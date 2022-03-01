@@ -189,7 +189,7 @@ class SecondWindow(QWidget):
         # Create Layouts
         self.mainLayout = QVBoxLayout()
         self.mainTopLayout = QHBoxLayout()
-        self.mainBottomLayout = QVBoxLayout()
+        self.mainBottomLayout = QHBoxLayout()
 
         #print(self.mainLayout.alignment())-
 
@@ -229,11 +229,22 @@ class SecondWindow(QWidget):
         self.settings.setAttribute(QtWebEngineWidgets.QWebEngineSettings.PluginsEnabled, True)
         self.url = QtCore.QUrl.fromLocalFile(self.filename)
 
-        
+
         self.resize(200,1400)
         
 
         self.mainBottomLayout.addWidget(self.view)
+
+        #Trying to
+        self.filename2 = os.path.join(os.path.dirname(__file__), 'GFG2.pdf')
+        self.view2 = QtWebEngineWidgets.QWebEngineView()
+        self.settings2 = self.view2.settings()
+        self.settings2.setAttribute(QtWebEngineWidgets.QWebEngineSettings.PluginsEnabled, True)
+        self.url2 = QtCore.QUrl.fromLocalFile(self.filename2)
+
+
+
+        self.mainBottomLayout.addWidget(self.view2)
 
         #filename2 = "/Users/danielvlasits/PycharmProjects/the-automatic-accountant/Interface/GFG2.pdf"
         #view2 = QtWebEngineWidgets.QWebEngineView()
@@ -291,7 +302,12 @@ class SecondWindow(QWidget):
             json.dump(self.data, outfile)
         pdf = FPDF()
         pdf.add_page()
+
+        pdf2 = FPDF()
+        pdf2.add_page()
+
         pdf.set_font("Arial", size=15)
+        pdf2.set_font("Arial", size=15)
         if data["Type"] == 1:
             loopThrough = [data]
         if data["Type"] == 2:
@@ -328,13 +344,19 @@ class SecondWindow(QWidget):
                              ln=4, align='L')
                     self.printBasic(item, CompanyData, pdf)
 
+
+
         self.label.setText(textToWrite)
         # save the pdf with name .pdf
         pdf.output(os.path.join("Interface","GFG.pdf"))
+        pdf2.output(os.path.join("Interface", "GFG2.pdf"))
         for i in self.data:
             print(i)
         self.view.load(self.url)
         self.view.show()
+
+        self.view2.load(self.url2)
+        self.view2.show()
 
 
 if __name__ == '__main__':
