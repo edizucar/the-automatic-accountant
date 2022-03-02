@@ -310,15 +310,6 @@ class SecondWindow(QWidget):
         except KeyError:
             pass
 
-    def resizeEvent(self, event):
-        print("Window has been resized")
-        ##TODO delete this
-        #if True: # self.timestamp + 1 < time.time():
-        #    self.view.reload()
-        #    self.view2.reload()
-        #    self.timestamp = time.time()
-        # QtWidgets.QMainWindow.resizeEvent(self, event)
-
 
 
     def giveAnalysisData(self,data):
@@ -336,17 +327,17 @@ class SecondWindow(QWidget):
             self.analysisType = Type.ONE_YEAR_ONE_COMPANY
             
             self.label.setText(textToWrite)
-            
-            name1 = "Analysis_{}_{}.pdf".format(data["Company Details"]["Company Name"], data["Company Details"]["Start date covered by report"])
-            
+
+            name1 = "Analysis_{}_{}.pdf".format(data["Company Details"]["Company Name"],
+                                                data["Company Details"]["Start date covered by report"])
+
             self.filename = os.path.join(os.path.dirname(__file__), name1)
 
             
             # save the pdf with name .pdf
             pdf.output(self.filename)
             self.setMinimumSize(800, 800)
-            
-            
+
             self.url = QtCore.QUrl.fromLocalFile(self.filename)
             
             if (self.twoPDFS):
@@ -395,6 +386,11 @@ class SecondWindow(QWidget):
         elif data["Type"] == Type.MULTIPLE_YEARS_ONE_COMPANY:
             self.analysisType = Type.ONE_YEAR_ONE_COMPANY
             pdf, textToWrite = generateMultiYearSingleCompanyPDF(self, data["Yearly Analysis"])
+            name1 = "PDF1"
+
+            self.filename = os.path.join(os.path.dirname(__file__), name1)
+            pdf.output(self.filename)
+            self.url = QtCore.QUrl.fromLocalFile(self.filename)
             self.view.load(self.url)
             self.view.show()
             
@@ -447,14 +443,22 @@ def generateMultiYearSingleCompanyPDF(self, CompanyData2):
     textToWrite = ""
     pdf = FPDF()
     pdf.add_page()
-    for CompanyData in CompanyData2:
+    for index,CompanyData in enumerate(CompanyData2):
         for key,value in CompanyData["Company Details"].items():
-            pdf.set_font("Arial", size=15)
-            pdf.set_text_color(0, 0, 0)
-            pdf.cell(200, 10, txt=f"{key}: {value}",
-                        ln=4, align='C')
-            if key not in ["SIC", "Industry", "Sector"]:
-                textToWrite += str(value) + " "
+            if index == 0:
+                pdf.set_font("Arial", size=15)
+                pdf.set_text_color(0, 0, 0)
+                pdf.cell(200, 10, txt=f"{key}: {value}",
+                         ln=4, align='C')
+                if key not in ["SIC", "Industry", "Sector"]:
+                    textToWrite += str(value) + " "
+            else:
+                if key == "Start date covered by report":
+                    pdf.set_font("Arial", size=18,style="B")
+                    pdf.set_text_color(0, 0, 0)
+                    pdf.cell(200, 10, txt=f"Next Year : {value}",
+                             ln=4, align='C')
+                    pdf.set_font("Arial", size=15)
 
         CompanyData["Negative Indices"]["Flag"] = 3
         CompanyData["Negative Indices"]["Message"] = "Index has negative value while it should be positive"
@@ -479,7 +483,7 @@ def generateMultiYearSingleCompanyPDF(self, CompanyData2):
                             ln=4, align='L')
                 self.printBasic(item, CompanyData, pdf)
 
-        return pdf, textToWrite
+    return pdf, textToWrite
 
 
 if __name__ == '__main__':
