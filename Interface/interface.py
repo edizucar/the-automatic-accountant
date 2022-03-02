@@ -501,6 +501,7 @@ def generateMultiYearSingleCompanyPDF(self, CompanyData2, c2):
     pdf2.set_font("Arial", size=15)
     pdf2.set_text_color(0, 0, 0)
     companies = []
+    c3 = c2
     for index,CompanyData in enumerate(CompanyData2):
         companies.append(CompanyData["Company Details"])
         for key,value in CompanyData["Company Details"].items():
@@ -542,6 +543,8 @@ def generateMultiYearSingleCompanyPDF(self, CompanyData2, c2):
                             ln=4, align='L')
                 self.printBasic(item, CompanyData, pdf)
     print(companies)
+    first = companies[0]
+    last = companies[-1]
     print(c2["Comparisons"])
     for item in c2["Comparisons"]:
         pdf2.set_font("Arial", 'B', size=19)
@@ -572,7 +575,7 @@ def generateMultiYearSingleCompanyPDF(self, CompanyData2, c2):
     pdf2.image(p, w=190, h=100)
     p = os.path.join(os.path.dirname(__file__), "..", "Liquidity Ratio.png")
     pdf2.image(p, w=190, h=100)
-
+    self.label.setText(f"Looking at {c3['Yearly Analysis'][0]['Company Details']['Company Name']} from {c3['Yearly Analysis'][0]['Company Details']['Start date covered by report']} to {c3['Yearly Analysis'][-1]['Company Details']['End date covered by report']} ")
     return (pdf,pdf2), textToWrite
 
 
