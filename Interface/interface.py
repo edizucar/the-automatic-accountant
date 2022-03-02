@@ -8,6 +8,8 @@ from fpdf import FPDF
 from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit, \
     QFileDialog, QPushButton, QHBoxLayout, QVBoxLayout, QTextEdit, QPlainTextEdit, QLabel, QStackedWidget
 from PyQt5.QtGui import QIcon
+from enum import Enum, IntEnum, auto
+
 import pathlib
 import os
 
@@ -16,7 +18,10 @@ import os
 sys.path.append('.')
 sys.path.append('../data_analysis')
 from data_analysis.analysis_testing import main as getAnalysisJSON
-
+class Type(IntEnum):
+    ONE_YEAR_ONE_COMPANY = 1
+    MULTIPLE_YEARS_ONE_COMPANY = 2
+    ONE_YEAR_TWO_COMPANIES = 3
 
 
 class Combined(QWidget):
@@ -179,7 +184,9 @@ class SecondWindow(QWidget):
         self.width = 800
         self.height = 600
         self.initUI()
+        self.twoPDFS = False
         self.swapScreen = swapScreen
+        self.analysisType = None
 
     def initUI(self):
         self.setWindowTitle(self.title)
@@ -220,7 +227,21 @@ class SecondWindow(QWidget):
         self.mainTopLayout.addStretch()
         
         self.timestamp = time.time()
+        
+        self.view = QtWebEngineWidgets.QWebEngineView()
+        self.settings = self.view.settings()
+        self.settings.setAttribute(QtWebEngineWidgets.QWebEngineSettings.PluginsEnabled, True)
+        
+        self.mainBottomLayout.addWidget(self.view)
+        
+        self.view2 = QtWebEngineWidgets.QWebEngineView()
+        self.settings2 = self.view2.settings()
+        self.settings2.setAttribute(QtWebEngineWidgets.QWebEngineSettings.PluginsEnabled, True)
+        
+        
 
+
+        """
         #self.mainLayout.addWidget(self.mainBottomWidget)
         self.filename = os.path.join(os.path.dirname(__file__), 'GFG.pdf')
         #print(os.path)
@@ -230,9 +251,6 @@ class SecondWindow(QWidget):
         self.settings = self.view.settings()
         self.settings.setAttribute(QtWebEngineWidgets.QWebEngineSettings.PluginsEnabled, True)
         self.url = QtCore.QUrl.fromLocalFile(self.filename)
-
-
-        self.resize(200,1400)
         
 
         self.mainBottomLayout.addWidget(self.view)
@@ -243,9 +261,9 @@ class SecondWindow(QWidget):
         self.settings2 = self.view2.settings()
         self.settings2.setAttribute(QtWebEngineWidgets.QWebEngineSettings.PluginsEnabled, True)
         self.url2 = QtCore.QUrl.fromLocalFile(self.filename2)
+        """
 
-
-        self.mainBottomLayout.addWidget(self.view2)
+        #self.mainBottomLayout.addWidget(self.view2)
 
         #filename2 = "/Users/danielvlasits/PycharmProjects/the-automatic-accountant/Interface/GFG2.pdf"
         #view2 = QtWebEngineWidgets.QWebEngineView()
@@ -299,82 +317,170 @@ class SecondWindow(QWidget):
         #    self.view.reload()
         #    self.view2.reload()
         #    self.timestamp = time.time()
-        QtWidgets.QMainWindow.resizeEvent(self, event)
+        # QtWidgets.QMainWindow.resizeEvent(self, event)
+
 
 
     def giveAnalysisData(self,data):
         #TODO CREATE PDF HERE
+        # DATA IS EITHER FOR:
+        # Single Company Single Year
+        # 2 Companies Single Year - Side by side
+        # Single Company Multiple Years
         self.data = data
-        textToWrite = ""
         with open('json_data.json', 'w') as outfile:
             json.dump(self.data, outfile,indent=4)
-        pdf = FPDF()
-        pdf.add_page()
+        
+        if data["Type"] == Type.ONE_YEAR_ONE_COMPANY:
+            pdf, textToWrite = generateSingleYearSingleCompanyPDF(self, data)
+            self.analysisType = Type.ONE_YEAR_ONE_COMPANY
+            
+            self.label.setText(textToWrite)
+            
+            name1 = "Analysis_{}_{}.pdf".format(data["Company Details"]["Company Name"], data["Company Details"]["Start date covered by report"])
+            
+            self.filename = os.path.join(os.path.dirname(__file__), name1)
 
-        pdf2 = FPDF()
-        pdf2.add_page()
+            
+            # save the pdf with name .pdf
+            pdf.output(self.filename)
+            self.setMinimumSize(800, 800)
+            
+            
+            self.url = QtCore.QUrl.fromLocalFile(self.filename)
+            
+            if (self.twoPDFS):
+                self.twoPDFS = False
+                self.view2.hide()
+                self.mainBottomLayout.removeWidget(self.view2)
+                        
+            
+            
+            self.view.load(self.url)
+            self.view.show()        
+            
 
+        elif data["Type"] == Type.ONE_YEAR_TWO_COMPANIES:
+            self.analysisType = Type.ONE_YEAR_TWO_COMPANIES
+            pdf, textToWrite = generateSingleYearSingleCompanyPDF(self, data["Company 1"])
+            pdf2, textToWrite2 = generateSingleYearSingleCompanyPDF(self, data["Company 2"])
+            
+            # save the pdf with name .pdf
+            name1 = "Analysis_{}_{}.pdf".format(data["Company 1"]["Company Details"]["Company Name"], data["Company 1"]["Company Details"]["Start date covered by report"])
+            name2 = "Analysis_{}_{}.pdf".format(data["Company 2"]["Company Details"]["Company Name"], data["Company 2"]["Company Details"]["Start date covered by report"])
+            
+           
+            self.filename = os.path.join(os.path.dirname(__file__), name1)
+            self.url = QtCore.QUrl.fromLocalFile(self.filename)
+            self.filename2 = os.path.join(os.path.dirname(__file__), name2)
+            self.url2 = QtCore.QUrl.fromLocalFile(self.filename2)
+
+            #self.url = os.path.join("Interface",name1)
+            #self.url2 = os.path.join("Interface",name2)
+            
+            pdf.output(self.filename)
+            # save the pdf with name .pdf
+            pdf2.output(self.filename2)
+            
+            self.view.load(self.url)
+            self.view.show()
+            
+            self.view2.load(self.url2)
+            self.view2.show()
+            if (not self.twoPDFS):
+                self.twoPDFS = True
+                self.mainBottomLayout.addWidget(self.view2)
+
+            self.setMinimumSize(1400, 800)
+        elif data["Type"] == Type.MULTIPLE_YEARS_ONE_COMPANY:
+            self.analysisType = Type.ONE_YEAR_ONE_COMPANY
+            pdf, textToWrite = generateMultiYearSingleCompanyPDF(self, data["Yearly Analysis"])
+            self.view.load(self.url)
+            self.view.show()
+            
+            if (self.twoPDFS):
+                self.twoPDFS = False
+                self.view2.hide()
+                self.mainBottomLayout.removeWidget(self.view2)
+                
+
+def generateSingleYearSingleCompanyPDF(self, CompanyData):
+    textToWrite = ""
+        
+    pdf = FPDF()
+    pdf.add_page()
+        
+    for key,value in CompanyData["Company Details"].items():
         pdf.set_font("Arial", size=15)
-        pdf2.set_font("Arial", size=15)
-        if data["Type"] == 1:
-            loopThrough = [data]
-        if data["Type"] == 2:
-            loopThrough = data["Yearly Analysis"]
-        if data["Type"] == 3:
-            loopThrough = [data["Company 1"], data["Company 2"]]
-        for index,CompanyData in enumerate(loopThrough):
-            print(index)
-            if index == 0 or data["Type"] != 2:
-                for key,value in CompanyData["Company Details"].items():
-                    pdf.set_font("Arial", size=15)
-                    pdf.set_text_color(0, 0, 0)
-                    pdf.cell(200, 10, txt=f"{key}: {value}",
-                             ln=4, align='C')
+        pdf.set_text_color(0, 0, 0)
+        pdf.cell(200, 10, txt=f"{key}: {value}",
+                    ln=4, align='C')
+        if key not in ["SIC", "Industry", "Sector"]:
+            textToWrite += str(value) + " "
 
-                    if key not in ["SIC", "Industry", "Sector"]:
-                        textToWrite += str(value) + " "
-            else:
-                pdf.set_font("Arial", size=15,style="B")
-                pdf.set_text_color(0, 0, 0)
-                if data["Type"] == 2:
-                    pdf.cell(200, 10, txt=f"Year: {CompanyData['Company Details']['Start date covered by report']}",
-                             ln=4, align='C')
+    CompanyData["Negative Indices"]["Flag"] = 3
+    CompanyData["Negative Indices"]["Message"] = "Index has negative value while it should be positive"
 
-            CompanyData["Negative Indices"]["Flag"] = 3
-            CompanyData["Negative Indices"]["Message"] = "Index has negative value while it should be positive"
+    #pdf.add_page()
+    getDict = {"Director Info": ["Directors", "Director Turnover"],
+                "Turnover Info": ["Turnover", "Turnover by Region"],
+                "Profit Info": ["Gross Profit", "Net Profit", "Liquidity Ratio"],
+                "Debtor Info": ["Debtor Days"],
+                "Indices": ["Negative Indices"]}
+    longLine = "-----------------------------------------------------------"
+    for bigName in ["Director Info", "Turnover Info", "Profit Info", "Debtor Info", "Indices"]:
+        pdf.set_text_color(0, 0, 0)
+        pdf.set_font('Arial', 'B', 15)
+        pdf.cell(200, 10, txt=longLine,
+                    ln=4, align='L', )
+        pdf.cell(200, 10, txt=bigName,
+                    ln=4, align='L', )
+        pdf.set_font('Arial', size=15)
+        for item in getDict[bigName]:
+            pdf.cell(200, 10, txt=item,
+                        ln=4, align='L')
+            self.printBasic(item, CompanyData, pdf)
 
-            #pdf.add_page()
-            getDict = {"Director Info": ["Directors", "Director Turnover"],
-                       "Turnover Info": ["Turnover", "Turnover by Region"],
-                       "Profit Info": ["Gross Profit", "Net Profit", "Liquidity Ratio"],
-                       "Debtor Info": ["Debtor Days"],
-                       "Indices": ["Negative Indices"]}
-            longLine = "-----------------------------------------------------------"
-            for bigName in ["Director Info", "Turnover Info", "Profit Info", "Debtor Info", "Indices"]:
-                pdf.set_text_color(0, 0, 0)
-                pdf.set_font('Arial', 'B', 15)
-                pdf.cell(200, 10, txt=longLine,
-                         ln=4, align='L', )
-                pdf.cell(200, 10, txt=bigName,
-                         ln=4, align='L', )
-                pdf.set_font('Arial', size=15)
-                for item in getDict[bigName]:
-                    pdf.cell(200, 10, txt=item,
-                             ln=4, align='L')
-                    self.printBasic(item, CompanyData, pdf)
+    return pdf, textToWrite
 
+def generateMultiYearSingleCompanyPDF(self, CompanyData):
+    textToWrite = ""
+        
+    pdf = FPDF()
+    pdf.add_page()
+        
+    for key,value in CompanyData["Company Details"].items():
+        pdf.set_font("Arial", size=15)
+        pdf.set_text_color(0, 0, 0)
+        pdf.cell(200, 10, txt=f"{key}: {value}",
+                    ln=4, align='C')
+        if key not in ["SIC", "Industry", "Sector"]:
+            textToWrite += str(value) + " "
 
-        self.label.setText(textToWrite)
-        # save the pdf with name .pdf
-        pdf.output(os.path.join("Interface","GFG.pdf"))
-        pdf2.output(os.path.join("Interface", "GFG2.pdf"))
-        for i in self.data:
-            print(i)
-        self.view.load(self.url)
-        self.view.show()
+    CompanyData["Negative Indices"]["Flag"] = 3
+    CompanyData["Negative Indices"]["Message"] = "Index has negative value while it should be positive"
 
-        self.view2.load(self.url2)
-        self.view2.show()
+    #pdf.add_page()
+    getDict = {"Director Info": ["Directors", "Director Turnover"],
+                "Turnover Info": ["Turnover", "Turnover by Region"],
+                "Profit Info": ["Gross Profit", "Net Profit", "Liquidity Ratio"],
+                "Debtor Info": ["Debtor Days"],
+                "Indices": ["Negative Indices"]}
+    longLine = "-----------------------------------------------------------"
+    for bigName in ["Director Info", "Turnover Info", "Profit Info", "Debtor Info", "Indices"]:
+        pdf.set_text_color(0, 0, 0)
+        pdf.set_font('Arial', 'B', 15)
+        pdf.cell(200, 10, txt=longLine,
+                    ln=4, align='L', )
+        pdf.cell(200, 10, txt=bigName,
+                    ln=4, align='L', )
+        pdf.set_font('Arial', size=15)
+        for item in getDict[bigName]:
+            pdf.cell(200, 10, txt=item,
+                        ln=4, align='L')
+            self.printBasic(item, CompanyData, pdf)
+
+    return pdf, textToWrite
 
 
 if __name__ == '__main__':
