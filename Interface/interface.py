@@ -289,7 +289,7 @@ class SecondWindow(QWidget):
     def goToMainPage(self):
         self.swapScreen()
 
-    def printBasic(self, item, json, pdf,noFlag = False):
+    def printBasic(self, item, json, pdf,noFlag = False, c1 = False, c2 = False):
         try:
             if not noFlag:
                 pdf.set_font("Arial", size=15)
@@ -306,6 +306,10 @@ class SecondWindow(QWidget):
                 if key not in ["Flag", "Message"]:
                     if item == "Suspicious Changes":
                         pdf.set_text_color(100, 0, 0)
+                    if key == "Company1":
+                        key = c1
+                    if key == "Company2":
+                        key = c2
                     pdf.cell(200, 10, txt=f"{key} : {value}",
                              ln=4, align='L')
                     if noFlag:
@@ -519,13 +523,20 @@ def generateMultiYearSingleCompanyPDF(self, CompanyData2, c2):
                 pdf2.cell(200, 10, txt=key,
                          ln=4, align='L', )
                 pdf2.set_font('Arial', size=15)
-                self.printBasic(key, item, pdf2,True)
+                c1 = companies[0]['Start date covered by report']
+                c2 = companies[1]['Start date covered by report']
+                self.printBasic(key, item, pdf2,True, c1, c2)
                 pdf2.cell(200, 10, txt=longLine,
                          ln=4, align='L', )
 
 
         companies.pop(0)
 
+    pdf2.add_page()
+    p = os.path.join(os.path.dirname(__file__), "..", "directors.png")
+    pdf2.image(p, w=190, h=100)
+    p = os.path.join(os.path.dirname(__file__), "..", "Liquidity Ratio.png")
+    pdf2.image(p, w=190, h=100)
     return (pdf,pdf2), textToWrite
 
 
