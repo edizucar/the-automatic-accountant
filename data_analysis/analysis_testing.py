@@ -7,7 +7,7 @@ from turtle import color
 from xml.etree.ElementPath import get_parent_map
 import matplotlib.pyplot as plt
 from enum import Enum, IntEnum, auto
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from numpy import sort
 
@@ -522,8 +522,8 @@ def multipleYearsOneCompany(data_li):
         start = getDate(data_li[d+1]["Start date covered by report"])
         end = getDate(data_li[d]["End date covered by report"])
         if not ((start-end).days == 1):
-            missing_reports.append((end + datetime.timedeleta(days = 1)).strftime("%Y-%m-%d") + " to " + 
-                (start - datetime.timedeleta(days = 1)).strftime("%Y-%m-%d"))    
+            missing_reports.append((end + timedelta(days = 1)).strftime("%Y-%m-%d") + " to " +
+                (start - timedelta(days = 1)).strftime("%Y-%m-%d"))
         else:
             comparisons.append(compare(data_li[d], data_li[d+1], (getDate(data_li[d+1]["End date covered by report"]) - end).days))
     plotGraphs(analysis)
