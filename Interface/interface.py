@@ -457,7 +457,7 @@ def generateSingleYearSingleCompanyPDF(self, CompanyData, samePDF = False):
             pdf.cell(200, 10, txt=item,
                         ln=4, align='L')
             self.printBasic(item, CompanyData, pdf)
-
+    self.label.setText(textToWrite)
     return pdf, textToWrite
 def doComparisons(self, c2):
     companies = [{"Company Name": c2["Company 1"]['Company Details']['Company Name']}, {"Company Name" : c2["Company 2"]['Company Details']['Company Name']}]
@@ -574,6 +574,7 @@ def generateMultiYearSingleCompanyPDF(self, CompanyData2, c2):
     pdf2.image(p, w=190, h=100)
     p = os.path.join(os.path.dirname(__file__), "..", "Liquidity Ratio.png")
     pdf2.image(p, w=190, h=100)
+
     return (pdf,pdf2), textToWrite
 
 
