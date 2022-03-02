@@ -365,7 +365,8 @@ class SecondWindow(QWidget):
         elif data["Type"] == Type.ONE_YEAR_TWO_COMPANIES:
             self.analysisType = Type.ONE_YEAR_TWO_COMPANIES
             pdf, textToWrite = generateSingleYearSingleCompanyPDF(self, data["Company 1"])
-            pdf2, textToWrite2 = generateSingleYearSingleCompanyPDF(self, data["Company 2"])
+            pdf2, textToWrite2 = generateSingleYearSingleCompanyPDF(self, data["Company 2"], pdf)
+            pdf2 = doComparisons(self,data)
             
             # save the pdf with name .pdf
             name1 = "Analysis_{}_{}.pdf".format(data["Company 1"]["Company Details"]["Company Name"], data["Company 1"]["Company Details"]["Start date covered by report"])
@@ -418,10 +419,12 @@ class SecondWindow(QWidget):
                 self.mainBottomLayout.removeWidget(self.view2)
                 
 
-def generateSingleYearSingleCompanyPDF(self, CompanyData):
+def generateSingleYearSingleCompanyPDF(self, CompanyData, samePDF = False):
     textToWrite = ""
-        
-    pdf = FPDF()
+    if not samePDF:
+        pdf = FPDF()
+    else:
+        pdf = samePDF
     pdf.add_page()
         
     for key,value in CompanyData["Company Details"].items():
@@ -456,6 +459,41 @@ def generateSingleYearSingleCompanyPDF(self, CompanyData):
             self.printBasic(item, CompanyData, pdf)
 
     return pdf, textToWrite
+def doComparisons(self, c2):
+    companies = [{"Company Name": "Company1"}, {"Company Name" : "Company2"}]
+    pdf2 = FPDF()
+    pdf2.add_page()
+    pdf2.set_font("Arial", size=15)
+    pdf2.set_text_color(0, 0, 0)
+
+    item = c2["Comparison"]
+
+    pdf2.set_font("Arial", 'B', size=19)
+    pdf2.set_text_color(0, 0, 0)
+    longLine = "-----------------------------------------------------------"
+    pdf2.cell(200, 10, txt=f"Comparing Year {companies[0]['Company Name']} with {companies[1]['Company Name']}",
+             ln=4, align='C')
+    pdf2.set_font('Arial', size=15)
+    for key,value in item.items():
+        if all([i is not None for i in value.values()]):
+            print("here!!!!!")
+            print(key)
+            print(item)
+            pdf2.set_font('Arial', 'B', 15)
+            pdf2.cell(200, 10, txt=key,
+                     ln=4, align='L', )
+            pdf2.set_font('Arial', size=15)
+            c1 = companies[0]['Company Name']
+            c2 = companies[1]['Company Name']
+            self.printBasic(key, item, pdf2,True, c1, c2)
+            pdf2.cell(200, 10, txt=longLine,
+                     ln=4, align='L', )
+
+
+    companies.pop(0)
+
+
+    return pdf2
 
 def generateMultiYearSingleCompanyPDF(self, CompanyData2, c2):
     textToWrite = ""
