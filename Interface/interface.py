@@ -289,24 +289,31 @@ class SecondWindow(QWidget):
     def goToMainPage(self):
         self.swapScreen()
 
-    def printBasic(self, item, json, pdf):
+    def printBasic(self, item, json, pdf,noFlag = False):
         try:
-            pdf.set_font("Arial", size=15)
-            pdf.set_text_color(0, 0, 0)
-            if json[item]["Flag"] == 2:
-                pdf.set_text_color(0, 0, 100)
-            if json[item]["Flag"] == 3:
-                pdf.set_text_color(100, 0, 0)
+            if not noFlag:
+                pdf.set_font("Arial", size=15)
+                pdf.set_text_color(0, 0, 0)
+                if json[item]["Flag"] == 2:
+                    pdf.set_text_color(0, 0, 100)
+                if json[item]["Flag"] == 3:
+                    pdf.set_text_color(100, 0, 0)
             print("_________________________________________")
             for key,value in json[item].items():
 
                 print(key,value)
+
                 if key not in ["Flag", "Message"]:
+                    if item == "Suspicious Changes":
+                        pdf.set_text_color(100, 0, 0)
                     pdf.cell(200, 10, txt=f"{key} : {value}",
                              ln=4, align='L')
-            if json[item]["Flag"] != 1:
-                pdf.multi_cell(200, 10, txt=f"Error Identified : {json[item]['Message']}",
-                         align='L')
+                    if noFlag:
+                        pdf.set_text_color(0, 0, 0)
+            if not noFlag:
+                if json[item]["Flag"] != 1:
+                    pdf.multi_cell(200, 10, txt=f"Error Identified : {json[item]['Message']}",
+                             align='L')
         except KeyError:
             pass
 
@@ -385,16 +392,23 @@ class SecondWindow(QWidget):
             self.setMinimumSize(1400, 800)
         elif data["Type"] == Type.MULTIPLE_YEARS_ONE_COMPANY:
             self.analysisType = Type.ONE_YEAR_ONE_COMPANY
-            pdf, textToWrite = generateMultiYearSingleCompanyPDF(self, data["Yearly Analysis"])
+            (pdf, pdf2), textToWrite = generateMultiYearSingleCompanyPDF(self, data["Yearly Analysis"], data)
             name1 = "PDF1"
+            name2 = "PDF2"
+            self.filename2 = os.path.join(os.path.dirname(__file__), name2)
+            pdf2.output(self.filename2)
+            self.url2 = QtCore.QUrl.fromLocalFile(self.filename2)
+            self.view2.load(self.url2)
+            self.view2.show()
 
             self.filename = os.path.join(os.path.dirname(__file__), name1)
             pdf.output(self.filename)
             self.url = QtCore.QUrl.fromLocalFile(self.filename)
             self.view.load(self.url)
             self.view.show()
-            
-            if (self.twoPDFS):
+            self.twoPDFS = True
+            self.mainBottomLayout.addWidget(self.view2)
+            if False:#(self.twoPDFS):
                 self.twoPDFS = False
                 self.view2.hide()
                 self.mainBottomLayout.removeWidget(self.view2)
@@ -439,11 +453,17 @@ def generateSingleYearSingleCompanyPDF(self, CompanyData):
 
     return pdf, textToWrite
 
-def generateMultiYearSingleCompanyPDF(self, CompanyData2):
+def generateMultiYearSingleCompanyPDF(self, CompanyData2, c2):
     textToWrite = ""
     pdf = FPDF()
+    pdf2 = FPDF()
     pdf.add_page()
+    pdf2.add_page()
+    pdf2.set_font("Arial", size=15)
+    pdf2.set_text_color(0, 0, 0)
+    companies = []
     for index,CompanyData in enumerate(CompanyData2):
+        companies.append(CompanyData["Company Details"])
         for key,value in CompanyData["Company Details"].items():
             if index == 0:
                 pdf.set_font("Arial", size=15)
@@ -476,14 +496,37 @@ def generateMultiYearSingleCompanyPDF(self, CompanyData2):
             pdf.cell(200, 10, txt=longLine,
                         ln=4, align='L', )
             pdf.cell(200, 10, txt=bigName,
-                        ln=4, align='L', )
+                     ln=4, align='L', )
             pdf.set_font('Arial', size=15)
             for item in getDict[bigName]:
                 pdf.cell(200, 10, txt=item,
                             ln=4, align='L')
                 self.printBasic(item, CompanyData, pdf)
+    print(companies)
+    print(c2["Comparisons"])
+    for item in c2["Comparisons"]:
+        pdf2.set_font("Arial", 'B', size=19)
+        pdf2.set_text_color(0, 0, 0)
+        pdf2.cell(200, 10, txt=f"Comparing Year {companies[0]['Start date covered by report']} with {companies[1]['Start date covered by report']}",
+                 ln=4, align='C')
+        pdf2.set_font('Arial', size=15)
+        for key,value in item.items():
+            if all([i is not None for i in value.values()]):
+                print("here!!!!!")
+                print(key)
+                print(item)
+                pdf2.set_font('Arial', 'B', 15)
+                pdf2.cell(200, 10, txt=key,
+                         ln=4, align='L', )
+                pdf2.set_font('Arial', size=15)
+                self.printBasic(key, item, pdf2,True)
+                pdf2.cell(200, 10, txt=longLine,
+                         ln=4, align='L', )
 
-    return pdf, textToWrite
+
+        companies.pop(0)
+
+    return (pdf,pdf2), textToWrite
 
 
 if __name__ == '__main__':
