@@ -488,9 +488,7 @@ def doComparisons(self, c2):
             pdf2.cell(200, 10, txt=longLine,
                      ln=4, align='L', )
 
-
-    companies.pop(0)
-
+    self.label.setText(f"Comparing two companies : {companies[0]['Company Name']} with {companies[1]['Company Name']}")
 
     return pdf2
 
