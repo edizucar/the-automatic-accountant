@@ -11,18 +11,30 @@ from typing import List
 
 
 def matchAny(patterns: List[str], string:str) -> bool:
+    """
+    Applies re.match with every pattern on string. If it matches any pattern it should return true.
+    """
     return len(filter(lambda pattern: re.match(pattern, string), patterns)) != 0
 
 
 def searchAny(patterns :List[str], string:str)->bool:
+    """
+    Applies re.search with every pattern on string. If it matches any pattern it should return true.
+    """
     return len(filter(lambda pattern: re.search(pattern, string), patterns)) != 0
 
 
 def sanitiseName(name:str):
+    """
+    Changes a string so it only contains alphabetic characters in it.
+    """
     return re.sub(r"[^a-zA-Z\- ]", "", name)
 
 
 def maxDate(instant, start, end):
+    """
+    Finds the latest date of instant, start and end. Compatible with None values for any of the arguments.
+    """
     if (instant != None):
         if (start == None):
             if (end == None):
@@ -49,6 +61,10 @@ def maxDate(instant, start, end):
 
 
 def addNonnumericTags(ixbrl_file:IXBRL, data:json)->json:
+    """
+    Takes the IXBRL file and data json.
+    Appends relevant non-numeric data from the file into the data json object and returns it
+    """
     important_role_patterns = ["Chairman", "ChiefExecutive", "Director[0-9]+"]
     important_people = set()
 
@@ -89,7 +105,12 @@ def addNonnumericTags(ixbrl_file:IXBRL, data:json)->json:
 
 def addSICAndTag(data: json) -> json:
     """
-    |Needs company_id to be found or it won't be happy
+    PREREQUISITE: Needs company_id to be found or it won't be happy
+
+    Uses company_id to web scrape the SIC number from companies house website
+
+    Appends this data to the data json and returns it.
+
     """
 
     company_id = data.get("UK Companies House Registered Number", None)
@@ -114,6 +135,15 @@ def addSICAndTag(data: json) -> json:
 
 
 def addDirectorTurnover(data:json)->json:
+    """
+    PREREQUISITE: Needs company_id to be found or it won't be happy
+
+    Takes data json object and web scrapes from companies house to get accurate resignations
+    and assignment data
+
+    Appends this data to the data json and returns it.    
+    """
+
     company_id = data.get("UK Companies House Registered Number",None)
     if company_id is None:
         data["Number of Assignments"] = None
@@ -174,6 +204,10 @@ def addDirectorTurnover(data:json)->json:
      
 
 def addNumericTags(ixbrl_file:IXBRL, data:json)->json:
+    """
+    Takes the IXBRL file and data json.
+    Appends relevant numeric data from the file into the data json object and returns it
+    """
     # Get Balance Sheet Info
     latest = {"turnover": None, "gpl": None, "npl": None, "fixed": None, "t fixed": None, "i fixed": None,
               "debtors": None, "debtors 1y": None, "c assets": None, "c liabilities": None,
@@ -351,8 +385,10 @@ def addNumericTags(ixbrl_file:IXBRL, data:json)->json:
     return data
 
 def addAuditorsReport(input_path:pathlib.Path, data:json)->json:
-    # if heading contains "AUDITORS’ REPORT" or similar, append everything underneath it
-    # until next heading (span on same level)
+    """
+    If heading contains "AUDITORS’ REPORT" or similar, append everything underneath it
+    until next heading (span on same level)
+    """
 
     with open(input_path, encoding="utf8") as file:
         soup = BeautifulSoup(file,"html.parser")
