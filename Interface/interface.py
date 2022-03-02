@@ -1,5 +1,7 @@
 import sys
-from PyQt5 import QtCore, QtWebEngineWidgets
+import time
+
+from PyQt5 import QtCore, QtWebEngineWidgets, QtWidgets
 from PyQt5 import QtGui
 import json
 from fpdf import FPDF
@@ -217,7 +219,7 @@ class SecondWindow(QWidget):
         
         self.mainTopLayout.addStretch()
         
-        
+        self.timestamp = time.time()
 
         #self.mainLayout.addWidget(self.mainBottomWidget)
         self.filename = os.path.join(os.path.dirname(__file__), 'GFG.pdf')
@@ -241,7 +243,6 @@ class SecondWindow(QWidget):
         self.settings2 = self.view2.settings()
         self.settings2.setAttribute(QtWebEngineWidgets.QWebEngineSettings.PluginsEnabled, True)
         self.url2 = QtCore.QUrl.fromLocalFile(self.filename2)
-
 
 
         self.mainBottomLayout.addWidget(self.view2)
@@ -291,7 +292,14 @@ class SecondWindow(QWidget):
         except KeyError:
             pass
 
-
+    def resizeEvent(self, event):
+        print("Window has been resized")
+        ##TODO delete this
+        #if True: # self.timestamp + 1 < time.time():
+        #    self.view.reload()
+        #    self.view2.reload()
+        #    self.timestamp = time.time()
+        QtWidgets.QMainWindow.resizeEvent(self, event)
 
 
     def giveAnalysisData(self,data):
@@ -314,12 +322,23 @@ class SecondWindow(QWidget):
             loopThrough = data["Yearly Analysis"]
         if data["Type"] == 3:
             loopThrough = [data["Company 1"], data["Company 2"]]
-        for CompanyData in loopThrough:
-            for key,value in CompanyData["Company Details"].items():
-                pdf.cell(200, 10, txt=f"{key}: {value}",
-                         ln=4, align='C')
-                if key not in ["SIC", "Industry", "Sector"]:
-                    textToWrite += str(value) + " "
+        for index,CompanyData in enumerate(loopThrough):
+            print(index)
+            if index == 0 or data["Type"] != 2:
+                for key,value in CompanyData["Company Details"].items():
+                    pdf.set_font("Arial", size=15)
+                    pdf.set_text_color(0, 0, 0)
+                    pdf.cell(200, 10, txt=f"{key}: {value}",
+                             ln=4, align='C')
+
+                    if key not in ["SIC", "Industry", "Sector"]:
+                        textToWrite += str(value) + " "
+            else:
+                pdf.set_font("Arial", size=15,style="B")
+                pdf.set_text_color(0, 0, 0)
+                if data["Type"] == 2:
+                    pdf.cell(200, 10, txt=f"Year: {CompanyData['Company Details']['Start date covered by report']}",
+                             ln=4, align='C')
 
             CompanyData["Negative Indices"]["Flag"] = 3
             CompanyData["Negative Indices"]["Message"] = "Index has negative value while it should be positive"
@@ -343,7 +362,6 @@ class SecondWindow(QWidget):
                     pdf.cell(200, 10, txt=item,
                              ln=4, align='L')
                     self.printBasic(item, CompanyData, pdf)
-
 
 
         self.label.setText(textToWrite)
