@@ -443,44 +443,43 @@ def generateSingleYearSingleCompanyPDF(self, CompanyData):
 
     return pdf, textToWrite
 
-def generateMultiYearSingleCompanyPDF(self, CompanyData):
+def generateMultiYearSingleCompanyPDF(self, CompanyData2):
     textToWrite = ""
-        
     pdf = FPDF()
     pdf.add_page()
-        
-    for key,value in CompanyData["Company Details"].items():
-        pdf.set_font("Arial", size=15)
-        pdf.set_text_color(0, 0, 0)
-        pdf.cell(200, 10, txt=f"{key}: {value}",
-                    ln=4, align='C')
-        if key not in ["SIC", "Industry", "Sector"]:
-            textToWrite += str(value) + " "
+    for CompanyData in CompanyData2:
+        for key,value in CompanyData["Company Details"].items():
+            pdf.set_font("Arial", size=15)
+            pdf.set_text_color(0, 0, 0)
+            pdf.cell(200, 10, txt=f"{key}: {value}",
+                        ln=4, align='C')
+            if key not in ["SIC", "Industry", "Sector"]:
+                textToWrite += str(value) + " "
 
-    CompanyData["Negative Indices"]["Flag"] = 3
-    CompanyData["Negative Indices"]["Message"] = "Index has negative value while it should be positive"
+        CompanyData["Negative Indices"]["Flag"] = 3
+        CompanyData["Negative Indices"]["Message"] = "Index has negative value while it should be positive"
 
-    #pdf.add_page()
-    getDict = {"Director Info": ["Directors", "Director Turnover"],
-                "Turnover Info": ["Turnover", "Turnover by Region"],
-                "Profit Info": ["Gross Profit", "Net Profit", "Liquidity Ratio"],
-                "Debtor Info": ["Debtor Days"],
-                "Indices": ["Negative Indices"]}
-    longLine = "-----------------------------------------------------------"
-    for bigName in ["Director Info", "Turnover Info", "Profit Info", "Debtor Info", "Indices"]:
-        pdf.set_text_color(0, 0, 0)
-        pdf.set_font('Arial', 'B', 15)
-        pdf.cell(200, 10, txt=longLine,
-                    ln=4, align='L', )
-        pdf.cell(200, 10, txt=bigName,
-                    ln=4, align='L', )
-        pdf.set_font('Arial', size=15)
-        for item in getDict[bigName]:
-            pdf.cell(200, 10, txt=item,
-                        ln=4, align='L')
-            self.printBasic(item, CompanyData, pdf)
+        #pdf.add_page()
+        getDict = {"Director Info": ["Directors", "Director Turnover"],
+                    "Turnover Info": ["Turnover", "Turnover by Region"],
+                    "Profit Info": ["Gross Profit", "Net Profit", "Liquidity Ratio"],
+                    "Debtor Info": ["Debtor Days"],
+                    "Indices": ["Negative Indices"]}
+        longLine = "-----------------------------------------------------------"
+        for bigName in ["Director Info", "Turnover Info", "Profit Info", "Debtor Info", "Indices"]:
+            pdf.set_text_color(0, 0, 0)
+            pdf.set_font('Arial', 'B', 15)
+            pdf.cell(200, 10, txt=longLine,
+                        ln=4, align='L', )
+            pdf.cell(200, 10, txt=bigName,
+                        ln=4, align='L', )
+            pdf.set_font('Arial', size=15)
+            for item in getDict[bigName]:
+                pdf.cell(200, 10, txt=item,
+                            ln=4, align='L')
+                self.printBasic(item, CompanyData, pdf)
 
-    return pdf, textToWrite
+        return pdf, textToWrite
 
 
 if __name__ == '__main__':
