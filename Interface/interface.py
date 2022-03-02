@@ -460,7 +460,7 @@ def generateSingleYearSingleCompanyPDF(self, CompanyData, samePDF = False):
 
     return pdf, textToWrite
 def doComparisons(self, c2):
-    companies = [{"Company Name": "Company1"}, {"Company Name" : "Company2"}]
+    companies = [{"Company Name": c2["Company 1"]['Company Details']['Company Name']}, {"Company Name" : c2["Company 2"]['Company Details']['Company Name']}]
     pdf2 = FPDF()
     pdf2.add_page()
     pdf2.set_font("Arial", size=15)
@@ -471,8 +471,7 @@ def doComparisons(self, c2):
     pdf2.set_font("Arial", 'B', size=19)
     pdf2.set_text_color(0, 0, 0)
     longLine = "-----------------------------------------------------------"
-    pdf2.cell(200, 10, txt=f"Comparing Year {companies[0]['Company Name']} with {companies[1]['Company Name']}",
-             ln=4, align='C')
+    pdf2.multi_cell(200, 10, txt=f"Comparing Companies: {companies[0]['Company Name']} with {companies[1]['Company Name']}", align='C')
     pdf2.set_font('Arial', size=15)
     for key,value in item.items():
         if all([i is not None for i in value.values()]):
