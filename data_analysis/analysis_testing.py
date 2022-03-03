@@ -476,6 +476,7 @@ def plot(x: List[datetime], y: List[float], index: str) -> None:
     """
     Plots a list of values against their corresponding datetime objects, and saves the graph as an image.
     """
+    plt.figure()
     plt.plot(x,y)
     plt.title(index)
     plt.xlabel("Date")
@@ -486,6 +487,7 @@ def plotDirectors(x: List[datetime], directors: List[int], turnover: List[int], 
     """
     Plots a list of directors, turnovers, appointments and resignations against their corresponding datetime objects, and saves the graph as an image.
     """
+    plt.figure()
     plt.plot(x, directors, label = "Number of Directors", color = "b")
     plt.plot(x, turnover, label = "Director Turnover", color = "c")
     plt.plot(x, appointments, label = "Director appintments", color = "g")
@@ -500,6 +502,7 @@ def plotProfit(x: List[datetime], turnover: List[float], gross_profit: List[floa
     """
     Plots a list of turnovers, gross profits, net profits against their corresponding datetime objects, and saves the graph as an image.
     """
+    plt.figure()
     plt.plot(x, turnover, label = "Turnover")
     plt.plot(x, gross_profit, label = "Gross profit")
     plt.plot(x, net_profit, label = "Net profit")
@@ -515,6 +518,7 @@ def plotProfitMargins(x: List[datetime], gross_profit_margin: List[float], gross
     Plots a list of gross profit margins, gross profit averages, net profit margins, net profit averages, against their corresponding datetime objects, 
     and saves the graph as an image.
     """
+    plt.figure()
     plt.plot(x, gross_profit_margin, label = "Gross profit margin")
     plt.plot(x, net_profit_margin, label = "Net profit margin")
     plt.axhline(y=gross_profit_margin_average, linestyle='--', label = "Gross profit margin industry average")
@@ -660,3 +664,11 @@ if __name__ == "__main__":
     ]
     print(main(paths))
 '''
+
+if __name__ == "__main__":
+    paths = [
+    r"..\the-automatic-accountant\data_analysis\input_files\CE Statutory Accounts FY17-18.html",
+    r"..\the-automatic-accountant\data_analysis\input_files\CE Statutory Accounts FY18-19.html",
+    r"..\the-automatic-accountant\data_analysis\input_files\CE Statutory Accounts FY19-20.html"
+    ]
+    print(main(paths))
