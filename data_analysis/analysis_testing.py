@@ -10,22 +10,27 @@ from enum import Enum, IntEnum, auto
 from datetime import datetime, timedelta
 from pathlib import Path
 from numpy import sort
+from typing import List, Dict, Tuple
 
 sys.path.append('.')
 sys.path.append('../data_analysis')
 from data_mining.data_mine import checkAndGetJSON
 
-#Find out percentage change of a specific index, eg. gross profit,
-#from data1 to data2
-def change(index1, index2):
-    if(index1 == 0):
-        return 0
-    return (index2 - index1) / (index1)
 
-#Just some examples of indices where we can look at the change over time
-def checkIfSuspicious(comparison, indices, factor=365):
+def change(data1: float, data2: float) -> float:
+    """
+    Find out percentage change of a specific index, eg. gross profit, from data1 to data2.
+    """
+    if(data1 == 0):
+        return 0
+    return (data2 - data1) / (data1)
+
+def checkIfSuspicious(comparison: Dict, indices: List[str], factor=365) -> Dict:
+    """
+    Checks if a given set of indices are suspicious given a comparison dictionary.
+    Suspicious here means that the specific index has changed for over 0.2 for every year.
+    """
     drastic_changes = {}
-    none_values = {}
     for index in indices:
         diff = comparison[index]["Relative Change"]
         if diff is None:
@@ -36,7 +41,10 @@ def checkIfSuspicious(comparison, indices, factor=365):
     return drastic_changes
 
 
-def returnCompare(data1, data2, index):
+def returnCompare(data1:Dict, data2:Dict, index:str) -> Dict:
+    """
+    Returns a dictionary containing the absolute change and relative change for a two sets of data for a specific index.
+    """
     company1 = data1[index]
     company2 = data2[index]
     if company1 is None or company2 is None:
@@ -50,7 +58,11 @@ def returnCompare(data1, data2, index):
     return {"Company1": company1, "Company2": company2, "Absolute Change": absolute_change, \
         "Relative Change": relative_change}
 
-def companyDetails(data):
+
+def companyDetails(data:Dict) -> Dict:
+    """
+    Returns a dictionary comtaining the non-numeric company information such as name, industry etc extracted from the data.
+    """
     d = {}
     for x in ["Company Name", "UK Companies House Registered Number", "Start date covered by report", "End date covered by report"]:
         d[x] = data[x]
@@ -61,10 +73,11 @@ def companyDetails(data):
 
 
 
-#Compare two sets of data, returns a dictionary which has all the data, absolute changes, relative changes, as well as points that are worth reporting 
-#(including over 20% change in certain indices, certain indices being negative when they shouldn't be)
-def compare(data1, data2, factor=365):
-    #Temporary replace None values by 0 function, should update analysis function in the future to handle None values instead of this
+
+def compare(data1:Dict, data2:Dict, factor=365) -> Dict:
+    """
+    Compare two sets of data, returns a dictionary which has all the data, absolute changes, relative changes, as well as points that are worth reporting.
+    """
     profit_and_loss1 = data1["Profit & Loss Account"]
     profit_and_loss2 = data2["Profit & Loss Account"]
     turnover = returnCompare(profit_and_loss1, profit_and_loss2, "Turnover")
@@ -108,7 +121,10 @@ def compare(data1, data2, factor=365):
 
     return comparison
     
-def getNegativeIndices(data):
+def getNegativeIndices(data) -> Dict:
+    """
+    Returns the set of indices that are negative, but shouldn't be, for example fixed assets.
+    """
     negative_indices = {}
     for positive_index, ind in [(data["Balance Sheet"]["Fixed assets"]["Tangible fixed assets"], "Tangible fixed assets"),
                                 (data["Balance Sheet"]["Fixed assets"]["Investments fixed assets"], "Investments fixed assets"),
@@ -123,11 +139,18 @@ def getNegativeIndices(data):
     return negative_indices
 
 class Flag(IntEnum):
+    """
+    Flag to help label how worth looking into some information is, for example red means that there is something very wrong/interesting with this piece of data 
+    and needs to be looked into ASAP.
+    """
     GREEN = auto()
     AMBER = auto()
     RED = auto()
 
-def getSector(SIC):
+def getSector(SIC: int) -> str:
+    """
+    Returns the sector of a company given its SIC number.
+    """
     if 1110 <= SIC <= 3220:
         return "A"
     elif 5101 <= SIC <= 9900:
@@ -248,18 +271,31 @@ average_net_profit_by_sector = {
     "U" : 1
 }
 
-def getInvalidTuple(feature):
+
+def getInvalidTuple(feature: str) -> Tuple:
+    """
+    Returns a tuple containing a description for invalid data.
+    """
     return (None, Flag.RED, feature + " missing or inappropriately tagged.")
 
-def getNegativeTuple(feature, value):
+def getNegativeTuple(feature: str, value: List[float]) -> Tuple:
+    """
+    Returns a tuple containing a description for data that is negative but cannot be.
+    """
     return (value, Flag.RED, feature + " cannot be negative")
 
-def getDirectors(data):
+def getDirectors(data: Dict) -> Tuple:
+    """
+    Return a tuple containing a description for the Director list entry in data.
+    """
     if data["People"]["Directors"] is None:
         return getInvalidTuple("Directors list")
     return (len(data["People"]["Directors"]), Flag.GREEN, None)
 
-def getDirectorTurnover(data, directors):
+def getDirectorTurnover(data:Dict , directors: int) -> Tuple:
+    """
+    Return a tuple containing a description for the Director turnover entry in data.
+    """
     appointed = data["Number of Assignments"]
     resigned = data["Number of Resignations"]
     if directors is None:
@@ -267,7 +303,12 @@ def getDirectorTurnover(data, directors):
     if appointed is None or resigned is None:
         return getInvalidTuple("Director appointments/resignations")
     if appointed < 0 or resigned < 0:
-        return getNegativeTuple()
+        negative = []
+        if appointed < 0:
+            negative.append(appointed)
+        if appointed < 0:
+            negative.append(resigned)
+        return getNegativeTuple("Director appointments/resignations", negative)
     else:
         turnover = appointed + resigned
         if ((turnover / directors > 0.25 and directors > 12) or turnover / directors > 0.4 ):
@@ -277,7 +318,10 @@ def getDirectorTurnover(data, directors):
                 return ([turnover, appointed], Flag.AMBER, "Increased turnover including some resignations")
     return ([turnover, appointed], Flag.GREEN, None)
 
-def getGrossProfitMargin(data, sector):
+def getGrossProfitMargin(data: Dict, sector: str) -> Tuple:
+    """
+    Return a tuple containing a description for the Gross Profit Margin entry in data.
+    """
     gross_profit_margin = data["Ratio Analysis Table"]["Gross profit margin"]
     if gross_profit_margin is None:
         return getInvalidTuple("Gross profit or turnover")
@@ -289,7 +333,10 @@ def getGrossProfitMargin(data, sector):
             "Gross profit margin (" + str(gross_profit_margin) + ") deviates from industry average (" + str(average_gross_profit_by_sector[sector]) + ").")
     return (gross_profit_margin, Flag.GREEN, None)
 
-def getNetProfitMargin(data, sector, net_profit):
+def getNetProfitMargin(data: Dict, sector: str, net_profit: float) -> Tuple:
+    """
+    Return a tuple containing a description for the Net Profit Margin entry in data.
+    """
     turnover = data["Profit & Loss Account"]["Turnover"]
     if net_profit is None or turnover is None:
         return getInvalidTuple("Net profit or turnover")
@@ -304,7 +351,10 @@ def getNetProfitMargin(data, sector, net_profit):
             "Net profit margin (" + str(net_profit_margin) + ") deviates from industry average (" + str(average_net_profit_by_sector[sector]) + ").")
     return (net_profit_margin, Flag.GREEN, None)
 
-def getLiquidityRatio(data):
+def getLiquidityRatio(data: Dict) -> Tuple:
+    """
+    Return a tuple containing a description for the Liquidity ratio entry in data.
+    """
     liquidity_ratio = data["Ratio Analysis Table"]["Liquidity ratio"]
     if liquidity_ratio is None:
         return getInvalidTuple("Current assets or current liabilities")
@@ -315,7 +365,10 @@ def getLiquidityRatio(data):
         return (liquidity_ratio, Flag.AMBER, "Current assets only slightly outweigh liabilities")
     return (liquidity_ratio, Flag.GREEN, None)
 
-def getDebtorDays(data):
+def getDebtorDays(data: Dict) -> Tuple:
+    """
+    Return a tuple containing a description for the Debtor Days entry in data.
+    """
     debtorDays = data["Ratio Analysis Table"]["Debtor days"]
     if debtorDays is None:
         return getInvalidTuple("Debtors within a year")
@@ -328,6 +381,10 @@ def getDebtorDays(data):
     return (debtorDays, Flag.GREEN, None)
     
 class Type(IntEnum):
+    """
+    An Enum class to help distinguish between different types of data we are dealing with. It could either be just looking at the data of one company at one year,
+    or comparing the data of one company across different years, or comparing the data of two companies at the same year.
+    """
     ONE_YEAR_ONE_COMPANY = 1
     MULTIPLE_YEARS_ONE_COMPANY = 2
     ONE_YEAR_TWO_COMPANIES = 3
@@ -337,7 +394,10 @@ class Type(IntEnum):
 #TODO: clear up code - comments, argument types etc
 #TODO: add auditors report that was added by data mining team
 
-def oneYearOneCompany(data):
+def oneYearOneCompany(data: Dict) -> Dict:
+    """
+    Return a dict containing the information and analysis for one company at a specific year.
+    """
     directors, director_flag, director_message = getDirectors(data)
     (turnover, appointed), turnover_flag, turnover_message = getDirectorTurnover(data, directors)
 
@@ -399,21 +459,33 @@ def oneYearOneCompany(data):
         "Negative Indices" : getNegativeIndices(data)
     }
 
-def oneYearTwoCompanies(data1, data2):
+def oneYearTwoCompanies(data1: Dict, data2: Dict) -> Dict:
+    """
+    Return a dict containing the information, analysis and comparison for two companies at a specific year.
+    """
     analysis = {"Type" : Type.ONE_YEAR_TWO_COMPANIES, "Company 1" : oneYearOneCompany(data1), "Company 2" : oneYearOneCompany(data2), "Comparison" : compare(data1, data2) }
     return analysis
 
-def getDate(date_string):
+def getDate(date_string: str) -> datetime:
+    """
+    Return a datetime object from a date string.
+    """
     return datetime.strptime(date_string, "%Y-%m-%d")
 
-def plot(x, y, index):
+def plot(x: List[datetime], y: List[float], index: str) -> None:
+    """
+    Plots a list of values against their corresponding datetime objects, and saves the graph as an image.
+    """
     plt.plot(x,y)
     plt.title(index)
     plt.xlabel("Date")
     plt.ylabel(index)
     plt.savefig(index + ".png")
 
-def plotDirectors(x,directors, turnover, appointments, resignations):
+def plotDirectors(x: List[datetime], directors: List[int], turnover: List[int], appointments: List[int], resignations: List[int]) -> None:
+    """
+    Plots a list of directors, turnovers, appointments and resignations against their corresponding datetime objects, and saves the graph as an image.
+    """
     plt.plot(x, directors, label = "Number of Directors", color = "b")
     plt.plot(x, turnover, label = "Director Turnover", color = "c")
     plt.plot(x, appointments, label = "Director appintments", color = "g")
@@ -424,7 +496,10 @@ def plotDirectors(x,directors, turnover, appointments, resignations):
     plt.legend()
     plt.savefig("directors.png")
 
-def plotProfit(x, turnover, gross_profit, net_profit):
+def plotProfit(x: List[datetime], turnover: List[float], gross_profit: List[float], net_profit: List[float]) -> None:
+    """
+    Plots a list of turnovers, gross profits, net profits against their corresponding datetime objects, and saves the graph as an image.
+    """
     plt.plot(x, turnover, label = "Turnover")
     plt.plot(x, gross_profit, label = "Gross profit")
     plt.plot(x, net_profit, label = "Net profit")
@@ -434,7 +509,12 @@ def plotProfit(x, turnover, gross_profit, net_profit):
     plt.legend()
     plt.savefig("profit.png")
 
-def plotProfitMargins(x, gross_profit_margin, gross_profit_margin_average, net_profit_margin, net_profit_margin_average):
+def plotProfitMargins(x: List[datetime], gross_profit_margin: List[float], gross_profit_margin_average: List[float], net_profit_margin: List[float], \
+    net_profit_margin_average: List[float]) -> None:
+    """
+    Plots a list of gross profit margins, gross profit averages, net profit margins, net profit averages, against their corresponding datetime objects, 
+    and saves the graph as an image.
+    """
     plt.plot(x, gross_profit_margin, label = "Gross profit margin")
     plt.plot(x, net_profit_margin, label = "Net profit margin")
     plt.axhline(y=gross_profit_margin_average, linestyle='--', label = "Gross profit margin industry average")
@@ -445,7 +525,10 @@ def plotProfitMargins(x, gross_profit_margin, gross_profit_margin_average, net_p
     plt.legend()
     plt.savefig("profit_margin.png")
 
-def plotGraphs(analysis):
+def plotGraphs(analysis: List[Dict]) -> None:
+    """
+    Plot the corresponding graphs for a list of analysis of companies.
+    """
     axes = [(getDate(a["Company Details"]["End date covered by report"]),
             a["Directors"]["Number of directors"],
             a["Director Turnover"]["Turnover"],
@@ -512,7 +595,10 @@ def plotGraphs(analysis):
         plot(x, liq_ratio, "Liquidity Ratio")
     
 
-def multipleYearsOneCompany(data_li):
+def multipleYearsOneCompany(data_li: List[Dict]) -> Dict:
+    """
+    Plots the corresponding graphs for the analysis of the same company across multiple years, and also returns said analysis.
+    """
     data_li = [d for d in data_li if d["Start date covered by report"] is not None and d["End date covered by report"]]
     data_li = sorted(data_li, key= lambda x:getDate(x["Start date covered by report"]))
     analysis = [oneYearOneCompany(d) for d in data_li]
@@ -536,7 +622,11 @@ def multipleYearsOneCompany(data_li):
 
 
 
-def main(paths):
+def main(paths: List[str]) -> None:
+    """
+    When provided with a list of paths, carry out the corresponding appropriate analysis for the input, for example if there is only one input then carry out analysis
+    for one company at one year.
+    """
     length = len(paths)
     if length == 0:
         raise Exception("No files provided")
@@ -561,10 +651,12 @@ def main(paths):
         data_li.append(data)
     return multipleYearsOneCompany(data_li)
 
-'''paths = [
+'''
+if __name__ == "__main__":
+    paths = [
     r"..\the-automatic-accountant\data_analysis\input_files\CE Statutory Accounts FY17-18.html",
     r"..\the-automatic-accountant\data_analysis\input_files\CE Statutory Accounts FY18-19.html",
     r"..\the-automatic-accountant\data_analysis\input_files\CE Statutory Accounts FY19-20.html"
-]
-
-print(main(paths))'''
+    ]
+    print(main(paths))
+'''

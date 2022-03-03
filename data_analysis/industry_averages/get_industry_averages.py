@@ -1,6 +1,9 @@
 import json
 
-def get_averages():
+def get_averages() -> dict:
+    """
+    Returns the averages of gross profits and net profits for each industry, parsed from the files.
+    """
     industry_averages = {}
     with open("data_analysis/industry_averages/industry_names.txt") as f:
         industry_names = f.readlines()
