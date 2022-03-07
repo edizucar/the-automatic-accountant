@@ -310,6 +310,10 @@ class SecondWindow(QWidget):
                         key = c1
                     if key == "Company2":
                         key = c2
+                    if "Ratio" in key:
+                        value = prettifyRatio(value)
+                    else:
+                        value = prettifyValue(value)
                     pdf.cell(200, 10, txt=f"{key} : {value}",
                              ln=4, align='L')
                     if noFlag:
