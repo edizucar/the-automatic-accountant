@@ -583,7 +583,7 @@ def prettifyValue(value):
     newValue = ""
     if type(value) == int or type(value) == float:
         #Truncate big numbers
-        if (value >= 1000000):
+        if (abs(value) >= 1000000):
             newValue = f"{round(value / 1000000,2)} million"
         else:
             newValue = f"{round(value,2)}"
