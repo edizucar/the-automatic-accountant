@@ -426,7 +426,7 @@ def addAuditorsReport(input_path:pathlib.Path, data:json)->json:
             rep_string = "\n".join(rep)
             report.append(rep_string)  
             
-            data["Auditors' Report"] = report
+            data["Auditors\' Report"] = report
             return data
 
 

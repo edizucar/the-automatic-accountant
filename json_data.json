@@ -1,346 +1,49 @@
 {
-    "Type": 2,
-    "Yearly Analysis": [
-        {
-            "Type": 1,
-            "Company Details": {
-                "Company Name": "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED",
-                "UK Companies House Registered Number": "05749230",
-                "Start date covered by report": "2017-08-01",
-                "End date covered by report": "2018-07-31",
-                "SIC": 70229,
-                "Industry": "Management consultancy activities other than financial management",
-                "Sector": "Professional, scientific and technical activities"
-            },
-            "Directors": {
-                "Number of directors": 4,
-                "Flag": 1,
-                "Message": null
-            },
-            "Director Turnover": {
-                "Turnover": 0,
-                "Appointments": 0,
-                "Flag": 1,
-                "Message": null
-            },
-            "Gross Profit": {
-                "Gross Profit": 1016981.0,
-                "Gross Profit Margin": null,
-                "Flag": 3,
-                "Message": "Gross profit or turnover missing or inappropriately tagged."
-            },
-            "Net Profit": {
-                "Net Profit": null,
-                "Net Profit Margin": null,
-                "Flag": 3,
-                "Message": "Net profit or turnover missing or inappropriately tagged."
-            },
-            "Liquidity Ratio": {
-                "Liquidity Ratio": 0.9998609966979792,
-                "Flag": 3,
-                "Message": "Current liabilities outweigh assets"
-            },
-            "Debtor Days": {
-                "Debtor Days": null,
-                "Flag": 3,
-                "Message": "Debtors within a year missing or inappropriately tagged."
-            },
-            "Negative Indices": {}
-        },
-        {
-            "Type": 1,
-            "Company Details": {
-                "Company Name": "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED",
-                "UK Companies House Registered Number": "05749230",
-                "Start date covered by report": "2018-08-01",
-                "End date covered by report": "2019-07-31",
-                "SIC": 70229,
-                "Industry": "Management consultancy activities other than financial management",
-                "Sector": "Professional, scientific and technical activities"
-            },
-            "Directors": {
-                "Number of directors": 4,
-                "Flag": 1,
-                "Message": null
-            },
-            "Director Turnover": {
-                "Turnover": 0,
-                "Appointments": 0,
-                "Flag": 1,
-                "Message": null
-            },
-            "Gross Profit": {
-                "Gross Profit": 1488389.0,
-                "Gross Profit Margin": null,
-                "Flag": 3,
-                "Message": "Gross profit or turnover missing or inappropriately tagged."
-            },
-            "Net Profit": {
-                "Net Profit": null,
-                "Net Profit Margin": null,
-                "Flag": 3,
-                "Message": "Net profit or turnover missing or inappropriately tagged."
-            },
-            "Liquidity Ratio": {
-                "Liquidity Ratio": 1.4144297891528215,
-                "Flag": 1,
-                "Message": null
-            },
-            "Debtor Days": {
-                "Debtor Days": null,
-                "Flag": 3,
-                "Message": "Debtors within a year missing or inappropriately tagged."
-            },
-            "Negative Indices": {
-                "Net assets/liabilities balance": -1302351.0
-            }
-        },
-        {
-            "Type": 1,
-            "Company Details": {
-                "Company Name": "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED",
-                "UK Companies House Registered Number": "05749230",
-                "Start date covered by report": "2019-08-01",
-                "End date covered by report": "2020-07-31",
-                "SIC": 70229,
-                "Industry": "Management consultancy activities other than financial management",
-                "Sector": "Professional, scientific and technical activities"
-            },
-            "Directors": {
-                "Number of directors": 4,
-                "Flag": 1,
-                "Message": null
-            },
-            "Director Turnover": {
-                "Turnover": 0,
-                "Appointments": 0,
-                "Flag": 1,
-                "Message": null
-            },
-            "Gross Profit": {
-                "Gross Profit": 1105479.0,
-                "Gross Profit Margin": null,
-                "Flag": 3,
-                "Message": "Gross profit or turnover missing or inappropriately tagged."
-            },
-            "Net Profit": {
-                "Net Profit": null,
-                "Net Profit Margin": null,
-                "Flag": 3,
-                "Message": "Net profit or turnover missing or inappropriately tagged."
-            },
-            "Liquidity Ratio": {
-                "Liquidity Ratio": 0.999682862300922,
-                "Flag": 3,
-                "Message": "Current liabilities outweigh assets"
-            },
-            "Debtor Days": {
-                "Debtor Days": null,
-                "Flag": 3,
-                "Message": "Debtors within a year missing or inappropriately tagged."
-            },
-            "Negative Indices": {}
-        }
+    "Type": 1,
+    "Company Details": {
+        "Company Name": "CAMBRIDGE ENTERPRISE LIMITED",
+        "UK Companies House Registered Number": "01069886",
+        "Start date covered by report": "2018-08-01",
+        "End date covered by report": "2019-07-31",
+        "SIC": 70229,
+        "Industry": "Management consultancy activities other than financial management",
+        "Sector": "Professional, scientific and technical activities"
+    },
+    "Directors": {
+        "Number of directors": 13,
+        "Flag": 1,
+        "Message": null
+    },
+    "Director Turnover": {
+        "Turnover": 4,
+        "Appointments": 3,
+        "Flag": 1,
+        "Message": null
+    },
+    "Gross Profit": {
+        "Gross Profit": 1277612.0,
+        "Gross Profit Margin": null,
+        "Flag": 3,
+        "Message": "Gross profit or turnover missing or inappropriately tagged."
+    },
+    "Net Profit": {
+        "Net Profit": null,
+        "Net Profit Margin": null,
+        "Flag": 3,
+        "Message": "Net profit or turnover missing or inappropriately tagged."
+    },
+    "Liquidity Ratio": {
+        "Liquidity Ratio": 0.14414419348647536,
+        "Flag": 3,
+        "Message": "Current liabilities outweigh assets"
+    },
+    "Debtor Days": {
+        "Debtor Days": null,
+        "Flag": 3,
+        "Message": "Debtors within a year missing or inappropriately tagged."
+    },
+    "Auditors' report": [
+        "Independent auditors\u2019 report to the members of Cambridge Enterprise Limited\n\n\nReport on the audit of the financial statements\n\n\nOpinion\n\n\nIn our opinion, Cambridge Enterprise Limited\u2019s financial statements: give a true and fair view of the state of the company\u2019s affairs as at 31 July 2019 and of its profit for the year then ended; have been properly prepared in accordance with United Kingdom Generally Accepted Accounting Practice (United Kingdom Accounting Standards, comprising FRS 102 \u201cThe Financial Reporting Standard applicable in the UK and Republic of Ireland\u201d, and applicable law); and have been prepared in accordance with the requirements of the Companies Act 2006.\nWe have audited the financial statements, included within the Annual Report and Financial Statements (the \u201cAnnual Report\u201d), which comprise: balance sheet as at \n     31 July 2019\n; the statement of comprehensive income, the statement of changes in equity for the year then ended; and the notes to the financial statements, which include a description of the significant accounting policies.\n\n\nBasis for opinion\n\n\nWe conducted our audit in accordance with International Standards on Auditing (UK) (\u201cISAs (UK)\u201d) and applicable law. Our responsibilities under ISAs (UK) are further described in the Auditors\u2019 responsibilities for the audit of the financial statements section of our report. We believe that the audit evidence we have obtained is sufficient and appropriate to provide a basis for our opinion.\n\n\nIndependence\n\n\nWe remained independent of the company in accordance with the ethical requirements that are relevant to our audit of the financial statements in the UK, which includes the FRC\u2019s Ethical Standard, and we have fulfilled our other ethical responsibilities in accordance with these requirements.\n\n\nConclusions relating to going concern\n\n\nISAs (UK) require us to report to you when: the directors\u2019 use of the going concern basis of accounting in the preparation of the financial statements is not appropriate; or the directors have not disclosed in the financial statements any identified material uncertainties that may cast significant doubt about the company\u2019s ability to continue to adopt the going concern basis of accounting for a period of at least twelve months from the date when the financial statements are authorised for issue.\nWe have nothing to report in respect of the above matters.\nHowever, because not all future events or conditions can be predicted, this statement is not a guarantee as to the company\u2019s ability to continue as a going concern. For example, the terms on which the United Kingdom may withdraw from the European Union are not clear, and it is difficult to evaluate all of the potential implications on the company\u2019s trade, customers, suppliers and the wider economy.\n\n\nReporting on other information\n\n\nThe other information comprises all of the information in the Annual Report other than the financial statements and our auditors\u2019 report thereon. The directors are responsible for the other information. Our opinion on the financial statements does not cover the other information and, accordingly, we do not express an audit opinion or, except to the extent otherwise explicitly stated in this report, any form of assurance thereon.\nIn connection with our audit of the financial statements, our responsibility is to read the other information and, in doing so, consider whether the other information is materially inconsistent with the financial statements or our knowledge obtained in the audit, or otherwise appears to be materially misstated. If we identify an apparent material inconsistency or material misstatement, we are required to perform procedures to conclude whether there is a material misstatement of the financial statements or a material misstatement of the other information. If, based on the work we have performed, we conclude that there is a material misstatement of this other information, we are required to report that fact. We have nothing to report based on these responsibilities.\nWith respect to the Strategic Report and Directors\u2019 Report, we also considered whether the disclosures required by the UK Companies Act 2006 have been included.\nBased on the responsibilities described above and our work undertaken in the course of the audit, ISAs (UK) require us also to report certain opinions and matters as described below."
     ],
-    "Comparisons": [
-        {
-            "Turnover": {
-                "Company1": null,
-                "Company2": null,
-                "Absolute Change": null,
-                "Relative Change": null
-            },
-            "Gross profit/loss": {
-                "Company1": 1016981.0,
-                "Company2": 1488389.0,
-                "Absolute Change": 471408.0,
-                "Relative Change": 0.46353668357619265
-            },
-            "Net profit/loss": {
-                "Company1": null,
-                "Company2": null,
-                "Absolute Change": null,
-                "Relative Change": null
-            },
-            "Tangible fixed assets": {
-                "Company1": null,
-                "Company2": null,
-                "Absolute Change": null,
-                "Relative Change": null
-            },
-            "Investments fixed assets": {
-                "Company1": null,
-                "Company2": null,
-                "Absolute Change": null,
-                "Relative Change": null
-            },
-            "Fixed assets balance": {
-                "Company1": null,
-                "Company2": null,
-                "Absolute Change": null,
-                "Relative Change": null
-            },
-            "Debtors (due within one year)": {
-                "Company1": 1701123.0,
-                "Company2": null,
-                "Absolute Change": null,
-                "Relative Change": null
-            },
-            "Cash balance": {
-                "Company1": 1910302.0,
-                "Company2": 3142513.0,
-                "Absolute Change": 1232211.0,
-                "Relative Change": 0.645034659441282
-            },
-            "Current assets balance": {
-                "Company1": 3611425.0,
-                "Company2": 3142513.0,
-                "Absolute Change": -468912.0,
-                "Relative Change": -0.12984126764365866
-            },
-            "Creditors (due within one year)": {
-                "Company1": 3610923.0,
-                "Company2": 4444864.0,
-                "Absolute Change": 833941.0,
-                "Relative Change": 0.23094953838672272
-            },
-            "Current liabilities balance": {
-                "Company1": 3610923.0,
-                "Company2": 4444864.0,
-                "Absolute Change": 833941.0,
-                "Relative Change": 0.23094953838672272
-            },
-            "Net assets/liabilities balance": {
-                "Company1": 502.0,
-                "Company2": -1302351.0,
-                "Absolute Change": -1302853.0,
-                "Relative Change": -2595.324701195219
-            },
-            "Gross profit margin": {
-                "Company1": null,
-                "Company2": null,
-                "Absolute Change": null,
-                "Relative Change": null
-            },
-            "Liquidity ratio": {
-                "Company1": 1.000139022626625,
-                "Company2": 0.7069986843241998,
-                "Absolute Change": -0.29314033830242514,
-                "Relative Change": -0.29309959082744563
-            },
-            "Debtor days": {
-                "Company1": null,
-                "Company2": null,
-                "Absolute Change": null,
-                "Relative Change": null
-            },
-            "Suspicious Changes": {
-                "Gross profit/loss": 0.46353668357619265,
-                "Cash balance": 0.645034659441282,
-                "Creditors (due within one year)": 0.23094953838672272,
-                "Current liabilities balance": 0.23094953838672272,
-                "Net assets/liabilities balance": -2595.324701195219,
-                "Liquidity ratio": -0.29309959082744563
-            }
-        },
-        {
-            "Turnover": {
-                "Company1": null,
-                "Company2": null,
-                "Absolute Change": null,
-                "Relative Change": null
-            },
-            "Gross profit/loss": {
-                "Company1": 1488389.0,
-                "Company2": 1105479.0,
-                "Absolute Change": -382910.0,
-                "Relative Change": -0.25726473388341353
-            },
-            "Net profit/loss": {
-                "Company1": null,
-                "Company2": null,
-                "Absolute Change": null,
-                "Relative Change": null
-            },
-            "Tangible fixed assets": {
-                "Company1": null,
-                "Company2": null,
-                "Absolute Change": null,
-                "Relative Change": null
-            },
-            "Investments fixed assets": {
-                "Company1": null,
-                "Company2": null,
-                "Absolute Change": null,
-                "Relative Change": null
-            },
-            "Fixed assets balance": {
-                "Company1": null,
-                "Company2": null,
-                "Absolute Change": null,
-                "Relative Change": null
-            },
-            "Debtors (due within one year)": {
-                "Company1": null,
-                "Company2": 1275904.0,
-                "Absolute Change": null,
-                "Relative Change": null
-            },
-            "Cash balance": {
-                "Company1": 3142513.0,
-                "Company2": 2703440.0,
-                "Absolute Change": -439073.0,
-                "Relative Change": -0.13972034483230458
-            },
-            "Current assets balance": {
-                "Company1": 3142513.0,
-                "Company2": 3979344.0,
-                "Absolute Change": 836831.0,
-                "Relative Change": 0.26629356823663103
-            },
-            "Creditors (due within one year)": {
-                "Company1": 4444864.0,
-                "Company2": 3978082.0,
-                "Absolute Change": -466782.0,
-                "Relative Change": -0.1050160364861557
-            },
-            "Current liabilities balance": {
-                "Company1": 4444864.0,
-                "Company2": 3978082.0,
-                "Absolute Change": -466782.0,
-                "Relative Change": -0.1050160364861557
-            },
-            "Net assets/liabilities balance": {
-                "Company1": -1302351.0,
-                "Company2": 1262.0,
-                "Absolute Change": 1303613.0,
-                "Relative Change": -1.0009690168011542
-            },
-            "Gross profit margin": {
-                "Company1": null,
-                "Company2": null,
-                "Absolute Change": null,
-                "Relative Change": null
-            },
-            "Liquidity ratio": {
-                "Company1": 0.7069986843241998,
-                "Company2": 1.000317238307305,
-                "Absolute Change": 0.29331855398310513,
-                "Relative Change": 0.41487850046493385
-            },
-            "Debtor days": {
-                "Company1": null,
-                "Company2": null,
-                "Absolute Change": null,
-                "Relative Change": null
-            },
-            "Suspicious Changes": {
-                "Gross profit/loss": -0.25726473388341353,
-                "Current assets balance": 0.26629356823663103,
-                "Net assets/liabilities balance": -1.0009690168011542,
-                "Liquidity ratio": 0.41487850046493385
-            }
-        }
-    ],
-    "Missing Reports": []
+    "Negative Indices": {}
 }
