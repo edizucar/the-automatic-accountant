@@ -578,6 +578,20 @@ def generateMultiYearSingleCompanyPDF(self, CompanyData2, c2):
     self.label.setText(f"Looking at {c3['Yearly Analysis'][0]['Company Details']['Company Name']} from {c3['Yearly Analysis'][0]['Company Details']['Start date covered by report']} to {c3['Yearly Analysis'][-1]['Company Details']['End date covered by report']} ")
     return (pdf,pdf2), textToWrite
 
+# Prettify the value for printing 
+def prettifyValue(value):
+    newValue = ""
+    if type(value) == int or type(value) == float:
+        #Truncate big numbers
+        if (value >= 1000000):
+            newValue = f"{round(value / 1000000,2)} million"
+        else:
+            newValue = f"{round(value,2)}"
+    
+    return newValue
+
+def prettifyRatio(value):
+    return f"{round(value * 100,2)} %"
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
