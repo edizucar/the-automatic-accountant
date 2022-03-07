@@ -456,7 +456,7 @@ def oneYearOneCompany(data: Dict) -> Dict:
             "Message" : debtor_message
         },
 
-        "Auditors\' report" : data["Auditors\' Report"],
+        "Auditors' Report" : data["Auditors' Report"],
 
         "Negative Indices" : getNegativeIndices(data)
     }
@@ -667,10 +667,10 @@ if __name__ == "__main__":
     print(main(paths))
 '''
 
-if __name__ == "__main__":
+'''if __name__ == "__main__":
     paths = [
     r"..\the-automatic-accountant\data_analysis\input_files\CE Statutory Accounts FY17-18.html",
     r"..\the-automatic-accountant\data_analysis\input_files\CE Statutory Accounts FY18-19.html",
     r"..\the-automatic-accountant\data_analysis\input_files\CE Statutory Accounts FY19-20.html"
     ]
-    print(main(paths))
+    print(main(paths))'''
