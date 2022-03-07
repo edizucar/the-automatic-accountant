@@ -456,7 +456,7 @@ def oneYearOneCompany(data: Dict) -> Dict:
             "Message" : debtor_message
         },
 
-        "Auditors' report" : data["Auditors' report"],
+        "Auditors' Report" : data["Auditors' Report"],
 
         "Negative Indices" : getNegativeIndices(data)
     }
