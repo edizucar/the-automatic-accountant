@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
     "Type": 2,
     "Yearly Analysis": [
         {
@@ -150,6 +151,55 @@
             ],
             "Negative Indices": {}
         }
+=======
+    "Type": 1,
+    "Company Details": {
+        "Company Name": "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED",
+        "UK Companies House Registered Number": "05749230",
+        "Start date covered by report": "2017-08-01",
+        "End date covered by report": "2018-07-31",
+        "SIC": 70229,
+        "Industry": "Management consultancy activities other than financial management",
+        "Sector": "Professional, scientific and technical activities"
+    },
+    "Directors": {
+        "Number of directors": 4,
+        "Flag": 1,
+        "Message": null
+    },
+    "Director Turnover": {
+        "Turnover": 0,
+        "Appointments": 0,
+        "Flag": 1,
+        "Message": null
+    },
+    "Gross Profit": {
+        "Gross Profit": 1016981.0,
+        "Gross Profit Margin": null,
+        "Flag": 3,
+        "Message": "Gross profit or turnover missing or inappropriately tagged."
+    },
+    "Net Profit": {
+        "Net Profit": null,
+        "Net Profit Margin": null,
+        "Flag": 3,
+        "Message": "Net profit or turnover missing or inappropriately tagged."
+    },
+    "Liquidity Ratio": {
+        "Liquidity Ratio": 0.9998609966979792,
+        "Flag": 3,
+        "Message": "Current liabilities outweigh assets"
+    },
+    "Debtor Days": {
+        "Debtor Days": null,
+        "Flag": 3,
+        "Message": "Debtors within a year missing or inappropriately tagged."
+    },
+    "Auditors' Report": [
+        "Report on the audit of the financial statements\nOur responsibilities under ISAs (UK) are further described in the Auditors\u2019 responsibilities for the audit of the financial statements section of our report.\nWe remained independent of the company in accordance with the ethical requirements that are relevant to our audit of the financial statements in the UK, which includes the FRC\u2019s Ethical Standard, and we have fulfilled our other ethical responsibilities in accordance with these requirements.\nThe other information comprises all of the information in the Annual Report other than the financial statements and our auditors\u2019 report thereon.\nOur opinion on the financial statements does not cover the other information and, accordingly, we do not express an audit opinion or, except to the extent otherwise explicitly stated in this report, any form of assurance thereon.\nBased on the responsibilities described above and our work undertaken in the course of the audit, ISAs (UK) require us also to report certain opinions and matters as described below.",
+        1,
+        null
+>>>>>>> 03cf278277d7428c6b2d2f291f34be7c556006e0
     ],
     "Comparisons": [
         {

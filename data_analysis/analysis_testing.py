@@ -11,11 +11,14 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from numpy import sort
 from typing import List, Dict, Tuple
+from requests import post
 
 sys.path.append('.')
 sys.path.append('../data_analysis')
 from data_mining.data_mine import checkAndGetJSON
+from data_analysis.industry_averages.get_industry_averages import get_averages
 
+average_industry_margins = get_averages()
 
 def change(data1: float, data2: float) -> float:
     """
@@ -221,56 +224,6 @@ sectors = {
 
 #TODO: change all instances of exception to be of a more appropriate, specific exception type
 
-#TODO: find reasonable values for these two dictionaries
-
-average_gross_profit_by_sector = {
-    "A" : 1,
-    "B" : 1,
-    "C" : 1,
-    "D" : 1,
-    "E" : 1,
-    "F" : 1,
-    "G" : 1,
-    "H" : 1,
-    "I" : 1,
-    "J" : 1,
-    "K" : 1,
-    "L" : 1,
-    "M" : 1,
-    "N" : 1,
-    "O" : 1,
-    "P" : 1,
-    "Q" : 1,
-    "R" : 1,
-    "S" : 1,
-    "T" : 1,
-    "U" : 1
-}
-
-average_net_profit_by_sector = {
-    "A" : 1,
-    "B" : 1,
-    "C" : 1,
-    "D" : 1,
-    "E" : 1,
-    "F" : 1,
-    "G" : 1,
-    "H" : 1,
-    "I" : 1,
-    "J" : 1,
-    "K" : 1,
-    "L" : 1,
-    "M" : 1,
-    "N" : 1,
-    "O" : 1,
-    "P" : 1,
-    "Q" : 1,
-    "R" : 1,
-    "S" : 1,
-    "T" : 1,
-    "U" : 1
-}
-
 
 def getInvalidTuple(feature: str) -> Tuple:
     """
@@ -288,7 +241,7 @@ def getDirectors(data: Dict) -> Tuple:
     """
     Return a tuple containing a description for the Director list entry in data.
     """
-    if data["People"]["Directors"] is None:
+    if data["People"] is None or data["People"]["Directors"] is None:
         return getInvalidTuple("Directors list")
     return (len(data["People"]["Directors"]), Flag.GREEN, None)
 
@@ -318,22 +271,23 @@ def getDirectorTurnover(data:Dict , directors: int) -> Tuple:
                 return ([turnover, appointed], Flag.AMBER, "Increased turnover including some resignations")
     return ([turnover, appointed], Flag.GREEN, None)
 
-def getGrossProfitMargin(data: Dict, sector: str) -> Tuple:
+def getGrossProfitMargin(data: Dict, sector_industry: str) -> Tuple:
     """
     Return a tuple containing a description for the Gross Profit Margin entry in data.
     """
     gross_profit_margin = data["Ratio Analysis Table"]["Gross profit margin"]
+
     if gross_profit_margin is None:
         return getInvalidTuple("Gross profit or turnover")
-    if abs(change(average_gross_profit_by_sector[sector], gross_profit_margin)) > 1.5:
+    if abs(change(average_industry_margins[sector_industry]["Gross Profit Margin"], gross_profit_margin)) > 0.5:
         return (gross_profit_margin, Flag.RED, 
-        "Gross profit margin (" + str(gross_profit_margin) + ") deviates significantly from industry average (" + str(average_gross_profit_by_sector[sector]) + ").")
-    if abs(change(average_gross_profit_by_sector[sector], gross_profit_margin)) > 0.8:
+        "Gross profit margin (" + str(gross_profit_margin) + ") deviates significantly from industry average (" + str(average_industry_margins[sector_industry]["Gross Profit Margin"]) + ").")
+    if abs(change(average_industry_margins[sector_industry]["Gross Profit Margin"], gross_profit_margin)) > 0.2:
         return(gross_profit_margin, Flag.AMBER, 
-            "Gross profit margin (" + str(gross_profit_margin) + ") deviates from industry average (" + str(average_gross_profit_by_sector[sector]) + ").")
+            "Gross profit margin (" + str(gross_profit_margin) + ") deviates from industry average (" + str(average_industry_margins[sector_industry]["Gross Profit Margin"]) + ").")
     return (gross_profit_margin, Flag.GREEN, None)
 
-def getNetProfitMargin(data: Dict, sector: str, net_profit: float) -> Tuple:
+def getNetProfitMargin(data: Dict, sector_industry: str, net_profit: float) -> Tuple:
     """
     Return a tuple containing a description for the Net Profit Margin entry in data.
     """
@@ -343,12 +297,12 @@ def getNetProfitMargin(data: Dict, sector: str, net_profit: float) -> Tuple:
     if turnover < 0:
         return (turnover, Flag.RED, "Turnover cannot be negative")
     net_profit_margin = net_profit / turnover
-    if abs(change(average_net_profit_by_sector[sector], net_profit_margin)) > 1.5:
+    if abs(change(average_industry_margins[sector_industry]["Net Profit Margin"], net_profit_margin)) > 0.5:
         return (net_profit_margin, Flag.RED, 
-        "Net profit margin (" + str(net_profit_margin) + ") deviates significantly from industry average (" + str(average_net_profit_by_sector[sector]) + ").")
-    if abs(change(average_net_profit_by_sector[sector], net_profit_margin)) > 0.8:
+        "Net profit margin (" + str(net_profit_margin) + ") deviates significantly from industry average (" + str(average_industry_margins[sector_industry]["Net Profit Margin"]) + ").")
+    if abs(change(average_industry_margins[sector_industry]["Net Profit Margin"], net_profit_margin)) > 0.2:
         return(net_profit_margin, Flag.AMBER, 
-            "Net profit margin (" + str(net_profit_margin) + ") deviates from industry average (" + str(average_net_profit_by_sector[sector]) + ").")
+            "Net profit margin (" + str(net_profit_margin) + ") deviates from industry average (" + str(average_industry_margins[sector_industry]["Net Profit Margin"]) + ").")
     return (net_profit_margin, Flag.GREEN, None)
 
 def getLiquidityRatio(data: Dict) -> Tuple:
@@ -369,17 +323,31 @@ def getDebtorDays(data: Dict) -> Tuple:
     """
     Return a tuple containing a description for the Debtor Days entry in data.
     """
-    debtorDays = data["Ratio Analysis Table"]["Debtor days"]
-    if debtorDays is None:
+    debtor_days = data["Ratio Analysis Table"]["Debtor days"]
+    if debtor_days is None:
         return getInvalidTuple("Debtors within a year")
-    if debtorDays > 200:
-        return (debtorDays, Flag.RED, "Debtor days too high")
-    if debtorDays > 100:
-        return (debtorDays, Flag.AMBER, "Debtor days high")
-    if debtorDays < 0:
-        return (debtorDays, Flag.RED, "Debtor days cannot be negative")
-    return (debtorDays, Flag.GREEN, None)
-    
+    if debtor_days > 200:
+        return (debtor_days, Flag.RED, "Debtor days too high")
+    if debtor_days > 100:
+        return (debtor_days, Flag.AMBER, "Debtor days high")
+    if debtor_days < 0:
+        return (debtor_days, Flag.RED, "Debtor days cannot be negative")
+    return (debtor_days, Flag.GREEN, None)
+
+def getAuditorsReport(data: Dict) -> Tuple:
+    """
+    Return a tuple containing a description for the Auditors' Report entry in data.
+    """
+    if data["Auditors\' Report"] is None:
+        return getInvalidTuple("Auditors' Report")
+    auditors_report = post(
+        "https://api.deepai.org/api/summarization",
+        data={
+            'text': data["Auditors\' Report"],
+        },
+        headers={'api-key': '1d79475c-a116-4e1a-ac1b-892e3d2c7aeb'}
+    ).json()['output']
+    return (auditors_report, Flag.GREEN, None)
 class Type(IntEnum):
     """
     An Enum class to help distinguish between different types of data we are dealing with. It could either be just looking at the data of one company at one year,
@@ -389,10 +357,12 @@ class Type(IntEnum):
     MULTIPLE_YEARS_ONE_COMPANY = 2
     ONE_YEAR_TWO_COMPANIES = 3
 
-#TODO: add turnover by region if mining team manages to extract that
-#TODO: add in every field the corresponding note or a summary if the mining team manages to extract that
-#TODO: clear up code - comments, argument types etc
-#TODO: add auditors report that was added by data mining team
+def getSectorIndustry(sic: int) -> str:
+    """
+    Given an SIC compute a string of the form "[SECTOR LETTER][FIRST TWO DIGITS OF SIC].[LAST THREE DIGITS OF SIC]"
+    e.g. for 1110 this returns "A01.110
+    """
+    return getSector(sic) + str(sic//10000) + str((sic%10000)//1000) + "." + str(sic%1000)
 
 def oneYearOneCompany(data: Dict) -> Dict:
     """
@@ -401,16 +371,20 @@ def oneYearOneCompany(data: Dict) -> Dict:
     directors, director_flag, director_message = getDirectors(data)
     (turnover, appointed), turnover_flag, turnover_message = getDirectorTurnover(data, directors)
 
-    sector = getSector(data["SIC And Tag Pairs"][0][0])
+    sic = data["SIC And Tag Pairs"][0][0]
+    sector_industry = getSectorIndustry(sic)
+    
     gross_profit = data["Profit & Loss Account"]["Gross profit/loss"]
-    gross_profit_margin, gross_profit_flag, gross_profit_message = getGrossProfitMargin(data, sector)
+    gross_profit_margin, gross_profit_flag, gross_profit_message = getGrossProfitMargin(data, sector_industry)
 
     net_profit = data["Profit & Loss Account"]["Net profit/loss"]
-    net_profit_margin, net_profit_flag, net_profit_message = getNetProfitMargin(data, sector, net_profit)
+    net_profit_margin, net_profit_flag, net_profit_message = getNetProfitMargin(data, sector_industry, net_profit)
 
     liquidity_ratio, liquidity_ratio_flag, liquidity_ratio_message = getLiquidityRatio(data)
 
     debtor_days, debtor_flag, debtor_message = getDebtorDays(data)
+
+    auditors_report = getAuditorsReport(data)
 
     return {
         "Type" : Type.ONE_YEAR_ONE_COMPANY,
@@ -456,7 +430,7 @@ def oneYearOneCompany(data: Dict) -> Dict:
             "Message" : debtor_message
         },
 
-        "Auditors\' Report" : data["Auditors\' Report"],
+        "Auditors\' Report" : auditors_report,
 
         "Negative Indices" : getNegativeIndices(data)
     }
@@ -576,8 +550,8 @@ def plotGraphs(analysis: List[Dict]) -> None:
     if axes != [] and analysis[0]["Company Details"]["SIC"]:
         (x, gross_profit_margin , net_profit_margin) = list(zip(*axes))
         SIC = analysis[0]["Company Details"]["SIC"]
-        gross_profit_margin_average = average_gross_profit_by_sector[getSector(SIC)]
-        net_profit_margin_average = average_net_profit_by_sector[getSector(SIC)]
+        gross_profit_margin_average = average_industry_margins[getSectorIndustry(SIC)]["Gross Profit Margin"]
+        net_profit_margin_average = average_industry_margins[getSectorIndustry(SIC)]["Net Profit Margin"]
         plotProfitMargins(x, gross_profit_margin, gross_profit_margin_average, net_profit_margin, net_profit_margin_average)
     
     axes = [(getDate(a["Company Details"]["End date covered by report"]),
@@ -638,7 +612,6 @@ def main(paths: List[str]) -> None:
         raise Exception("No files provided")
     if length == 1:
         data = checkAndGetJSON(Path(paths[0]))
-        print(data)
         return oneYearOneCompany(data)
     if length == 2:
         data1 = checkAndGetJSON(Path(paths[0]))
@@ -657,20 +630,20 @@ def main(paths: List[str]) -> None:
         data_li.append(data)
     return multipleYearsOneCompany(data_li)
 
-'''
-if __name__ == "__main__":
-    paths = [
+'''paths = [
     r"..\the-automatic-accountant\data_analysis\input_files\CE Statutory Accounts FY17-18.html",
     r"..\the-automatic-accountant\data_analysis\input_files\CE Statutory Accounts FY18-19.html",
-    r"..\the-automatic-accountant\data_analysis\input_files\CE Statutory Accounts FY19-20.html"
+    r"..\the-automatic-accountant\data_analysis\input_files\CE Statutory Accounts FY19-20.html",
+    #r"..\the-automatic-accountant\data_analysis\input_files\CUTS Statutory Accounts FY17-18.html",
+    #r"..\the-automatic-accountant\data_analysis\input_files\CUTS Statutory Accounts FY18-19.html",
+    #r"..\the-automatic-accountant\data_analysis\input_files\CUTS Statutory Accounts FY19-20.html",
+    #r"..\the-automatic-accountant\data_analysis\input_files\Aspuna Group Limited.xhtml",
+    #r"..\the-automatic-accountant\data_analysis\input_files\AudioTelligence Limited.xhtml",
+    #r"..\the-automatic-accountant\data_analysis\input_files\Bilitech Ltd.xhtml",
+    #r"..\the-automatic-accountant\data_analysis\input_files\CE Statutory Accounts FY14-15.html",
+    #r"..\the-automatic-accountant\data_analysis\input_files\CUTS Statutory Accounts FY14-15.html",
+    #r"..\the-automatic-accountant\data_analysis\input_files\Tarsis Technology Limited.xhtml",
     ]
-    print(main(paths))
-'''
 
-'''if __name__ == "__main__":
-    paths = [
-    r"..\the-automatic-accountant\data_analysis\input_files\CE Statutory Accounts FY17-18.html",
-    r"..\the-automatic-accountant\data_analysis\input_files\CE Statutory Accounts FY18-19.html",
-    r"..\the-automatic-accountant\data_analysis\input_files\CE Statutory Accounts FY19-20.html"
-    ]
-    print(main(paths))'''
+
+print(main(paths))'''

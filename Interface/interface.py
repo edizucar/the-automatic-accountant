@@ -310,6 +310,10 @@ class SecondWindow(QWidget):
                         key = c1
                     if key == "Company2":
                         key = c2
+                    if "Ratio" in key:
+                        value = prettifyRatio(value)
+                    else:
+                        value = prettifyValue(value)
                     pdf.cell(200, 10, txt=f"{key} : {value}",
                              ln=4, align='L')
                     if noFlag:
@@ -443,7 +447,8 @@ def generateSingleYearSingleCompanyPDF(self, CompanyData, samePDF = False):
                 "Turnover Info": ["Turnover", "Turnover by Region"],
                 "Profit Info": ["Gross Profit", "Net Profit", "Liquidity Ratio"],
                 "Debtor Info": ["Debtor Days"],
-                "Indices": ["Negative Indices"]}
+                "Indices": ["Negative Indices"]
+                }
     longLine = "-----------------------------------------------------------"
     for bigName in ["Director Info", "Turnover Info", "Profit Info", "Debtor Info", "Indices"]:
         pdf.set_text_color(0, 0, 0)
@@ -457,6 +462,21 @@ def generateSingleYearSingleCompanyPDF(self, CompanyData, samePDF = False):
             pdf.cell(200, 10, txt=item,
                         ln=4, align='L')
             self.printBasic(item, CompanyData, pdf)
+
+    # add report
+    pdf.set_text_color(0, 0, 0)
+    pdf.set_font('Arial', 'B', 15)
+    pdf.cell(200, 10, txt=longLine,
+                    ln=4, align='L', )
+    pdf.cell(200, 10, txt="Auditors\' Report",
+                    ln=4, align='L', )
+    report = CompanyData['Auditors\' Report'][0].encode('latin-1', 'replace').decode('latin-1')
+    pdf.set_font("Arial", size=13)
+    pdf.multi_cell(200, 10, txt=f"{report}",
+                            align='L')
+    
+    
+    
     self.label.setText(textToWrite)
     return pdf, textToWrite
 def doComparisons(self, c2):
@@ -578,6 +598,20 @@ def generateMultiYearSingleCompanyPDF(self, CompanyData2, c2):
     self.label.setText(f"Looking at {c3['Yearly Analysis'][0]['Company Details']['Company Name']} from {c3['Yearly Analysis'][0]['Company Details']['Start date covered by report']} to {c3['Yearly Analysis'][-1]['Company Details']['End date covered by report']} ")
     return (pdf,pdf2), textToWrite
 
+# Prettify the value for printing 
+def prettifyValue(value):
+    newValue = ""
+    if type(value) == int or type(value) == float:
+        #Truncate big numbers
+        if (abs(value) >= 1000000):
+            newValue = f"{round(value / 1000000,2)} million"
+        else:
+            newValue = f"{round(value,2)}"
+    
+    return newValue
+
+def prettifyRatio(value):
+    return f"{round(value * 100,2)} %"
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
