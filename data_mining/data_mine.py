@@ -218,7 +218,7 @@ def addNumericTags(ixbrl_file:IXBRL, data:json)->json:
         date = maxDate(tag.context.instant,
                        tag.context.startdate, tag.context.enddate)
         if (date != None):
-            if tag.name == "TurnoverGrossOperatingRevenue":
+            if tag.name == "TurnoverGrossOperatingRevenue" or tag.name == "TurnoverRevenue":
                 if ((latest["turnover"] == None) or (date > latest["turnover"])):
                     latest["turnover"] = date
             if tag.name == "GrossProfitLoss":
@@ -266,7 +266,7 @@ def addNumericTags(ixbrl_file:IXBRL, data:json)->json:
         date = maxDate(tag.context.instant,
                        tag.context.startdate, tag.context.enddate)
 
-        if tag.name == "TurnoverGrossOperatingRevenue":
+        if tag.name == "TurnoverGrossOperatingRevenue"or tag.name == "TurnoverRevenue":
             if (date == latest["turnover"]):
                 data["Profit & Loss Account"]["Turnover"] = tag.value
         if tag.name == "GrossProfitLoss":
