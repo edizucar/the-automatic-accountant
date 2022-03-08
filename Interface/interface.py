@@ -447,7 +447,8 @@ def generateSingleYearSingleCompanyPDF(self, CompanyData, samePDF = False):
                 "Turnover Info": ["Turnover", "Turnover by Region"],
                 "Profit Info": ["Gross Profit", "Net Profit", "Liquidity Ratio"],
                 "Debtor Info": ["Debtor Days"],
-                "Indices": ["Negative Indices"]}
+                "Indices": ["Negative Indices"]
+                }
     longLine = "-----------------------------------------------------------"
     for bigName in ["Director Info", "Turnover Info", "Profit Info", "Debtor Info", "Indices"]:
         pdf.set_text_color(0, 0, 0)
@@ -461,6 +462,21 @@ def generateSingleYearSingleCompanyPDF(self, CompanyData, samePDF = False):
             pdf.cell(200, 10, txt=item,
                         ln=4, align='L')
             self.printBasic(item, CompanyData, pdf)
+
+    # add report
+    pdf.set_text_color(0, 0, 0)
+    pdf.set_font('Arial', 'B', 15)
+    pdf.cell(200, 10, txt=longLine,
+                    ln=4, align='L', )
+    pdf.cell(200, 10, txt="Auditors\' Report",
+                    ln=4, align='L', )
+    report = CompanyData['Auditors\' Report'][0].encode('latin-1', 'replace').decode('latin-1')
+    pdf.set_font("Arial", size=13)
+    pdf.multi_cell(200, 10, txt=f"{report}",
+                            align='L')
+    
+    
+    
     self.label.setText(textToWrite)
     return pdf, textToWrite
 def doComparisons(self, c2):
