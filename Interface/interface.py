@@ -450,13 +450,12 @@ def generateSingleYearSingleCompanyPDF(self, CompanyData, samePDF = False):
 
     #pdf.add_page()
     getDict = {"Director Info": ["Directors", "Director Turnover"],
-                "Turnover Info": ["Turnover", "Turnover by Region"],
                 "Profit Info": ["Gross Profit", "Net Profit", "Liquidity Ratio"],
                 "Debtor Info": ["Debtor Days"],
                 "Indices": ["Negative Indices"]
                 }
     longLine = "-----------------------------------------------------------"
-    for bigName in ["Director Info", "Turnover Info", "Profit Info", "Debtor Info", "Indices"]:
+    for bigName in ["Director Info", "Profit Info", "Debtor Info", "Indices"]:
         pdf.set_text_color(0, 0, 0)
         pdf.set_font('Arial', 'B', 15)
         pdf.cell(200, 10, txt=longLine,
@@ -551,12 +550,11 @@ def generateMultiYearSingleCompanyPDF(self, CompanyData2, c2):
 
         #pdf.add_page()
         getDict = {"Director Info": ["Directors", "Director Turnover"],
-                    "Turnover Info": ["Turnover", "Turnover by Region"],
                     "Profit Info": ["Gross Profit", "Net Profit", "Liquidity Ratio"],
                     "Debtor Info": ["Debtor Days"],
                     "Indices": ["Negative Indices"]}
         longLine = "-----------------------------------------------------------"
-        for bigName in ["Director Info", "Turnover Info", "Profit Info", "Debtor Info", "Indices"]:
+        for bigName in ["Director Info", "Profit Info", "Debtor Info", "Indices"]:
             pdf.set_text_color(0, 0, 0)
             pdf.set_font('Arial', 'B', 15)
             pdf.cell(200, 10, txt=longLine,
