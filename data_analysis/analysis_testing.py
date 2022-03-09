@@ -186,6 +186,11 @@ sectors = {
     "U" : "Activities of extraterritorial organisations and bodies"
 } 
 
+def trunc(value: float) -> float:
+    """
+    Formats a float by truncating to two decimal places
+    """
+    return "{:.2f".format(value)
 
 def getInvalidTuple(feature: str) -> Tuple:
     """
@@ -243,10 +248,10 @@ def getGrossProfitMargin(data: Dict, sector_industry: str) -> Tuple:
         return getInvalidTuple("Gross profit or turnover")
     if abs(change(average_industry_margins[sector_industry]["Gross Profit Margin"], gross_profit_margin)) > 0.5:
         return (gross_profit_margin, Flag.RED, 
-        "Gross profit margin (" + str(gross_profit_margin) + ") deviates significantly from industry average (" + str(average_industry_margins[sector_industry]["Gross Profit Margin"]) + ").")
+        "Gross profit margin (" + trunc(gross_profit_margin) + ") deviates significantly from industry average (" + trunc(average_industry_margins[sector_industry]["Gross Profit Margin"]) + ").")
     if abs(change(average_industry_margins[sector_industry]["Gross Profit Margin"], gross_profit_margin)) > 0.2:
         return(gross_profit_margin, Flag.AMBER, 
-            "Gross profit margin (" + str(gross_profit_margin) + ") deviates from industry average (" + str(average_industry_margins[sector_industry]["Gross Profit Margin"]) + ").")
+            "Gross profit margin (" + trunc(gross_profit_margin) + ") deviates from industry average (" + trunc(average_industry_margins[sector_industry]["Gross Profit Margin"]) + ").")
     return (gross_profit_margin, Flag.GREEN, None)
 
 def getNetProfitMargin(data: Dict, sector_industry: str, net_profit: float) -> Tuple:
@@ -261,10 +266,10 @@ def getNetProfitMargin(data: Dict, sector_industry: str, net_profit: float) -> T
     net_profit_margin = net_profit / turnover
     if abs(change(average_industry_margins[sector_industry]["Net Profit Margin"], net_profit_margin)) > 0.5:
         return (net_profit_margin, Flag.RED, 
-        "Net profit margin (" + str(net_profit_margin) + ") deviates significantly from industry average (" + str(average_industry_margins[sector_industry]["Net Profit Margin"]) + ").")
+        "Net profit margin (" + trunc(net_profit_margin) + ") deviates significantly from industry average (" + trunc(average_industry_margins[sector_industry]["Net Profit Margin"]) + ").")
     if abs(change(average_industry_margins[sector_industry]["Net Profit Margin"], net_profit_margin)) > 0.2:
         return(net_profit_margin, Flag.AMBER, 
-            "Net profit margin (" + str(net_profit_margin) + ") deviates from industry average (" + str(average_industry_margins[sector_industry]["Net Profit Margin"]) + ").")
+            "Net profit margin (" + trunc(net_profit_margin) + ") deviates from industry average (" + trunc(average_industry_margins[sector_industry]["Net Profit Margin"]) + ").")
     return (net_profit_margin, Flag.GREEN, None)
 
 def getLiquidityRatio(data: Dict) -> Tuple:
