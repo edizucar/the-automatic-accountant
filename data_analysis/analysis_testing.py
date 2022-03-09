@@ -154,48 +154,12 @@ def getSector(SIC: int) -> str:
     """
     Returns the sector of a company given its SIC number.
     """
-    if 1110 <= SIC <= 3220:
-        return "A"
-    elif 5101 <= SIC <= 9900:
-        return "B"
-    elif 10110 <= SIC <= 33200:
-        return "C"
-    elif 35110 <= SIC <= 35300:
-        return "D"
-    elif 36000 <= SIC <= 39000:
-        return "E"
-    elif 41100 <= SIC <= 43999:
-        return "F"
-    elif 45111 <= SIC <= 47990:
-        return "G"
-    elif 49100 <= SIC <= 53202:
-        return "H"
-    elif 55100 <= SIC <= 56302:
-        return "I"
-    elif 58110 <= SIC <= 63990:
-        return "J"
-    elif 64110 <= SIC <= 66300:
-        return "K"
-    elif 68100 <= SIC <= 68320:
-        return "L"
-    elif 69101 <= SIC <= 75000:
-        return "M"
-    elif 77110 <= SIC <= 82990:
-        return "N"
-    elif 84110 <= SIC <= 84300:
-        return "O"
-    elif 85100 <= SIC <= 85600:
-        return "P"
-    elif 86101 <= SIC <= 88990:
-        return "Q"
-    elif 90010 <= SIC <= 93290:
-        return "R"
-    elif 94110 <= SIC <= 96090:
-        return "S"
-    elif 97000 <= SIC <= 98200:
-        return "T"
-    elif 99000 <= SIC <= 99999:
-        return "U"
+    SICs = [(1110,3220,"A"), (5101,9900,"B"), (10110,33200,"C"), (35110, 35300, "D"), (36000, 39000, "E"), (41100,43999,"F"), (45111,47990,"G"), 
+            (49100,53202,"H"), (55100,56302,"I"), (58110,63990,"J"), (64110,66300,"K"), (68100,68320,"L"), (69101,75000,"M"), (77110,82990,"N"), 
+            (84110,84300,"O"), (85100,85600,"P"), (86101,88990,"Q"), (90010,93290,"R"), (94110,96090,"S"), (97000,98200,"T"), (99000,99999,"U")]
+    for s in SICs:
+        if s[0] <= SIC <= s[1]:
+            return s[2]
     raise Exception("Invalid SIC")
 
 sectors = {
@@ -221,8 +185,6 @@ sectors = {
     "T" : "Activities of households as employers; undifferentiated goods- and services-producing activities of households for own use",
     "U" : "Activities of extraterritorial organisations and bodies"
 } 
-
-#TODO: change all instances of exception to be of a more appropriate, specific exception type
 
 
 def getInvalidTuple(feature: str) -> Tuple:
