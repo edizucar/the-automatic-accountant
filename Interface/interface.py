@@ -13,6 +13,7 @@ from enum import Enum, IntEnum, auto
 import pathlib
 import os
 
+import webbrowser
 
 
 sys.path.append('.')
@@ -134,7 +135,12 @@ class App(QWidget):
 
     def companyLookup(self):
         company = self.textbox.text()
+        chrome_path="C:\\Program Files \\Google\\Chrome\\Application\\chrome.exe"
+        webbrowser.register('google-chrome', None,webbrowser.BackgroundBrowser(chrome_path))
         link = f"https://find-and-update.company-information.service.gov.uk/search?q={company}"
+        webbrowser.get(using='google-chrome').open(link,new=2)
+        webbrowser.open(link, new=2)
+
         print(link)
 
     def uploadAccounts(self):

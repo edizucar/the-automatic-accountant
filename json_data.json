@@ -1,157 +1,4 @@
 {
-<<<<<<< HEAD
-    "Type": 2,
-    "Yearly Analysis": [
-        {
-            "Type": 1,
-            "Company Details": {
-                "Company Name": "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED",
-                "UK Companies House Registered Number": "05749230",
-                "Start date covered by report": "2017-08-01",
-                "End date covered by report": "2018-07-31",
-                "SIC": 70229,
-                "Industry": "Management consultancy activities other than financial management",
-                "Sector": "Professional, scientific and technical activities"
-            },
-            "Directors": {
-                "Number of directors": 4,
-                "Flag": 1,
-                "Message": null
-            },
-            "Director Turnover": {
-                "Turnover": 0,
-                "Appointments": 0,
-                "Flag": 1,
-                "Message": null
-            },
-            "Gross Profit": {
-                "Gross Profit": 1016981.0,
-                "Gross Profit Margin": null,
-                "Flag": 3,
-                "Message": "Gross profit or turnover missing or inappropriately tagged."
-            },
-            "Net Profit": {
-                "Net Profit": null,
-                "Net Profit Margin": null,
-                "Flag": 3,
-                "Message": "Net profit or turnover missing or inappropriately tagged."
-            },
-            "Liquidity Ratio": {
-                "Liquidity Ratio": 0.9998609966979792,
-                "Flag": 3,
-                "Message": "Current liabilities outweigh assets"
-            },
-            "Debtor Days": {
-                "Debtor Days": null,
-                "Flag": 3,
-                "Message": "Debtors within a year missing or inappropriately tagged."
-            },
-            "Auditors' Report": [
-                "Independent auditors\u2019 report to the members of Cambridge University Technical Services Limited\n\n\nReport on the audit of the financial statements\n\n\nOpinion\n\n\nIn our opinion, Cambridge University Technical Services Limited\u2019s financial statements:\ngive a true and fair view of the state of the company\u2019s affairs as at \n     31 July 2018\n and of its profit for the year then ended;\nhave been properly prepared in accordance with United Kingdom Generally Accepted Accounting Practice (United Kingdom Accounting Standards, comprising FRS 102 \u201cThe Financial Reporting Standard applicable in the UK and Republic of Ireland\u201d, and applicable law); and\nhave been prepared in accordance with the requirements of the Companies Act 2006.\nWe have audited the financial statements, included within the Annual Report and Financial Statements (the \u201cAnnual Report\u201d), which comprise: the balance sheet as at \n     31 July 2018\n; the statement of total comprehensive income, the statement of changes in equity for the year then ended; and the notes to the financial statements, which include a description of the significant accounting policies.\n\n\nBasis for opinion\n\n\nWe conducted our audit in accordance with International Standards on Auditing (UK) (\u201cISAs (UK)\u201d) and applicable law. Our responsibilities under ISAs (UK) are further described in the Auditors\u2019 responsibilities for the audit of the financial statements section of our report. We believe that the audit evidence we have obtained is sufficient and appropriate to provide a basis for our opinion.\n\n\nIndependence\n\n\nWe remained independent of the company in accordance with the ethical requirements that are relevant to our audit of the financial statements in the UK, which includes the FRC\u2019s Ethical Standard, and we have fulfilled our other ethical responsibilities in accordance with these requirements.\n\n\nConclusions relating to going concern\n\n\nWe have nothing to report in respect of the following matters in relation to which ISAs (UK) require us to report to you when:\nthe directors\u2019 use of the going concern basis of accounting in the preparation of the financial statements is not appropriate; or\nthe directors have not disclosed in the financial statements any identified material uncertainties that may cast significant doubt about the company\u2019s ability to continue to adopt the going concern basis of accounting for a period of at least twelve months from the date when the financial statements are authorised for issue.\nHowever, because not all future events or conditions can be predicted, this statement is not a guarantee as to the company\u2019s ability to continue as a going concern.\n\n\nReporting on other information\n\n\nThe other information comprises all of the information in the Annual Report other than the financial statements and our auditors\u2019 report thereon. The directors are responsible for the other information. Our opinion on the financial statements does not cover the other information and, accordingly, we do not express an audit opinion or, except to the extent otherwise explicitly stated in this report, any form of assurance thereon.\nIn connection with our audit of the financial statements, our responsibility is to read the other information and, in doing so, consider whether the other information is materially inconsistent with the financial statements or our knowledge obtained in the audit, or otherwise appears to be materially misstated. If we identify an apparent material inconsistency or material misstatement, we are required to perform procedures to conclude whether there is a material misstatement of the financial statements or a material misstatement of the other information. If, based on the work we have performed, we conclude that there is a material misstatement of this other information, we are required to report that fact. We have nothing to report based on these responsibilities.\nWith respect to the Directors\u2019 Report, we also considered whether the disclosures required by the UK Companies Act 2006 have been included.\nBased on the responsibilities described above and our work undertaken in the course of the audit, ISAs (UK) require us also to report certain opinions and matters as described below."
-            ],
-            "Negative Indices": {}
-        },
-        {
-            "Type": 1,
-            "Company Details": {
-                "Company Name": "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED",
-                "UK Companies House Registered Number": "05749230",
-                "Start date covered by report": "2018-08-01",
-                "End date covered by report": "2019-07-31",
-                "SIC": 70229,
-                "Industry": "Management consultancy activities other than financial management",
-                "Sector": "Professional, scientific and technical activities"
-            },
-            "Directors": {
-                "Number of directors": 4,
-                "Flag": 1,
-                "Message": null
-            },
-            "Director Turnover": {
-                "Turnover": 0,
-                "Appointments": 0,
-                "Flag": 1,
-                "Message": null
-            },
-            "Gross Profit": {
-                "Gross Profit": 1488389.0,
-                "Gross Profit Margin": null,
-                "Flag": 3,
-                "Message": "Gross profit or turnover missing or inappropriately tagged."
-            },
-            "Net Profit": {
-                "Net Profit": null,
-                "Net Profit Margin": null,
-                "Flag": 3,
-                "Message": "Net profit or turnover missing or inappropriately tagged."
-            },
-            "Liquidity Ratio": {
-                "Liquidity Ratio": 1.4144297891528215,
-                "Flag": 1,
-                "Message": null
-            },
-            "Debtor Days": {
-                "Debtor Days": null,
-                "Flag": 3,
-                "Message": "Debtors within a year missing or inappropriately tagged."
-            },
-            "Auditors' Report": [
-                "Independent auditors\u2019 report to the members of Cambridge University Technical Services Limited\n\n\nReport on the audit of the financial statements\n\n\nOpinion\n\n\nIn our opinion, Cambridge University Technical Services\u2019s financial statements: give a true and fair view of the state of the company\u2019s affairs as at 31 July 2019 and of its profit for the year then ended; have been properly prepared in accordance with United Kingdom Generally Accepted Accounting Practice (United Kingdom Accounting Standards, comprising FRS 102 \u201cThe Financial Reporting Standard applicable in the UK and Republic of Ireland\u201d, and applicable law); and have been prepared in accordance with the requirements of the Companies Act 2006.\nWe have audited the financial statements, included within the Annual Report and Financial Statements (the \u201cAnnual Report\u201d), which comprise: balance sheet as at \n     31 July 2019\n; statement of total comprehensive income, the statement of changes in equity for the year ended; and the notes to the financial statements, which include a description of the significant accounting policies.\n\n\nBasis for opinion\n\n\nWe conducted our audit in accordance with International Standards on Auditing (UK) (\u201cISAs (UK)\u201d) and applicable law. Our responsibilities under ISAs (UK) are further described in the Auditors\u2019 responsibilities for the audit of the financial statements section of our report. We believe that the audit evidence we have obtained is sufficient and appropriate to provide a basis for our opinion.\n\n\nIndependence\n\n\nWe remained independent of the company in accordance with the ethical requirements that are relevant to our audit of the financial statements in the UK, which includes the FRC\u2019s Ethical Standard, and we have fulfilled our other ethical responsibilities in accordance with these requirements.\n\n\nConclusions relating to going concern\n\n\nISAs (UK) require us to report to you when: the directors\u2019 use of the going concern basis of accounting in the preparation of the financial statements is not appropriate; or the directors have not disclosed in the financial statements any identified material uncertainties that may cast significant doubt about the company\u2019s ability to continue to adopt the going concern basis of accounting for a period of at least twelve months from the date when the financial statements are authorised for issue.\nWe have nothing to report in respect of the above matters.\nHowever, because not all future events or conditions can be predicted, this statement is not a guarantee as to the company\u2019s ability to continue as a going concern. For example, the terms on which the United Kingdom may withdraw from the European Union are not clear, and it is difficult to evaluate all of the potential implications on the company\u2019s trade, customers, suppliers and the wider economy.\n\n\nReporting on other information\n\n\nThe other information comprises all of the information in the Annual Report other than the financial statements and our auditors\u2019 report thereon. The directors are responsible for the other information. Our opinion on the financial statements does not cover the other information and, accordingly, we do not express an audit opinion or, except to the extent otherwise explicitly stated in this report, any form of assurance thereon.\nIn connection with our audit of the financial statements, our responsibility is to read the other information and, in doing so, consider whether the other information is materially inconsistent with the financial statements or our knowledge obtained in the audit, or otherwise appears to be materially misstated. If we identify an apparent material inconsistency or material misstatement, we are required to perform procedures to conclude whether there is a material misstatement of the financial statements or a material misstatement of the other information. If, based on the work we have performed, we conclude that there is a material misstatement of this other information, we are required to report that fact. We have nothing to report based on these responsibilities.\nWith respect to the Directors\u2019 Report, we also considered whether the disclosures required by the UK Companies Act 2006 have been included.\nBased on the responsibilities described above and our work undertaken in the course of the audit, ISAs (UK) require us also to report certain opinions and matters as described below."
-            ],
-            "Negative Indices": {
-                "Net assets/liabilities balance": -1302351.0
-            }
-        },
-        {
-            "Type": 1,
-            "Company Details": {
-                "Company Name": "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED",
-                "UK Companies House Registered Number": "05749230",
-                "Start date covered by report": "2019-08-01",
-                "End date covered by report": "2020-07-31",
-                "SIC": 70229,
-                "Industry": "Management consultancy activities other than financial management",
-                "Sector": "Professional, scientific and technical activities"
-            },
-            "Directors": {
-                "Number of directors": 4,
-                "Flag": 1,
-                "Message": null
-            },
-            "Director Turnover": {
-                "Turnover": 0,
-                "Appointments": 0,
-                "Flag": 1,
-                "Message": null
-            },
-            "Gross Profit": {
-                "Gross Profit": 1105479.0,
-                "Gross Profit Margin": null,
-                "Flag": 3,
-                "Message": "Gross profit or turnover missing or inappropriately tagged."
-            },
-            "Net Profit": {
-                "Net Profit": null,
-                "Net Profit Margin": null,
-                "Flag": 3,
-                "Message": "Net profit or turnover missing or inappropriately tagged."
-            },
-            "Liquidity Ratio": {
-                "Liquidity Ratio": 0.999682862300922,
-                "Flag": 3,
-                "Message": "Current liabilities outweigh assets"
-            },
-            "Debtor Days": {
-                "Debtor Days": null,
-                "Flag": 3,
-                "Message": "Debtors within a year missing or inappropriately tagged."
-            },
-            "Auditors' Report": [
-                "INDEPENDENT AUDITORS\u2019 REPORT TO THE MEMBERS OF CAMBRIDGE UNIVERSTIY TECHNICAL SERVICES LIMITED\n\n\nOpinion\n\n\nWe have audited the financial statements of Cambridge University Technical Services Limited (the 'Company') for the year ended \n     31 July 2020\n, which comprise the Statement of Total Comprehensive Income, the Statement of Changes in Equity, the Balance Sheet, and the notes to the financial statements, including a summary of significant accounting policies. The financial reporting framework that has been applied in their preparation is applicable law and United Kingdom Accounting Standards, including Financial Reporting Standard 102 \u2018The Financial Reporting Standard applicable in the UK and Republic of Ireland\u2019 (United Kingdom Generally Accepted Accounting Practice).\nIn our opinion, the accompanying financial statements: give a true and fair view of the state of the Company\u2019s affairs as at \n     31 July 2020\n and of its profit for the year then ended; have been properly prepared in accordance with United Kingdom Generally Accepted Accounting Practice; and have been properly prepared in accordance with the requirements of the Companies Act 2006.\n\n\nBASIS FOR OPINION\n\n\nWe conducted our audit in accordance with International Standards on Auditing (UK) (ISAs (UK)) and applicable law. Our responsibilities under those standards are further described in the Auditors' responsibilities for the audit of the financial statements section of our report. We are independent of the Company in accordance with the ethical requirements that are relevant to our audit of financial statements in the United Kingdom, including the Financial Reporting Council\u2019s Ethical Standard, and we have fulfilled our other ethical responsibilities in accordance with these requirements. We believe that the audit evidence we have obtained is sufficient and appropriate to provide a basis for our opinion.\n\n\nCONCLUSIONS RELATING TO GOING CONCERN\n\n\nWe have nothing to report in respect of the following matters in relation to which the ISAs (UK) require us to report to you where: the directors' use of the going concern basis of accounting in the preparation of the financial statements is not appropriate; or the directors have not disclosed in the financial statements any identified material uncertainties that may cast significant doubt about the Company's ability to continue to adopt the going concern basis of accounting for a period of at least twelve months from the date when the financial statements are authorised for issue.\n\n\nOTHER INFORMATION\n\n\nThe directors are responsible for the other information. The other information comprises the information included in the Annual report, other than the financial statements and our Auditors' report thereon. Our opinion on the financial statements does not cover the other information and, except to the extent otherwise explicitly stated in our report, we do not express any form of assurance conclusion thereon.\nIn connection with our audit of the financial statements, our responsibility is to read the other information and, in doing so, consider whether the other information is materially inconsistent with the financial statements or our knowledge obtained in the audit or otherwise appears to be materially misstated. If we identify such material inconsistencies or apparent material misstatements, we are required to determine whether there is a material misstatement in the financial statements or a material misstatement of the other information. If, based on the work we have performed, we conclude that there is a material misstatement of this other information, we are required to report that fact.\nWe have nothing to report in this regard."
-            ],
-            "Negative Indices": {}
-        }
-=======
     "Type": 1,
     "Company Details": {
         "Company Name": "CAMBRIDGE UNIVERSITY TECHNICAL SERVICES LIMITED",
@@ -199,15 +46,14 @@
         "Report on the audit of the financial statements\nOur responsibilities under ISAs (UK) are further described in the Auditors\u2019 responsibilities for the audit of the financial statements section of our report.\nWe remained independent of the company in accordance with the ethical requirements that are relevant to our audit of the financial statements in the UK, which includes the FRC\u2019s Ethical Standard, and we have fulfilled our other ethical responsibilities in accordance with these requirements.\nThe other information comprises all of the information in the Annual Report other than the financial statements and our auditors\u2019 report thereon.\nOur opinion on the financial statements does not cover the other information and, accordingly, we do not express an audit opinion or, except to the extent otherwise explicitly stated in this report, any form of assurance thereon.\nBased on the responsibilities described above and our work undertaken in the course of the audit, ISAs (UK) require us also to report certain opinions and matters as described below.",
         1,
         null
->>>>>>> 03cf278277d7428c6b2d2f291f34be7c556006e0
     ],
     "Comparisons": [
         {
             "Turnover": {
-                "Company1": null,
-                "Company2": null,
-                "Absolute Change": null,
-                "Relative Change": null
+                "Company1": 6076863.0,
+                "Company2": 7738283.0,
+                "Absolute Change": 1661420.0,
+                "Relative Change": 0.2734009307104669
             },
             "Gross profit/loss": {
                 "Company1": 1016981.0,
@@ -276,10 +122,10 @@
                 "Relative Change": -2595.324701195219
             },
             "Gross profit margin": {
-                "Company1": null,
-                "Company2": null,
-                "Absolute Change": null,
-                "Relative Change": null
+                "Company1": 0.16735295826152408,
+                "Company2": 0.1923409883045115,
+                "Absolute Change": 0.024988030042987414,
+                "Relative Change": 0.14931334529466983
             },
             "Liquidity ratio": {
                 "Company1": 1.000139022626625,
@@ -288,12 +134,13 @@
                 "Relative Change": -0.29309959082744563
             },
             "Debtor days": {
-                "Company1": null,
+                "Company1": 102.17605613290937,
                 "Company2": null,
                 "Absolute Change": null,
                 "Relative Change": null
             },
             "Suspicious Changes": {
+                "Turnover": 0.2734009307104669,
                 "Gross profit/loss": 0.46353668357619265,
                 "Cash balance": 0.645034659441282,
                 "Creditors (due within one year)": 0.23094953838672272,
@@ -304,10 +151,10 @@
         },
         {
             "Turnover": {
-                "Company1": null,
-                "Company2": null,
-                "Absolute Change": null,
-                "Relative Change": null
+                "Company1": 7738283.0,
+                "Company2": 6859740.0,
+                "Absolute Change": -878543.0,
+                "Relative Change": -0.113532032881196
             },
             "Gross profit/loss": {
                 "Company1": 1488389.0,
@@ -376,10 +223,10 @@
                 "Relative Change": -1.0009690168011542
             },
             "Gross profit margin": {
-                "Company1": null,
-                "Company2": null,
-                "Absolute Change": null,
-                "Relative Change": null
+                "Company1": 0.1923409883045115,
+                "Company2": 0.16115465017624575,
+                "Absolute Change": -0.03118633812826574,
+                "Relative Change": -0.16214088532649099
             },
             "Liquidity ratio": {
                 "Company1": 0.7069986843241998,
@@ -389,7 +236,7 @@
             },
             "Debtor days": {
                 "Company1": null,
-                "Company2": null,
+                "Company2": 67.88959348313493,
                 "Absolute Change": null,
                 "Relative Change": null
             },
