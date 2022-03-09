@@ -190,7 +190,7 @@ def trunc(value: float) -> float:
     """
     Formats a float by truncating to two decimal places
     """
-    return "{:.2f".format(value)
+    return "{:.2f}".format(value)
 
 def getInvalidTuple(feature: str) -> Tuple:
     """
